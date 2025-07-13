@@ -1,0 +1,308 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background: black;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  touch-action: manipulation;
+}
+
+.time-display {
+  font-size: 90px;
+  font-weight: 100;
+  text-align: center;
+  margin-top: 168px;
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  text-rendering: optimizeLegibility;
+  transition: all 0.1s ease-in-out;
+}
+
+.controls {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 118px 0 0 0;
+  padding: 0 26px 20px;
+}
+
+.controls::after {
+  content: "";
+  display: block;
+  height: 1px;
+  background-color: #222;
+  width: 90%;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.btn {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background-color: #1c1c1e;
+  color: #aaa;
+  user-select: none;
+  transition: background-color 0.1s ease, transform 0.1s ease;
+}
+
+.lap-btn {
+  background-color: #1c1c1e;
+  color: #aaa;
+}
+
+.lap-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.start-btn {
+  background-color: #013a1c;
+  color: #00ff4c;
+  transition: transform 0.1s ease, background-color 0.3s ease;
+}
+
+.stop-btn {
+  background-color: #3c0000;
+  color: #ff3b30;
+  transition: transform 0.1s ease, background-color 0.3s ease;
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+.dot-indicators {
+  text-align: center;
+}
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin: 0 4px;
+  border-radius: 50%;
+  background-color: gray;
+}
+
+.dot.active {
+  background-color: white;
+}
+
+.laps {
+  margin: 4px auto;
+  max-height: 160px;
+  overflow-y: auto;
+  width: 90%;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 10px;
+}
+
+.laps ul {
+  padding: 0;
+  list-style: none;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.laps li {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid #1c1c1e;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  line-height: 1.4;
+  height: 30px;
+  transition: color 0.3s ease;
+}
+
+.laps li.fastest {
+  color: #00ff4c;
+}
+
+.laps li.slowest {
+  color: #ff453a;
+}
+
+.lap-time {
+  min-width: 70px;
+  text-align: right;
+}
+
+.tabs {
+  position: absolute;
+  bottom: -25px;
+  width: 100%;
+  height: 76px;
+  background: black;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 11px;
+  color: #bbb;
+  cursor: pointer;
+}
+
+.tab img {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 4px;
+  filter: brightness(1.2);
+  opacity: 0.5;
+  transition: filter 0.2s, opacity 0.2s;
+}
+
+.tab.active {
+  color: #FFA00A;
+}
+
+.tab.active img {
+  opacity: 1;
+  filter: invert(65%) sepia(100%) saturate(700%) hue-rotate(10deg) brightness(100%) contrast(105%);
+}
+.psychic-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.psychic-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.psychic-container {
+  background: #1c1c1e;
+  border-radius: 12px;
+  padding: 18px;
+  width: 220px;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  position: absolute;
+  left: 2%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.psychic-title {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #FFA00A;
+}
+
+.psychic-input {
+  font-size: 32px;
+  letter-spacing: 6px;
+  padding: 8px 12px;
+  background: #2c2c2e;
+  border-radius: 9px;
+  margin-bottom: 18px;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  color: white;
+  width: 140px;
+  text-align: center;
+  border: 2px solid #3a3a3c;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.psychic-input.active {
+  border-color: #FFA00A;
+}
+
+.psychic-instruction {
+  font-size: 14px;
+  color: #aaa;
+  margin-bottom: 30px;
+}
+
+.psychic-mode-indicator {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 160, 10, 0.2);
+  color: #FFA00A;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.psychic-mode-indicator.active {
+  opacity: 1;
+}
+
+.number-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.number-btn {
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  height: 60px;
+  font-size: 24px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.number-btn:active {
+  background: #444;
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: white;
+}
