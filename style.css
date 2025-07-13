@@ -169,23 +169,36 @@ html, body {
   cursor: pointer;
 }
 
+/* Base style for all tab images (sets size and common properties) */
 .tab img {
   width: 24px;
   height: 24px;
   margin-bottom: 4px;
-  filter: brightness(1.2);
-  opacity: 0.5;
+  opacity: 0.5; /* Default opacity for all inactive icons */
   transition: filter 0.2s, opacity 0.2s;
 }
 
+/* Specific filter for inactive icons (World Clock, Alarms, Timers) */
+.tab:not(.active) img:not([alt="Stopwatch Icon"]) {
+  filter: invert(50%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(150%) contrast(100%);
+}
+
+/* Ensure stopwatch icon when NOT active keeps its original white color */
+.tab:not(.active) #stopwatchTab img {
+  filter: none; /* Explicitly remove any filter */
+  opacity: 0.5; /* Set specific opacity if needed, defaults to .tab img otherwise */
+}
+
 .tab.active {
-  color: #FFA00A;
+  color: #FFA00A; /* Orange text for active tab */
 }
 
 .tab.active img {
-  opacity: 1;
-  filter: invert(65%) sepia(100%) saturate(700%) hue-rotate(10deg) brightness(100%) contrast(105%);
+  opacity: 1; /* Full opacity when active */
+  /* This filter converts white to the desired orange color (#FFA00A) */
+  filter: brightness(0) saturate(100%) invert(64%) sepia(100%) saturate(2466%) hue-rotate(345deg) brightness(100%) contrast(105%);
 }
+
 .psychic-overlay {
   position: fixed;
   top: 0;
