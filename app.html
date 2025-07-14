@@ -94,7 +94,7 @@
   }
 
   // Cek key di database
-  get(ref(db, 'licenses/' + licenseKey)).then((snapshot) => {
+  get(ref(db, 'data/licenses/' + licenseKey)).then((snapshot) => {
     if (!snapshot.exists()) {
       window.location.href = '/'; // key tidak valid
     } else {
