@@ -84,36 +84,35 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  // ⛔ Skip validasi kalau sudah pernah aktivasi
-  if (localStorage.getItem("showtime_activated") === "true") {
-    console.log("✅ Sudah aktivasi, lanjut...");
-    return;
-  }
-
-  const params = new URLSearchParams(window.location.search);
-  const licenseKey = params.get("license_key");
+  // ⛔ Skip validasi kalau sudah aktivasi
+if (localStorage.getItem("showtime_activated") === "true") {
+  console.log("✅ Sudah aktivasi, lanjut...");
+} else {
+  // Ambil license dari hash (bukan search param)
+  const hash = window.location.hash;
+  const match = hash.match(/license_key=([A-Za-z0-9]+)/);
+  const licenseKey = match ? match[1] : null;
 
   if (!licenseKey) {
-    window.location.href = "/"; // Gagal: tidak ada key
+    window.location.href = "/";
   }
 
   const licenseRef = ref(db, "data/licenses/" + licenseKey);
 
-  get(licenseRef)
-    .then((snapshot) => {
-      if (!snapshot.exists()) {
-        window.location.href = "/"; // Key tidak valid
-      } else {
-        // ✅ Simpan status aktivasi lokal
-        localStorage.setItem("showtime_activated", "true");
+  get(licenseRef).then((snapshot) => {
+    if (!snapshot.exists()) {
+      window.location.href = "/";
+    } else {
+      localStorage.setItem("showtime_activated", "true");
+      remove(licenseRef);
 
-        // ❌ Hapus license dari database
-        remove(licenseRef);
+      // 💡 Bersihkan hash
+      window.location.hash = "";
 
-        // 🔍 Bersihkan URL
-        window.history.replaceState({}, document.title, "/app.html");
-      }
-    })
+      console.log("✅ Aktivasi sukses");
+    }
+  });
+}
     .catch((err) => {
       console.error("Error checking license", err);
       window.location.href = "/";
