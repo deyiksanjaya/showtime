@@ -67,6 +67,44 @@
       </div>
     </div>
   </div>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBm2cw6dircA3IMc3yCEeCgVa5--5W6DUw",
+    authDomain: "showtime-f086c.firebaseapp.com",
+    databaseURL: "https://showtime-f086c-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "showtime-f086c",
+    storageBucket: "showtime-f086c.firebasestorage.app",
+    messagingSenderId: "31064800242",
+    appId: "1:31064800242:web:8b290d03eda9bf7d95896b"
+  };
+
+  // Init Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // Ambil license_key dari URL
+  const params = new URLSearchParams(window.location.search);
+  const licenseKey = params.get('license_key');
+
+  if (!licenseKey) {
+    window.location.href = '/'; // nggak ada key = langsung tendang ke landing
+  }
+
+  // Cek key di database
+  get(ref(db, 'licenses/' + licenseKey)).then((snapshot) => {
+    if (!snapshot.exists()) {
+      window.location.href = '/'; // key tidak valid
+    } else {
+      // Bersihin URL agar nggak kelihatan license-nya
+      window.history.replaceState({}, document.title, "/app.html");
+    }
+  }).catch(() => {
+    window.location.href = '/'; // kalau error juga balikin
+  });
+</script>
   <script src="script.js"></script>
 </body>
 </html>
