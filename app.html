@@ -102,15 +102,13 @@
     };
 
     // Device ID (UUID)
-    const getDeviceId = () => {
-      let id = localStorage.getItem("showtime_device_id");
-      if (!id) {
-        id = crypto.randomUUID();
-        localStorage.setItem("showtime_device_id", id);
-        debugLog("🆕 Membuat device ID baru: " + id);
-      }
-      return id;
-    };
+    const const getDeviceId = () => {
+  const base = navigator.userAgent + navigator.language;
+  const encoded = btoa(base).replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
+  const id = "device_" + encoded;
+  debugLog("🔑 Device ID (dihasilkan dari fingerprint): " + id);
+  return id;
+};
 
     const runValidation = async () => {
       debugLog("🛡️ Memulai validasi lisensi...");
