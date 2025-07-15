@@ -3,74 +3,198 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>License Activation - ShowTime</title>
+  <title>Activate ShowTime</title>
   <style>
+    :root {
+      --background-color: #000000;
+      --container-bg: #1C1C1E;
+      --text-primary: #FFFFFF;
+      --text-secondary: #8E8E93;
+      --accent-orange: #FFA00A;
+      --accent-blue: #0A84FF;
+      --border-color: #3A3A3C;
+    }
+
     body {
       margin: 0;
-      padding: 0 20px;
-      background: black;
-      color: white;
+      padding: 24px;
+      background-color: var(--background-color);
+      color: var(--text-primary);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       display: flex;
       justify-content: center;
-      align-items: center;
-      height: 100dvh;
+      align-items: flex-start;
+      min-height: 100vh;
       text-align: center;
-    }
-    .container {
-      max-width: 320px;
-      width: 100%;
-    }
-    h1 {
-      font-weight: 300;
-      font-size: 24px;
-      color: #FFA00A; /* Orange color from the app */
-    }
-    p {
-      color: #aaa;
-      font-size: 16px;
-      line-height: 1.5;
-    }
-    .license-input {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      text-align: center;
-      background-color: #1c1c1e;
-      color: white;
-      border: 1px solid #333;
-      border-radius: 8px;
-      margin-top: 20px;
       box-sizing: border-box;
-      outline: none;
     }
-    .license-input:focus {
-      border-color: #FFA00A;
+
+    .container {
+      max-width: 340px;
+      width: 100%;
     }
-    .activate-btn {
+
+    .header {
+      margin-bottom: 32px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+    }
+
+    .header p {
+      font-size: 17px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .step-guide {
+      background-color: var(--container-bg);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .step-guide h2 {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 0 0 20px 0;
+      text-align: center;
+      color: var(--accent-orange);
+    }
+
+    .instruction {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .instruction:last-child {
+        margin-bottom: 4px;
+    }
+
+    /* Menggunakan filter untuk mengubah warna ikon PNG putih menjadi biru */
+    .instruction .icon {
+      width: 28px;
+      height: 28px;
+      margin-right: 16px;
+      flex-shrink: 0;
+      filter: brightness(0) saturate(100%) invert(48%) sepia(82%) saturate(4925%) hue-rotate(193deg) brightness(108%) contrast(101%);
+    }
+
+    .instruction p {
+      font-size: 15px;
+      color: var(--text-primary);
+      line-height: 1.4;
+      margin: 0;
+    }
+    
+    .instruction p strong {
+      color: var(--text-secondary);
+    }
+
+    .activation-section {
+      background-color: var(--container-bg);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    
+    .activation-section h2 {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+      color: var(--text-primary);
+    }
+    
+    /* Teks peringatan di bawah judul aktivasi */
+    .activation-section .warning-text {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin: 0 0 16px 0;
+        line-height: 1.4;
+    }
+
+    .license-input {
       width: 100%;
       padding: 14px;
       font-size: 16px;
+      text-align: center;
+      background-color: #3A3A3C;
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .license-input:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.3);
+    }
+
+    .activate-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 17px;
       font-weight: 600;
       color: white;
-      background-color: #007aff; /* iOS blue */
+      background-color: var(--accent-blue);
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      margin-top: 15px;
-      transition: background-color 0.2s;
+      margin-top: 12px;
+      transition: background-color 0.2s, transform 0.1s;
     }
     .activate-btn:active {
-      background-color: #005ecb;
+      background-color: #0060C0;
+      transform: scale(0.98);
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>License Activation</h1>
-    <p>Please enter your license key to continue.</p>
-    <input type="text" id="licenseKeyInput" class="license-input" placeholder="Type or paste your key here">
-    <button id="activateBtn" class="activate-btn">Activate</button>
+    <div class="header">
+      <h1>Welcome to ShowTime</h1>
+      <!-- Teks diubah sesuai permintaan -->
+      <p>Follow these steps to activate your app.</p>
+    </div>
+
+    <!-- PANDUAN LANGKAH-DEMI-LANGKAH -->
+    <div class="step-guide">
+      <h2>Installation & Activation Guide</h2>
+      <div class="instruction">
+        <!-- Ikon Share dari Icons8 -->
+        <img src="https://img.icons8.com/ios-glyphs/60/ffffff/share-rounded.png" alt="Share Icon" class="icon" onerror="this.style.display='none'">
+        <p>Tap the <strong>Share</strong> icon in your browser's toolbar.</p>
+      </div>
+      <div class="instruction">
+        <!-- Ikon Add dari Icons8 -->
+        <img src="https://img.icons8.com/ios-glyphs/60/ffffff/plus-math.png" alt="Add Icon" class="icon" onerror="this.style.display='none'">
+        <p>Scroll down and select <strong>'Add to Home Screen'</strong>.</p>
+      </div>
+      <!-- Instruksi baru ditambahkan di sini -->
+      <div class="instruction">
+        <!-- Ikon Open In App dari Icons8 -->
+        <img src="https://img.icons8.com/ios-glyphs/60/ffffff/new-post.png" alt="Open App Icon" class="icon" onerror="this.style.display='none'">
+        <p><strong>Close Safari</strong> and open the new app from your Home Screen.</p>
+      </div>
+    </div>
+
+    <!-- BAGIAN AKTIVASI -->
+    <div class="activation-section">
+        <h2>Enter License Key</h2>
+        <!-- Teks peringatan ditambahkan di sini -->
+        <p class="warning-text">
+          Enter your key here, inside the app (not in Safari).
+        </p>
+        <input type="text" id="licenseKeyInput" class="license-input" placeholder="Paste your license key">
+        <button id="activateBtn" class="activate-btn">Activate</button>
+    </div>
+
   </div>
 
   <script>
