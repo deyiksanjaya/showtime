@@ -74,34 +74,18 @@
 import { ref, get, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
 const runValidation = async () => {
-  console.log("🛡️ Memulai validasi lisensi...");
+  console.log("🛡️ Validasi lisensi ShowTime dimulai...");
 
   if (localStorage.getItem("showtime_activated") === "true") {
-    console.log("✅ Sudah diaktivasi sebelumnya.");
+    console.log("✅ Sudah diaktivasi sebelumnya. Akses dibuka.");
     return;
   }
 
-  let licenseKey = null;
+  // Ambil lisensi dari localStorage langsung
+  const licenseKey = localStorage.getItem("showtime_license");
 
-  // 1. Ambil dari hash
-  const hash = window.location.hash;
-  const match = hash.match(/license_key=([A-Za-z0-9]+)/);
-  if (match) {
-    licenseKey = match[1];
-    console.log("🔑 Dapat dari hash:", licenseKey);
-  }
-
-  // 2. Jika tidak ada di hash, coba dari localStorage
   if (!licenseKey) {
-    licenseKey = localStorage.getItem("showtime_license") || localStorage.getItem("pending_license");
-    if (licenseKey) {
-      console.log("🔁 Dapat dari localStorage:", licenseKey);
-    }
-  }
-
-  // 3. Kalau tetap tidak ada, arahkan ke activate.html
-  if (!licenseKey) {
-    console.warn("🚫 License kosong. Redirecting ke activate.html...");
+    console.warn("🚫 Tidak ada lisensi tersimpan. Arahkan ke activate.html");
     window.location.replace("activate.html");
     return;
   }
@@ -110,31 +94,30 @@ const runValidation = async () => {
 
   try {
     const snapshot = await get(licenseRef);
-    console.log("📡 Firebase response:", snapshot.val());
+    console.log("📡 Cek Firebase:", snapshot.val());
 
     if (snapshot.exists()) {
-      console.log("✅ Lisensi valid dari Firebase.");
+      console.log("✅ Lisensi valid.");
 
       try {
         await remove(licenseRef);
-        console.log("🔥 Lisensi berhasil dihapus dari Firebase");
+        console.log("🔥 Lisensi berhasil dihapus dari Firebase.");
       } catch (err) {
-        console.warn("⚠️ Gagal menghapus lisensi (tidak fatal):", err);
+        console.warn("⚠️ Tidak bisa hapus lisensi dari Firebase (tidak fatal):", err);
       }
 
       localStorage.setItem("showtime_activated", "true");
-      localStorage.setItem("showtime_license", licenseKey);
-      localStorage.removeItem("pending_license");
-      window.location.hash = ""; // hapus hash dari URL
-      console.log("✅ Aktivasi berhasil!");
+      console.log("✅ Aktivasi ShowTime selesai.");
     } else {
-      alert("❌ Lisensi tidak valid atau sudah digunakan.");
+      console.warn("❌ Lisensi tidak valid atau sudah digunakan. Hapus dari localStorage dan arahkan ulang.");
+      localStorage.removeItem("showtime_license");
+      localStorage.removeItem("showtime_activated");
       window.location.replace("activate.html");
     }
 
   } catch (err) {
-    console.error("⚠️ Gagal koneksi Firebase:", err);
-    alert("Terjadi kesalahan koneksi. Coba lagi.");
+    console.error("❌ Gagal terhubung ke Firebase:", err);
+    alert("Koneksi gagal. Coba lagi.");
     window.location.replace("activate.html");
   }
 };
