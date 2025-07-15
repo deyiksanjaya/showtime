@@ -1,7 +1,7 @@
 {
   "name": "ShowTime",
   "short_name": "Clock",
-  "start_url": "/app.html",
+  "start_url": "app.html",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
