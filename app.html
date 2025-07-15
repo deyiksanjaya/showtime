@@ -71,72 +71,67 @@
   
   <script type="module">
   import { db } from './firebase-init.js';
-  import { ref, get, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+import { ref, get, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
-  // Fungsi validasi inti
-  const runValidation = async () => {
-    // Jika sudah teraktivasi, hentikan proses. Aplikasi aman untuk dijalankan.
-    if (localStorage.getItem("showtime_activated") === "true") {
-      console.log("Akses sudah diberikan.");
-      return;
-    }
+const runValidation = async () => {
+  console.log("🛡️ Memulai validasi lisensi...");
 
-    // Jika belum aktif, lanjutkan pemeriksaan
-    let hash = window.location.hash;
-let match = hash.match(/license_key=([A-Za-z0-9]+)/);
-let licenseKey = match ? match[1] : null;
-
-// Fallback: jika tidak ada di hash, coba ambil dari localStorage
-if (!licenseKey) {
-  const stored = localStorage.getItem('pending_license');
-  if (stored) {
-    licenseKey = stored;
-    localStorage.removeItem('pending_license'); // Hapus setelah dipakai
+  // 1. Jika sudah aktif, hentikan proses
+  if (localStorage.getItem("showtime_activated") === "true") {
+    console.log("✅ Sudah diaktivasi sebelumnya.");
+    return;
   }
-}
-    // Jika tidak ada kunci sama sekali, ganti halaman ini dengan halaman aktivasi
-    if (!licenseKey) {
-      console.log("Belum aktif & tidak ada kunci. Mengganti halaman...");
-      window.location.replace("activate.html");
-      return;
+
+  // 2. Ambil dari hash atau dari localStorage
+  let hash = window.location.hash;
+  let match = hash.match(/license_key=([A-Za-z0-9]+)/);
+  let licenseKey = match ? match[1] : null;
+
+  if (!licenseKey) {
+    const savedKey = localStorage.getItem("showtime_license") || localStorage.getItem("pending_license");
+    if (savedKey) {
+      licenseKey = savedKey;
+      window.location.hash = `#license_key=${savedKey}`; // Trigger ulang validasi
+      console.log("🔁 Recovery mode: Memasukkan ulang lisensi.");
+      return; // biar validasi terjadi di load ulang
     }
+  }
 
-    // Jika ada kunci, validasi ke Firebase
-    const licenseRef = ref(db, "data/licenses/" + licenseKey);
+  // 3. Kalau tetap nggak ada, arahkan ke activate
+  if (!licenseKey) {
+    console.warn("🚫 License kosong. Arahkan ke activate.html");
+    window.location.replace("activate.html");
+    return;
+  }
 
-    try {
-      const snapshot = await get(licenseRef);
-      if (snapshot.exists()) {
-        // Kunci valid, aktivasi berhasil
-        localStorage.setItem("showtime_activated", "true"); // Simpan dulu status aktivasi
-window.location.hash = ""; // Hapus kunci dari URL
+  const licenseRef = ref(db, "data/licenses/" + licenseKey);
 
-try {
-  await remove(licenseRef); // Hapus lisensi dari database (opsional)
-  console.log("License removed from database.");
-} catch (err) {
-  console.warn("Gagal menghapus lisensi dari database, tapi aktivasi tetap diterima.");
-}
+  try {
+    const snapshot = await get(licenseRef);
+    console.log("📡 Firebase response:", snapshot.val());
 
-console.log("Aktivasi berhasil!");
-      } else {
-        // Kunci tidak valid, beri peringatan dan ganti halaman
-        alert("The license key you entered is invalid or has already been used.");
-        window.location.replace("activate.html");
-      }
-    } catch (err) {
-      // Error koneksi, beri peringatan dan ganti halaman
-      alert("Failed to connect to the validation server. Please try again.");
+    if (snapshot.exists()) {
+      // Valid! Aktifkan
+      localStorage.setItem("showtime_activated", "true");
+      localStorage.setItem("showtime_license", licenseKey);
+      localStorage.removeItem("pending_license");
+      window.location.hash = "";
+      await remove(licenseRef); // opsional tapi aman
+      console.log("✅ Aktivasi berhasil!");
+    } else {
+      alert("❌ Lisensi tidak valid atau sudah digunakan.");
       window.location.replace("activate.html");
     }
-  };
+  } catch (err) {
+    console.error("⚠️ Gagal koneksi Firebase:", err);
+    alert("Terjadi kesalahan koneksi. Coba lagi.");
+    window.location.replace("activate.html");
+  }
+};
 
-  // LAPIS KEDUA: Paksa validasi ulang setiap kali halaman ditampilkan (termasuk saat 'Back')
-  window.addEventListener('pageshow', function(event) {
-    // event.persisted bernilai true jika halaman dimuat dari cache (seperti saat menekan 'Back')
-    console.log("Halaman ditampilkan. Menjalankan validasi keamanan...");
-    runValidation();
-  });
+window.addEventListener('pageshow', () => {
+  runValidation();
+});
 </script>
   <script src="script.js"></script>
 </body>
