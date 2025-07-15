@@ -6,142 +6,129 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Stopwatch">
-  <link rel="apple-touch-icon" sizes="152x152" href="icon-152x152.png">
-  <link rel="apple-touch-icon" sizes="167x167" href="icon-167x167.png">
+  <meta name="apple-mobile-web-app-title" content="ShowTime">
   <link rel="apple-touch-icon" sizes="180x180" href="icon-180x180.png">
   <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="style.css">
-
 </head>
 <body>
+  <!-- Konten utama stopwatch kamu -->
   <div class="time-display" id="stopwatch">00:00.00</div>
 
-  <div class="controls">
-    <button class="btn lap-btn" id="lapBtn" disabled aria-label="Lap or Reset">Lap</button>
-    <div class="dot-indicators">
-      <span class="dot active"></span><span class="dot"></span>
-    </div>
-    <button class="btn start-btn" id="startBtn" aria-label="Start or Stop">Start</button>
-  </div>
+  <!-- Debug overlay -->
+  <div id="debugBanner" style="
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:#111;
+    color:#0f0;
+    padding:10px;
+    font-family:monospace;
+    font-size:12px;
+    z-index:9999;
+    max-height:160px;
+    overflow:auto;
+    display:none;
+    white-space:pre-wrap;
+  "></div>
 
-  <div class="laps" id="laps">
-    <ul id="lapList"></ul>
-  </div>
-
-  <div class="tabs">
-    <div class="tab" id="worldClockTab">
-      <img src="https://img.icons8.com/ios/50/globe.png" alt="World Clock Icon"/>
-      <div>World Clock</div>
-    </div>
-    <div class="tab" id="alarmsTab">
-      <img src="https://img.icons8.com/ios-filled/50/alarm-clock.png" alt="Alarms Icon"/>
-      <div>Alarms</div>
-    </div>
-    <div class="tab active" id="stopwatchTab">
-      <img src="https://img.icons8.com/ios-filled/50/stopwatch.png" alt="Stopwatch Icon"/>
-      <div>Stopwatch</div>
-    </div>
-    <div class="tab" id="timerTab">
-      <img src="https://img.icons8.com/ios-glyphs/50/timer.png" alt="Timer Icon"/>
-      <div>Timers</div>
-    </div>
-  </div>
-
-  <div class="psychic-overlay" id="psychicOverlay">
-    <div class="psychic-container">
-      <div class="psychic-title">Psychic Mode</div>
-      <div class="psychic-input" id="psychicInput">00</div>
-      <div class="psychic-instruction">Enter two-digit millisecond target</div>
-      <div class="number-grid">
-        <button class="number-btn" data-number="1">1</button>
-        <button class="number-btn" data-number="2">2</button>
-        <button class="number-btn" data-number="3">3</button>
-        <button class="number-btn" data-number="4">4</button>
-        <button class="number-btn" data-number="5">5</button>
-        <button class="number-btn" data-number="6">6</button>
-        <button class="number-btn" data-number="7">7</button>
-        <button class="number-btn" data-number="8">8</button>
-        <button class="number-btn" data-number="9">9</button>
-        <button class="number-btn" id="clearBtn">⌫</button>
-        <button class="number-btn" data-number="0">0</button>
-      </div>
-    </div>
-  </div>
-  
   <script type="module">
-  import { db } from './firebase-init.js';
-import { ref, get, remove, set } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
-const getDeviceId = () => {
-  let id = localStorage.getItem("showtime_device_id");
-  if (!id) {
-    id = crypto.randomUUID();
-    localStorage.setItem("showtime_device_id", id);
-  }
-  return id;
-};
+    import { db } from './firebase-init.js';
+    import { ref, get, set, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
-const runValidation = async () => {
-  console.log("🛡️ Memulai validasi...");
+    // 🔧 Debug helper
+    const debugLog = (msg) => {
+      const banner = document.getElementById("debugBanner");
+      if (banner) {
+        banner.style.display = "block";
+        banner.textContent += `\n${msg}`;
+      }
+      console.log(msg);
+    };
 
-  const deviceId = getDeviceId();
-  const deviceRef = ref(db, "data/activatedDevices/" + deviceId);
+    // 🔑 Device ID generator (pakai UUID sekali)
+    const getDeviceId = () => {
+      let id = localStorage.getItem("showtime_device_id");
+      if (!id) {
+        id = crypto.randomUUID();
+        localStorage.setItem("showtime_device_id", id);
+        debugLog("🆕 Membuat device ID baru: " + id);
+      }
+      return id;
+    };
 
-  // 1. Cek apakah device ini sudah pernah diaktivasi
-  try {
-    const deviceSnap = await get(deviceRef);
-    if (deviceSnap.exists()) {
-      console.log("✅ Device sudah diaktivasi. Akses dibuka.");
-      return;
-    }
-  } catch (err) {
-    console.error("❌ Gagal cek status device:", err);
-  }
+    const runValidation = async () => {
+      debugLog("🛡️ Memulai validasi lisensi ShowTime...");
+      debugLog("🌐 URL sekarang: " + window.location.href);
 
-  // 2. Kalau belum, coba ambil licenseKey dari localStorage
-  const licenseKey = localStorage.getItem("showtime_license");
-  if (!licenseKey) {
-    console.warn("🚫 Tidak ada lisensi. Redirect ke activate.html");
-    window.location.replace("activate.html");
-    return;
-  }
+      const deviceId = getDeviceId();
+      debugLog("🔑 Device ID: " + deviceId);
 
-  // 3. Validasi lisensi
-  const licenseRef = ref(db, "data/licenses/" + licenseKey);
-
-  try {
-    const snapshot = await get(licenseRef);
-    if (snapshot.exists()) {
-      console.log("✅ Lisensi valid, aktivasi device...");
+      const deviceRef = ref(db, "data/activatedDevices/" + deviceId);
 
       try {
-        await remove(licenseRef);
-        await set(deviceRef, {
-          activatedAt: Date.now()
-        });
-        localStorage.setItem("showtime_activated", "true");
-        console.log("🔥 Aktivasi berhasil & disimpan di Firebase.");
+        const deviceSnap = await get(deviceRef);
+        if (deviceSnap.exists()) {
+          debugLog("✅ Device sudah diaktivasi sebelumnya.");
+          return;
+        } else {
+          debugLog("ℹ️ Device belum pernah aktivasi.");
+        }
       } catch (err) {
-        console.warn("⚠️ Gagal menyimpan aktivasi:", err);
+        debugLog("❌ Gagal cek device di Firebase: " + err);
       }
-    } else {
-      alert("❌ Lisensi tidak valid atau sudah dipakai.");
-      localStorage.removeItem("showtime_license");
-      window.location.replace("activate.html");
-    }
-  } catch (err) {
-    console.error("❌ Gagal koneksi Firebase:", err);
-    alert("Koneksi ke server gagal. Coba lagi.");
-    window.location.replace("activate.html");
-  }
-};
 
-window.addEventListener('pageshow', () => {
-  runValidation();
-});
-</script>
-<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-<script>eruda.init();</script>
-  <script src="script.js"></script>
+      const licenseKey = localStorage.getItem("showtime_license");
+      debugLog("📦 Lisensi lokal: " + licenseKey);
+
+      if (!licenseKey) {
+        debugLog("🚫 Lisensi kosong. Redirect ke activate.html...");
+        window.location.replace("activate.html");
+        return;
+      }
+
+      const licenseRef = ref(db, "data/licenses/" + licenseKey);
+      try {
+        const snapshot = await get(licenseRef);
+        if (snapshot.exists()) {
+          debugLog("✅ Lisensi valid. Menghapus lisensi & mengaktifkan device...");
+
+          try {
+            await remove(licenseRef);
+            debugLog("🔥 Lisensi dihapus dari Firebase.");
+          } catch (err) {
+            debugLog("⚠️ Gagal menghapus lisensi: " + err);
+          }
+
+          try {
+            await set(deviceRef, {
+              activatedAt: Date.now(),
+              licenseKey: licenseKey
+            });
+            debugLog("📡 Device ID berhasil dicatat di Firebase.");
+            localStorage.setItem("showtime_activated", "true");
+          } catch (err) {
+            debugLog("⚠️ Gagal menyimpan aktivasi device: " + err);
+          }
+
+        } else {
+          debugLog("❌ Lisensi tidak valid atau sudah digunakan.");
+          localStorage.removeItem("showtime_license");
+          window.location.replace("activate.html");
+        }
+
+      } catch (err) {
+        debugLog("❌ Gagal koneksi ke Firebase saat validasi lisensi: " + err);
+        alert("Terjadi kesalahan koneksi. Coba lagi.");
+        window.location.replace("activate.html");
+      }
+    };
+
+    // Jalankan validasi saat halaman ditampilkan
+    window.addEventListener('pageshow', () => {
+      runValidation();
+    });
+  </script>
 </body>
 </html>
