@@ -187,8 +187,8 @@
     const attemptActivation = () => {
   const licenseKey = licenseInput.value.trim();
   if (licenseKey) {
-    localStorage.setItem('pending_license', licenseKey); // Tambahkan baris ini
-    window.location.href = `app.html`;
+    localStorage.setItem('pending_license', licenseKey);
+    window.location.href = 'app.html';
   } else {
     alert('Please enter a license key.');
   }
