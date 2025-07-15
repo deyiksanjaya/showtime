@@ -12,6 +12,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="icon-180x180.png">
   <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
   <div class="time-display" id="stopwatch">00:00.00</div>
@@ -67,51 +68,45 @@
       </div>
     </div>
   </div>
+  
   <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-  import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+    import { db } from './firebase-init.js';
+    import { ref, get, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBm2cw6dircA3IMc3yCEeCgVa5--5W6DUw",
-    authDomain: "showtime-f086c.firebaseapp.com",
-    databaseURL: "https://showtime-f086c-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "showtime-f086c",
-    storageBucket: "showtime-f086c.firebasestorage.app",
-    messagingSenderId: "31064800242",
-    appId: "1:31064800242:web:8b290d03eda9bf7d95896b"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  if (localStorage.getItem("showtime_activated") === "true") {
-    console.log("✅ Sudah aktivasi, lanjut...");
-  } else {
-    const hash = window.location.hash;
-    const match = hash.match(/license_key=([A-Za-z0-9]+)/);
-    const licenseKey = match ? match[1] : null;
-
-    if (!licenseKey) {
-      window.location.href = "/";
-    }
-
-    const licenseRef = ref(db, "data/licenses/" + licenseKey);
-
-    get(licenseRef).then((snapshot) => {
-      if (!snapshot.exists()) {
-        window.location.href = "/";
-      } else {
-        localStorage.setItem("showtime_activated", "true");
-        remove(licenseRef);
-        window.location.hash = "";
-        console.log("✅ Aktivasi sukses");
+    const validateLicense = async () => {
+      if (localStorage.getItem("showtime_activated") === "true") {
+        return;
       }
-    }).catch((err) => {
-        console.error("Error checking license", err);
-        window.location.href = "/";
-    });
-  }
-</script>
+
+      const hash = window.location.hash;
+      const match = hash.match(/license_key=([A-Za-z0-9]+)/);
+      const licenseKey = match ? match[1] : null;
+
+      if (!licenseKey) {
+        window.location.href = "activate.html";
+        return;
+      }
+
+      const licenseRef = ref(db, "data/licenses/" + licenseKey);
+
+      try {
+        const snapshot = await get(licenseRef);
+        if (snapshot.exists()) {
+          await remove(licenseRef);
+          localStorage.setItem("showtime_activated", "true");
+          window.location.hash = "";
+        } else {
+          alert("The license key you entered is invalid or has already been used.");
+          window.location.href = "activate.html";
+        }
+      } catch (err) {
+        alert("Failed to connect to the validation server. Please try again.");
+        window.location.href = "activate.html";
+      }
+    };
+
+    validateLicense();
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
