@@ -1,5 +1,4 @@
 // firebase-init.js
-
 // Konfigurasi ini sudah diisi dengan kredensial Anda.
 const firebaseConfig = {
     apiKey: "AIzaSyBm2cw6dircA3IMc3yCEeCgVa5--5W6DUw",
