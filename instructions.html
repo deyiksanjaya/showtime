@@ -1,237 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShowTime - The Secret Manual</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0a0a0a;
-            color: #e5e5e5;
-        }
-        .card {
-            background-color: #1c1c1e;
-            border: 1px solid #2d2d2f;
-            border-radius: 16px;
-            overflow: hidden;
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        }
-        .card-header {
-            background-color: #2c2c2e;
-            padding: 16px 24px;
-            border-bottom: 1px solid #2d2d2f;
-        }
-        .card-title {
-            color: #ffffff;
-            font-weight: 500;
-        }
-        .card-subtitle {
-            color: #FFA00A;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        .step {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-        }
-        .step-number {
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background-color: rgba(255, 160, 10, 0.15);
-            color: #FFA00A;
-            font-weight: 700;
-            font-size: 0.875rem;
-        }
-        .pro-tip {
-            background-color: rgba(0, 255, 76, 0.1);
-            border-left: 4px solid #00ff4c;
-        }
-        code {
-            background-color: #333;
-            color: #f2f2f2;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 0.9em;
-        }
-        .icon-svg {
-            width: 20px;
-            height: 20px;
-            display: inline-block;
-            vertical-align: middle;
-            margin-right: 4px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activate ShowTime</title>
+  <style>
+    :root {
+      --background-color: #000000;
+      --container-bg: #1C1C1E;
+      --text-primary: #FFFFFF;
+      --text-secondary: #8E8E93;
+      --accent-blue: #0A84FF;
+      --accent-orange: #FFA00A;
+      --border-color: #3A3A3C;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background-color: var(--background-color);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    .container {
+      max-width: 340px;
+      width: 100%;
+    }
+
+    /* Card Styling */
+    .card {
+        background-color: var(--container-bg);
+        border-radius: 18px;
+        padding: 24px;
+        margin-bottom: 24px;
+    }
+
+    /* Shared Card Header Style */
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 8px;
+    }
+    .card-header .step-circle {
+        background-color: var(--accent-orange);
+        color: var(--background-color);
+        font-size: 15px;
+        font-weight: 700;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        text-align: center;
+        margin-right: 10px;
+    }
+    .card-header h2 {
+        font-size: 22px;
+        font-weight: 600;
+        margin: 0;
+        color: var(--text-primary);
+    }
+
+    .card p {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin: 0 0 24px 0;
+    }
+
+    /* Activation Card Specifics */
+    .license-input {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      text-align: center;
+      background-color: #3A3A3C;
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .license-input:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.3);
+    }
+
+    .activate-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 17px;
+      font-weight: 600;
+      color: white;
+      background-color: var(--accent-blue);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    .activate-btn:active {
+      background-color: #0060C0;
+      transform: scale(0.98);
+    }
+    
+    /* Recommendation Card Specifics */
+    .recommendation-section {
+      text-align: left;
+    }
+    .recommendation-section .card-header {
+      margin-bottom: 16px; /* More space for sub-text */
+    }
+    .recommendation-section p {
+        text-align: center;
+        margin-top: -12px; /* Pull sub-text closer to title */
+    }
+    .instruction-step {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .instruction-step .icon {
+        width: 28px;
+        height: 28px;
+        margin-right: 16px;
+        flex-shrink: 0;
+        filter: brightness(0) saturate(100%) invert(48%) sepia(82%) saturate(4925%) hue-rotate(193deg) brightness(108%) contrast(101%);
+    }
+    .instruction-step .instruction-text {
+        font-size: 15px;
+        color: var(--text-secondary);
+        line-height: 1.4;
+        margin: 0;
+    }
+    .instruction-step .instruction-text strong {
+        color: var(--text-primary);
+    }
+
+  </style>
 </head>
-<body class="antialiased">
-
-    <div class="container mx-auto p-4 md:p-8 max-w-3xl">
-
-        <!-- Header -->
-        <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2">ShowTime</h1>
-            <p class="text-lg text-gray-400">The Secret Manual</p>
-        </header>
-
-        <!-- Trick 1: Thought Projection -->
-        <div class="card mb-10">
-            <div class="card-header">
-                <p class="card-subtitle">Trick #1</p>
-                <h2 class="card-title text-2xl">Thought Projection</h2>
-            </div>
-            <div class="p-6 md:p-8 space-y-6">
-                <div>
-                    <h3 class="font-semibold text-lg text-white mb-2">The Effect</h3>
-                    <p class="text-gray-300">A spectator merely <stronh>thinks</strong> of a two-digit number. After a moment of intense concentration, you stop the timer <strong>WITHOUT TOUCHING THE SCREEN</strong>, and the milliseconds have impossibly landed on the exact number they were only thinking of.</p>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-lg text-white mb-4">The Secret Method</h3>
-                    <div class="space-y-4">
-                        <div class="step">
-                            <div class="step-number">1</div>
-                            <p class="text-gray-300">You must first secretly discover their number. A classic technique is to have them write it on a business card "to focus their thoughts," which you secretly peek. Let's say you peek the number <strong>42</strong>.</p>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">2</div>
-                            <p class="text-gray-300">With the phone in your hands, create a moment of misdirection. During this moment, secretly tap the <strong>World Clock</strong> tab icon.</p>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">3</div>
-                            <p class="text-gray-300">Quickly enter the peeked number (<code>42</code>) into the hidden keypad. It will close automatically, setting the secret target. the numpad has been designed to be easily accessed by your left thumb</p>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">4</div>
-                            <p class="text-gray-300">Ask the spectator to extend their hand and imagine a "stop" button on their palm. Instruct them to start the timer themselves. Since the timer will automatically stop after 6 seconds, you must time your action to touch their palm at the exact moment it stops. The display will land precisely on the milliseconds you secretly set up, creating the illusion that their imaginary button press stopped the timer perfectly.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Trick 2: Mind Reading Mode -->
-        <div class="card mb-10">
-            <div class="card-header">
-                <p class="card-subtitle">Trick #2</p>
-                <h2 class="card-title text-2xl">Mind Reading Mode</h2>
-            </div>
-            <div class="p-6 md:p-8 space-y-6">
-                <div>
-                    <h3 class="font-semibold text-lg text-white mb-2">The Effect</h3>
-                    <p class="text-gray-300">A spectator creates a list of lap times, each with a seemingly random two-digit millisecond value. They silently think of just one of the millisecond numbers from the list. After a moment of concentration, you peer into their mind and reveal the exact number they are merely thinking of.</p>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-lg text-white mb-4">The Secret Method</h3>
-                    <div class="space-y-4">
-                        <div class="step">
-                            <div class="step-number">1</div>
-                            <p class="text-gray-300">To enable this mode, secretly tap the <strong>Alarms</strong> tab icon. There is no visual change. Tapping it again disables the mode.</p>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">2</div>
-                            <p class="text-gray-300">Hand the phone to a spectator. Instruct them to press <strong>Lap</strong> several times, and then finally press <strong>Stop</strong> to finish. This creates a list of times.</p>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">3</div>
-                            <p class="text-gray-300"><strong>The Core Secret:</strong> The app forces the milliseconds of each lap time to be a "sum-to-nine" number (like 18, 27, 36, 45, 63, 72, 81). More importantly, it often generates them in pairs. If <code>.27</code> appears, its partner <code>.72</code> will also likely appear on the list.</p>
-                        </div>
-                         <div class="step">
-                            <div class="step-number">4</div>
-                            <p class="text-gray-300">Ask the spectator to look at the list and just <strong>think</strong> of one of the two-digit millisecond numbers. Tell them to concentrate on it.</p>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">5</div>
-                            <p class="text-gray-300">Now, you "fish" for information. At this point you can use you favourite fishing method that you know</p>
-                        </div>
-                         <div class="step">
-                            <div class="step-number">6</div>
-                            <p class="text-gray-300">Because you know all the numbers are "sum-to-nine" pairs, knowing one number they are (or are not) thinking of makes it easy to deduce the others. For example, if you confirm they are <strong>not</strong> thinking of <code>81</code>, you can focus your performance on revealing its partner, <code>18</code>.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Trick 3: The Peek -->
-        <div class="card mb-10">
-            <div class="card-header">
-                <p class="card-subtitle">Trick #3</p>
-                <h2 class="card-title text-2xl">The Peek</h2>
-            </div>
-            <div class="p-6 md:p-8 space-y-6">
-                <div>
-                    <h3 class="font-semibold text-lg text-white mb-2">The Effect</h3>
-                    <p class="text-gray-300">A spectator starts and stops the timer at a completely random time. They then press <strong>Reset</strong>, making the time vanish completely. You take the phone back, and without looking, you are able to "read their mind" and announce the exact time they stopped it at.</p>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-lg text-white mb-4">The Secret Method</h3>
-                    <div class="space-y-4">
-                        <div class="step">
-                            <div class="step-number">1</div>
-                            <p class="text-gray-300">Hand the phone to a spectator. Ask them to Start, Stop, and then <strong>Reset</strong> the stopwatch. They will see the time disappear.</p>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">2</div>
-                            <p class="text-gray-300">Take the phone back. As you are talking, secretly <strong>tap the two small dots</strong> located between the Lap and Start buttons.</p>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">3</div>
-                            <p class="text-gray-300">The spectator's "vanished" time will flash on the screen for 2 seconds. Casually glance down and peek at this information.</p>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">4</div>
-                            <p class="text-gray-300">The time will disappear again. After a moment of concentration, dramatically reveal the exact time you secretly saw.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pro Tips & Utility -->
-        <div class="grid md:grid-cols-2 gap-8">
-            <div class="pro-tip p-6 rounded-lg">
-                <h3 class="font-semibold text-lg text-green-300 mb-2">Pro Performance Tips</h3>
-                <ul class="list-disc list-inside text-green-200 space-y-2">
-                    <li><strong>Practice makes perfect.</strong> Get comfortable with the secret taps so they become second nature.</li>
-                    <li><strong>Build a narrative.</strong> Tell a story about psychic energy, number theory, or reading micro-expressions.</li>
-                    <li><strong>Act natural.</strong> Your casual handling of the phone is what sells the illusion.</li>
-                    <li><strong>Never reveal the secret.</strong> A magician's greatest tool is mystery.</li>
-                </ul>
-            </div>
-            <div class="card">
-                 <div class="card-header">
-                    <h3 class="font-semibold text-lg text-white flex items-center">
-                        <svg class="icon-svg text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-                        Secret Utility
-                    </h3>
-                </div>
-                <div class="p-6">
-                    <h4 class="font-semibold text-white">Panic Reset</h4>
-                    <p class="text-gray-300 mt-1">If you get confused, tap the <strong>Timers</strong> tab. This instantly and silently reloads the app, disabling all secret modes.</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Footer -->
-        <footer class="text-center mt-12 mb-6">
-            <p class="text-gray-500">Now go and perform miracles.</p>
-        </footer>
-
+<body>
+  <div class="container">
+    
+    <!-- Step 1: Activation Card -->
+    <div class="card activation-section">
+      <div class="card-header">
+        <div class="step-circle">1</div>
+        <h2>Activate Your App</h2>
+      </div>
+      <p>Enter your license key to unlock ShowTime.</p>
+      <input type="text" id="licenseKeyInput" class="license-input" placeholder="Paste your license key">
+      <button id="activateBtn" class="activate-btn">Activate</button>
     </div>
 
+    <!-- Step 2: Recommendation Card -->
+    <div class="card recommendation-section">
+      <div class="card-header">
+        <div class="step-circle">2</div>
+        <h2>Add to Home Screen</h2>
+      </div>
+      <p>After activation, follow these steps.</p>
+      <div class="instruction-step">
+        <img src="https://img.icons8.com/ios-glyphs/60/ffffff/share-rounded.png" alt="Share Icon" class="icon" onerror="this.style.display='none'">
+        <div class="instruction-text">Tap the <strong>Share</strong> button in the browser.</div>
+      </div>
+       <div class="instruction-step">
+        <img src="https://img.icons8.com/ios-glyphs/60/ffffff/plus-math.png" alt="Add to Home Screen Icon" class="icon" onerror="this.style.display='none'">
+        <div class="instruction-text">Select <strong>'Add to Home Screen'</strong> for the best experience.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const licenseInput = document.getElementById('licenseKeyInput');
+    const activateBtn = document.getElementById('activateBtn');
+
+    const attemptActivation = () => {
+      const licenseKey = licenseInput.value.trim();
+      if (licenseKey) {
+        window.location.href = `app.html#license_key=${licenseKey}`;
+      } else {
+        alert('Please enter a license key.');
+      }
+    };
+
+    activateBtn.addEventListener('click', attemptActivation);
+
+    licenseInput.addEventListener('keyup', (event) => {
+      if (event.key === 'Enter') {
+        attemptActivation();
+      }
+    });
+  </script>
 </body>
 </html>
