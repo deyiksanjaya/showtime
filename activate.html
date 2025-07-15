@@ -187,7 +187,8 @@
     const attemptActivation = () => {
   const licenseKey = licenseInput.value.trim();
   if (licenseKey) {
-    localStorage.setItem('pending_license', licenseKey);
+    localStorage.setItem('showtime_license', licenseKey);
+    localStorage.setItem('showtime_activated', "false"); // tandai bahwa aktivasi belum diverifikasi
     window.location.href = 'app.html';
   } else {
     alert('Please enter a license key.');
