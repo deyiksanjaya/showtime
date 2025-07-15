@@ -82,10 +82,18 @@
     }
 
     // Jika belum aktif, lanjutkan pemeriksaan
-    const hash = window.location.hash;
-    const match = hash.match(/license_key=([A-Za-z0-9]+)/);
-    const licenseKey = match ? match[1] : null;
+    let hash = window.location.hash;
+let match = hash.match(/license_key=([A-Za-z0-9]+)/);
+let licenseKey = match ? match[1] : null;
 
+// Fallback: jika tidak ada di hash, coba ambil dari localStorage
+if (!licenseKey) {
+  const stored = localStorage.getItem('pending_license');
+  if (stored) {
+    licenseKey = stored;
+    localStorage.removeItem('pending_license'); // Hapus setelah dipakai
+  }
+}
     // Jika tidak ada kunci sama sekali, ganti halaman ini dengan halaman aktivasi
     if (!licenseKey) {
       console.log("Belum aktif & tidak ada kunci. Mengganti halaman...");
