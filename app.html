@@ -111,11 +111,20 @@ const runValidation = async () => {
     console.log("📡 Firebase response:", snapshot.val());
 
     if (snapshot.exists()) {
-      // Valid! Aktifkan
-      localStorage.setItem("showtime_activated", "true");
-      localStorage.setItem("showtime_license", licenseKey);
-      localStorage.removeItem("pending_license");
-      window.location.hash = "";
+  console.log("✅ Lisensi valid dari Firebase.");
+
+  try {
+    await remove(licenseRef);
+    console.log("🔥 Lisensi berhasil dihapus dari Firebase");
+  } catch (err) {
+    console.warn("⚠️ Gagal menghapus lisensi (tidak fatal):", err);
+  }
+
+  localStorage.setItem("showtime_activated", "true");
+  localStorage.setItem("showtime_license", licenseKey);
+  localStorage.removeItem("pending_license");
+  window.location.hash = "";
+}
       await remove(licenseRef); // opsional tapi aman
       console.log("✅ Aktivasi berhasil!");
     } else {
