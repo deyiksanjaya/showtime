@@ -12,8 +12,61 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Konten utama stopwatch kamu -->
+  <!-- Stopwatch UI -->
   <div class="time-display" id="stopwatch">00:00.00</div>
+
+  <div class="controls">
+    <button class="btn lap-btn" id="lapBtn" disabled aria-label="Lap or Reset">Lap</button>
+    <div class="dot-indicators">
+      <span class="dot active"></span><span class="dot"></span>
+    </div>
+    <button class="btn start-btn" id="startBtn" aria-label="Start or Stop">Start</button>
+  </div>
+
+  <div class="laps" id="laps">
+    <ul id="lapList"></ul>
+  </div>
+
+  <div class="tabs">
+    <div class="tab" id="worldClockTab">
+      <img src="https://img.icons8.com/ios/50/globe.png" alt="World Clock Icon"/>
+      <div>World Clock</div>
+    </div>
+    <div class="tab" id="alarmsTab">
+      <img src="https://img.icons8.com/ios-filled/50/alarm-clock.png" alt="Alarms Icon"/>
+      <div>Alarms</div>
+    </div>
+    <div class="tab active" id="stopwatchTab">
+      <img src="https://img.icons8.com/ios-filled/50/stopwatch.png" alt="Stopwatch Icon"/>
+      <div>Stopwatch</div>
+    </div>
+    <div class="tab" id="timerTab">
+      <img src="https://img.icons8.com/ios-glyphs/50/timer.png" alt="Timer Icon"/>
+      <div>Timers</div>
+    </div>
+  </div>
+
+  <!-- Psychic input mode -->
+  <div class="psychic-overlay" id="psychicOverlay">
+    <div class="psychic-container">
+      <div class="psychic-title">Psychic Mode</div>
+      <div class="psychic-input" id="psychicInput">00</div>
+      <div class="psychic-instruction">Enter two-digit millisecond target</div>
+      <div class="number-grid">
+        <button class="number-btn" data-number="1">1</button>
+        <button class="number-btn" data-number="2">2</button>
+        <button class="number-btn" data-number="3">3</button>
+        <button class="number-btn" data-number="4">4</button>
+        <button class="number-btn" data-number="5">5</button>
+        <button class="number-btn" data-number="6">6</button>
+        <button class="number-btn" data-number="7">7</button>
+        <button class="number-btn" data-number="8">8</button>
+        <button class="number-btn" data-number="9">9</button>
+        <button class="number-btn" id="clearBtn">⌫</button>
+        <button class="number-btn" data-number="0">0</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Debug overlay -->
   <div id="debugBanner" style="
@@ -33,11 +86,12 @@
     white-space:pre-wrap;
   "></div>
 
+  <!-- Script -->
   <script type="module">
     import { db } from './firebase-init.js';
     import { ref, get, set, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
-    // 🔧 Debug helper
+    // Debug log helper
     const debugLog = (msg) => {
       const banner = document.getElementById("debugBanner");
       if (banner) {
@@ -47,7 +101,7 @@
       console.log(msg);
     };
 
-    // 🔑 Device ID generator (pakai UUID sekali)
+    // Device ID (UUID)
     const getDeviceId = () => {
       let id = localStorage.getItem("showtime_device_id");
       if (!id) {
@@ -59,8 +113,8 @@
     };
 
     const runValidation = async () => {
-      debugLog("🛡️ Memulai validasi lisensi ShowTime...");
-      debugLog("🌐 URL sekarang: " + window.location.href);
+      debugLog("🛡️ Memulai validasi lisensi...");
+      debugLog("🌐 URL: " + window.location.href);
 
       const deviceId = getDeviceId();
       debugLog("🔑 Device ID: " + deviceId);
@@ -70,7 +124,7 @@
       try {
         const deviceSnap = await get(deviceRef);
         if (deviceSnap.exists()) {
-          debugLog("✅ Device sudah diaktivasi sebelumnya.");
+          debugLog("✅ Device sudah aktif.");
           return;
         } else {
           debugLog("ℹ️ Device belum pernah aktivasi.");
@@ -83,7 +137,7 @@
       debugLog("📦 Lisensi lokal: " + licenseKey);
 
       if (!licenseKey) {
-        debugLog("🚫 Lisensi kosong. Redirect ke activate.html...");
+        debugLog("🚫 Lisensi kosong. Arahkan ke activate.html");
         window.location.replace("activate.html");
         return;
       }
@@ -92,13 +146,13 @@
       try {
         const snapshot = await get(licenseRef);
         if (snapshot.exists()) {
-          debugLog("✅ Lisensi valid. Menghapus lisensi & mengaktifkan device...");
+          debugLog("✅ Lisensi valid. Menghapus dan mengaktifkan device...");
 
           try {
             await remove(licenseRef);
             debugLog("🔥 Lisensi dihapus dari Firebase.");
           } catch (err) {
-            debugLog("⚠️ Gagal menghapus lisensi: " + err);
+            debugLog("⚠️ Gagal hapus lisensi: " + err);
           }
 
           try {
@@ -106,29 +160,31 @@
               activatedAt: Date.now(),
               licenseKey: licenseKey
             });
-            debugLog("📡 Device ID berhasil dicatat di Firebase.");
+            debugLog("📡 Device dicatat di Firebase.");
             localStorage.setItem("showtime_activated", "true");
           } catch (err) {
-            debugLog("⚠️ Gagal menyimpan aktivasi device: " + err);
+            debugLog("⚠️ Gagal set deviceRef: " + err);
           }
 
         } else {
-          debugLog("❌ Lisensi tidak valid atau sudah digunakan.");
+          debugLog("❌ Lisensi tidak valid atau sudah dipakai.");
           localStorage.removeItem("showtime_license");
           window.location.replace("activate.html");
         }
 
       } catch (err) {
-        debugLog("❌ Gagal koneksi ke Firebase saat validasi lisensi: " + err);
-        alert("Terjadi kesalahan koneksi. Coba lagi.");
+        debugLog("❌ Gagal koneksi Firebase saat validasi: " + err);
+        alert("Koneksi gagal. Coba lagi.");
         window.location.replace("activate.html");
       }
     };
 
-    // Jalankan validasi saat halaman ditampilkan
     window.addEventListener('pageshow', () => {
       runValidation();
     });
   </script>
+
+  <!-- Stopwatch logic kamu sendiri -->
+  <script src="script.js"></script>
 </body>
 </html>
