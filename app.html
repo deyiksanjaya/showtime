@@ -12,6 +12,10 @@
   <link rel="apple-touch-icon" sizes="180x180" href="icon-180x180.png">
   <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="style.css">
+
+  <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+  <script>eruda.init();</script>
+
 </head>
 <body>
   <div class="time-display" id="stopwatch">00:00.00</div>
@@ -67,44 +71,45 @@
       </div>
     </div>
   </div>
+  
   <script type="module">
-  import { db } from './firebase-init.js';
-  import { ref, get, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+    import { db } from './firebase-init.js';
+    import { ref, get, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
-  const validateLicense = async () => {
-    if (localStorage.getItem("showtime_activated") === "true") {
-      return;
-    }
+    const validateLicense = async () => {
+      if (localStorage.getItem("showtime_activated") === "true") {
+        return;
+      }
 
-    const hash = window.location.hash;
-    const match = hash.match(/license_key=([A-Za-z0-9]+)/);
-    const licenseKey = match ? match[1] : null;
+      const hash = window.location.hash;
+      const match = hash.match(/license_key=([A-Za-z0-9]+)/);
+      const licenseKey = match ? match[1] : null;
 
-    if (!licenseKey) {
-      window.location.href = "activate.html";
-      return;
-    }
+      if (!licenseKey) {
+        window.location.href = "activate.html";
+        return;
+      }
 
-    const licenseRef = ref(db, "data/licenses/" + licenseKey);
+      const licenseRef = ref(db, "data/licenses/" + licenseKey);
 
-    try {
-      const snapshot = await get(licenseRef);
-      if (snapshot.exists()) {
-        await remove(licenseRef);
-        localStorage.setItem("showtime_activated", "true");
-        window.location.hash = "";
-      } else {
-        alert("The license key you entered is invalid or has already been used.");
+      try {
+        const snapshot = await get(licenseRef);
+        if (snapshot.exists()) {
+          await remove(licenseRef);
+          localStorage.setItem("showtime_activated", "true");
+          window.location.hash = "";
+        } else {
+          alert("The license key you entered is invalid or has already been used.");
+          window.location.href = "activate.html";
+        }
+      } catch (err) {
+        alert("Failed to connect to the validation server. Please try again.");
         window.location.href = "activate.html";
       }
-    } catch (err) {
-      alert("Failed to connect to the validation server. Please try again.");
-      window.location.href = "activate.html";
-    }
-  };
+    };
 
-  validateLicense();
-</script>
+    validateLicense();
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
