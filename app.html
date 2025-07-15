@@ -81,22 +81,27 @@ const runValidation = async () => {
     return;
   }
 
-  let hash = window.location.hash;
-  let match = hash.match(/license_key=([A-Za-z0-9]+)/);
-  let licenseKey = match ? match[1] : null;
+  let licenseKey = null;
 
+  // 1. Ambil dari hash
+  const hash = window.location.hash;
+  const match = hash.match(/license_key=([A-Za-z0-9]+)/);
+  if (match) {
+    licenseKey = match[1];
+    console.log("🔑 Dapat dari hash:", licenseKey);
+  }
+
+  // 2. Jika tidak ada di hash, coba dari localStorage
   if (!licenseKey) {
-    const savedKey = localStorage.getItem("showtime_license") || localStorage.getItem("pending_license");
-    if (savedKey) {
-      licenseKey = savedKey;
-      window.location.hash = `#license_key=${savedKey}`;
-      console.log("🔁 Recovery mode: Memasukkan ulang lisensi.");
-      return;
+    licenseKey = localStorage.getItem("showtime_license") || localStorage.getItem("pending_license");
+    if (licenseKey) {
+      console.log("🔁 Dapat dari localStorage:", licenseKey);
     }
   }
 
+  // 3. Kalau tetap tidak ada, arahkan ke activate.html
   if (!licenseKey) {
-    console.warn("🚫 License kosong. Arahkan ke activate.html");
+    console.warn("🚫 License kosong. Redirecting ke activate.html...");
     window.location.replace("activate.html");
     return;
   }
@@ -120,7 +125,7 @@ const runValidation = async () => {
       localStorage.setItem("showtime_activated", "true");
       localStorage.setItem("showtime_license", licenseKey);
       localStorage.removeItem("pending_license");
-      window.location.hash = "";
+      window.location.hash = ""; // hapus hash dari URL
       console.log("✅ Aktivasi berhasil!");
     } else {
       alert("❌ Lisensi tidak valid atau sudah digunakan.");
