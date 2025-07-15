@@ -70,43 +70,59 @@
   </div>
   
   <script type="module">
-    import { db } from './firebase-init.js';
-    import { ref, get, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+  import { db } from './firebase-init.js';
+  import { ref, get, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
-    const validateLicense = async () => {
-      if (localStorage.getItem("showtime_activated") === "true") {
-        return;
+  // Fungsi validasi inti
+  const runValidation = async () => {
+    // Jika sudah teraktivasi, hentikan proses. Aplikasi aman untuk dijalankan.
+    if (localStorage.getItem("showtime_activated") === "true") {
+      console.log("Akses sudah diberikan.");
+      return;
+    }
+
+    // Jika belum aktif, lanjutkan pemeriksaan
+    const hash = window.location.hash;
+    const match = hash.match(/license_key=([A-Za-z0-9]+)/);
+    const licenseKey = match ? match[1] : null;
+
+    // Jika tidak ada kunci sama sekali, ganti halaman ini dengan halaman aktivasi
+    if (!licenseKey) {
+      console.log("Belum aktif & tidak ada kunci. Mengganti halaman...");
+      window.location.replace("activate.html");
+      return;
+    }
+
+    // Jika ada kunci, validasi ke Firebase
+    const licenseRef = ref(db, "data/licenses/" + licenseKey);
+
+    try {
+      const snapshot = await get(licenseRef);
+      if (snapshot.exists()) {
+        // Kunci valid, aktivasi berhasil
+        await remove(licenseRef);
+        localStorage.setItem("showtime_activated", "true");
+        window.location.hash = ""; // Hapus kunci dari URL
+        console.log("Aktivasi berhasil!");
+      } else {
+        // Kunci tidak valid, beri peringatan dan ganti halaman
+        alert("The license key you entered is invalid or has already been used.");
+        window.location.replace("activate.html");
       }
+    } catch (err) {
+      // Error koneksi, beri peringatan dan ganti halaman
+      alert("Failed to connect to the validation server. Please try again.");
+      window.location.replace("activate.html");
+    }
+  };
 
-      const hash = window.location.hash;
-      const match = hash.match(/license_key=([A-Za-z0-9]+)/);
-      const licenseKey = match ? match[1] : null;
-
-      if (!licenseKey) {
-        window.location.href = "activate.html";
-        return;
-      }
-
-      const licenseRef = ref(db, "data/licenses/" + licenseKey);
-
-      try {
-        const snapshot = await get(licenseRef);
-        if (snapshot.exists()) {
-          await remove(licenseRef);
-          localStorage.setItem("showtime_activated", "true");
-          window.location.hash = "";
-        } else {
-          alert("The license key you entered is invalid or has already been used.");
-          window.location.href = "activate.html";
-        }
-      } catch (err) {
-        alert("Failed to connect to the validation server. Please try again.");
-        window.location.href = "activate.html";
-      }
-    };
-
-    validateLicense();
-  </script>
+  // LAPIS KEDUA: Paksa validasi ulang setiap kali halaman ditampilkan (termasuk saat 'Back')
+  window.addEventListener('pageshow', function(event) {
+    // event.persisted bernilai true jika halaman dimuat dari cache (seperti saat menekan 'Back')
+    console.log("Halaman ditampilkan. Menjalankan validasi keamanan...");
+    runValidation();
+  });
+</script>
   <script src="script.js"></script>
 </body>
 </html>
