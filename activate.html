@@ -11,6 +11,7 @@
       --text-primary: #FFFFFF;
       --text-secondary: #8E8E93;
       --accent-blue: #0A84FF;
+      --accent-orange: #FFA00A;
       --border-color: #3A3A3C;
     }
 
@@ -22,7 +23,7 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       min-height: 100vh;
       text-align: center;
       box-sizing: border-box;
@@ -33,26 +34,48 @@
       width: 100%;
     }
 
-    .activation-section {
+    /* Card Styling */
+    .card {
         background-color: var(--container-bg);
-        border-radius: 12px;
-        padding: 20px;
+        border-radius: 18px;
+        padding: 24px;
         margin-bottom: 24px;
     }
-    
-    .activation-section h1 {
-      font-size: 28px;
-      font-weight: 700;
-      margin: 0 0 8px 0;
+
+    /* Shared Card Header Style */
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 8px;
+    }
+    .card-header .step-circle {
+        background-color: var(--accent-orange);
+        color: var(--background-color);
+        font-size: 15px;
+        font-weight: 700;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        text-align: center;
+        margin-right: 10px;
+    }
+    .card-header h2 {
+        font-size: 22px;
+        font-weight: 600;
+        margin: 0;
+        color: var(--text-primary);
     }
 
-    .activation-section p {
-      font-size: 17px;
+    .card p {
+      font-size: 16px;
       color: var(--text-secondary);
       line-height: 1.5;
       margin: 0 0 24px 0;
     }
 
+    /* Activation Card Specifics */
     .license-input {
       width: 100%;
       padding: 14px;
@@ -68,7 +91,7 @@
     }
     .license-input:focus {
       border-color: var(--accent-blue);
-      box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.3);
+      box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.3);
     }
 
     .activate-btn {
@@ -89,44 +112,37 @@
       transform: scale(0.98);
     }
     
-    /* --- NEXT STEP INSTRUCTION BLOCK --- */
-    .next-step-info {
-        background-color: var(--container-bg);
-        border-radius: 12px;
-        padding: 20px;
-        text-align: left;
-        display: flex;
-        align-items: center;
+    /* Recommendation Card Specifics */
+    .recommendation-section {
+      text-align: left;
     }
-    
-    .next-step-info .icon {
-        width: 32px;
-        height: 32px;
+    .recommendation-section .card-header {
+      margin-bottom: 16px; /* More space for sub-text */
+    }
+    .recommendation-section p {
+        text-align: center;
+        margin-top: -12px; /* Pull sub-text closer to title */
+    }
+    .instruction-step {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .instruction-step .icon {
+        width: 28px;
+        height: 28px;
         margin-right: 16px;
         flex-shrink: 0;
-        /* Filter to make the white icon blue */
         filter: brightness(0) saturate(100%) invert(48%) sepia(82%) saturate(4925%) hue-rotate(193deg) brightness(108%) contrast(101%);
     }
-    
-    .next-step-info .text-content p {
-        font-size: 14px;
+    .instruction-step .instruction-text {
+        font-size: 15px;
         color: var(--text-secondary);
-        line-height: 1.5;
+        line-height: 1.4;
         margin: 0;
     }
-
-    .next-step-info .text-content p strong {
+    .instruction-step .instruction-text strong {
         color: var(--text-primary);
-    }
-
-    /* Style for the small inline share icon */
-    .inline-icon {
-        width: 15px;
-        height: 15px;
-        vertical-align: -2px; /* Fine-tunes vertical alignment */
-        display: inline-block;
-        margin: 0 2px;
-        filter: brightness(0) saturate(100%) invert(48%) sepia(82%) saturate(4925%) hue-rotate(193deg) brightness(108%) contrast(101%);
     }
 
   </style>
@@ -134,22 +150,32 @@
 <body>
   <div class="container">
     
-    <!-- Activation Section -->
-    <div class="activation-section">
-      <h1>Activate Your App</h1>
+    <!-- Step 1: Activation Card -->
+    <div class="card activation-section">
+      <div class="card-header">
+        <div class="step-circle">1</div>
+        <h2>Activate Your App</h2>
+      </div>
       <p>Enter your license key to unlock ShowTime.</p>
       <input type="text" id="licenseKeyInput" class="license-input" placeholder="Paste your license key">
       <button id="activateBtn" class="activate-btn">Activate</button>
     </div>
 
-    <!-- Next Step Instruction Section -->
-    <div class="next-step-info">
-        <img src="https://img.icons8.com/ios-glyphs/60/ffffff/add-to-homescreen.png" alt="Add to Home Screen Icon" class="icon" onerror="this.style.display='none'">
-        <div class="text-content">
-            <p>
-                <strong>Next Step:</strong> After the app opens, use the Share button <img src="https://img.icons8.com/ios-glyphs/60/ffffff/share-rounded.png" alt="Share Icon" class="inline-icon">, scroll down and click <strong>Add to Home Screen</strong> for the best fullscreen experience.
-            </p>
-        </div>
+    <!-- Step 2: Recommendation Card -->
+    <div class="card recommendation-section">
+      <div class="card-header">
+        <div class="step-circle">2</div>
+        <h2>Add to Home Screen</h2>
+      </div>
+      <p>After activation, follow these steps.</p>
+      <div class="instruction-step">
+        <img src="https://img.icons8.com/ios-glyphs/60/ffffff/share-rounded.png" alt="Share Icon" class="icon" onerror="this.style.display='none'">
+        <div class="instruction-text">Tap the <strong>Share</strong> button in the browser.</div>
+      </div>
+       <div class="instruction-step">
+        <img src="https://img.icons8.com/ios-glyphs/60/ffffff/plus-math.png" alt="Add to Home Screen Icon" class="icon" onerror="this.style.display='none'">
+        <div class="instruction-text">Select <strong>'Add to Home Screen'</strong> for the best experience.</div>
+      </div>
     </div>
 
   </div>
