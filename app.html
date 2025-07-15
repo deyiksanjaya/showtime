@@ -100,10 +100,17 @@
       const snapshot = await get(licenseRef);
       if (snapshot.exists()) {
         // Kunci valid, aktivasi berhasil
-        await remove(licenseRef);
-        localStorage.setItem("showtime_activated", "true");
-        window.location.hash = ""; // Hapus kunci dari URL
-        console.log("Aktivasi berhasil!");
+        localStorage.setItem("showtime_activated", "true"); // Simpan dulu status aktivasi
+window.location.hash = ""; // Hapus kunci dari URL
+
+try {
+  await remove(licenseRef); // Hapus lisensi dari database (opsional)
+  console.log("License removed from database.");
+} catch (err) {
+  console.warn("Gagal menghapus lisensi dari database, tapi aktivasi tetap diterima.");
+}
+
+console.log("Aktivasi berhasil!");
       } else {
         // Kunci tidak valid, beri peringatan dan ganti halaman
         alert("The license key you entered is invalid or has already been used.");
