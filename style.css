@@ -115,11 +115,19 @@ body > .app {
 .laps {
   margin: 4px auto 0;
   flex: 1;
-  overflow-y: auto;
+  overflow-y: scroll; /* ⬅️ selalu tampilkan ruang scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer */
   width: 90%;
   display: flex;
   flex-direction: column;
-  padding-bottom: 20px; /* supaya scroll tidak ketutup tab */
+  padding-bottom: 20px;
+}
+
+/* Hilangkan scrollbar visual di WebKit (iOS, Safari, Chrome) */
+.laps::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
 }
 
 .laps ul {
@@ -208,10 +216,9 @@ body > .app {
   color: #FFA00A; /* Orange text for active tab */
 }
 
-.tab.active img {
-  opacity: 1; /* Full opacity when active */
-  /* This filter converts white to the desired orange color (#FFA00A) */
-  filter: brightness(0) saturate(100%) invert(64%) sepia(100%) saturate(2466%) hue-rotate(345deg) brightness(100%) contrast(105%);
+#stopwatchTab.active img {
+  filter: brightness(1);
+  opacity: 1;
 }
 
 .psychic-overlay {
@@ -333,9 +340,4 @@ body > .app {
 
 .close-btn:hover {
   color: white;
-}
-
-.laps::-webkit-scrollbar {
-  width: 0;
-  background: transparent;
 }
