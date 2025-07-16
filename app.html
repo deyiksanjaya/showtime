@@ -89,13 +89,8 @@
 
   <!-- Script -->
   <script type="module">
-    // Import Firebase modules and 'db' instance from firebase-init.js
-    // PERHATIAN: Mengimpor konfigurasi Firebase secara langsung dari file di root
-    // akan mengekspos API Key dan detail proyek Anda di browser.
-    // Ini adalah RISIKO KEAMANAN.
     import { db } from './firebase-init.js';
-    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { ref, get, set, remove } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+    import { ref, get, set, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
     // Debug log helper
     const debugLog = (msg) => {
@@ -109,57 +104,24 @@
 
     // Device ID (UUID)
     const getDeviceId = () => {
-      const base = navigator.userAgent + navigator.language;
-      const encoded = btoa(base).replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
-      const id = "device_" + encoded;
-      debugLog("🔑 Device ID (dihasilkan dari fingerprint): " + id);
-      return id;
-    };
-
-    // Firebase Authentication
-    // __app_id adalah variabel global yang disediakan oleh lingkungan Canvas.
-    // Jika tidak ada (misalnya di GitHub Pages), akan menggunakan 'default-app-id'.
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    let auth; // Deklarasikan variabel auth di sini
-
-    const initAuth = async () => {
-      try {
-        // Instance 'app' secara implisit dibuat oleh firebase-init.js saat 'db' diekspor.
-        // Kita mendapatkan instance auth dari aplikasi default yang sudah diinisialisasi.
-        auth = getAuth();
-        
-        // Masuk dengan token kustom jika tersedia, jika tidak secara anonim
-        if (typeof __initial_auth_token !== 'undefined') {
-          await signInWithCustomToken(auth, __initial_auth_token);
-          debugLog("✅ Firebase: Berhasil masuk dengan token kustom.");
-        } else {
-          await signInAnonymously(auth);
-          debugLog("✅ Firebase: Berhasil masuk secara anonim.");
-        }
-      } catch (error) {
-        debugLog("❌ Firebase: Gagal mengautentikasi: " + error.message);
-        window.location.replace("activate.html");
-      }
-    };
+  const base = navigator.userAgent + navigator.language;
+  const encoded = btoa(base).replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
+  const id = "device_" + encoded;
+  debugLog("🔑 Device ID (dihasilkan dari fingerprint): " + id);
+  return id;
+};
 
     const runValidation = async () => {
       debugLog("🛡️ Memulai validasi lisensi...");
       debugLog("🌐 URL: " + window.location.href);
 
-      // Pastikan auth diinisialisasi sebelum melanjutkan
-      if (!auth) {
-        await initAuth();
-      }
-
       const deviceId = getDeviceId();
       debugLog("🔑 Device ID: " + deviceId);
 
-      // Gunakan ref Realtime Database dengan path yang benar
-      // Untuk data publik: /artifacts/{appId}/public/data/{nama_koleksi_anda}/{documentId}
-      const deviceRef = ref(db, `artifacts/${appId}/public/data/activatedDevices/${deviceId}`);
+      const deviceRef = ref(db, "data/activatedDevices/" + deviceId);
 
       try {
-        const deviceSnap = await get(deviceRef); // Gunakan get untuk Realtime Database
+        const deviceSnap = await get(deviceRef);
         if (deviceSnap.exists()) {
           debugLog("✅ Device sudah aktif.");
           return;
@@ -167,7 +129,7 @@
           debugLog("ℹ️ Device belum pernah aktivasi.");
         }
       } catch (err) {
-        debugLog("❌ Gagal cek device di Firebase: " + err.message);
+        debugLog("❌ Gagal cek device di Firebase: " + err);
       }
 
       const licenseKey = localStorage.getItem("showtime_license");
@@ -179,28 +141,28 @@
         return;
       }
 
-      const licenseRef = ref(db, `artifacts/${appId}/public/data/licenses/${licenseKey}`);
+      const licenseRef = ref(db, "data/licenses/" + licenseKey);
       try {
-        const snapshot = await get(licenseRef); // Gunakan get untuk Realtime Database
+        const snapshot = await get(licenseRef);
         if (snapshot.exists()) {
           debugLog("✅ Lisensi valid. Menghapus dan mengaktifkan device...");
 
           try {
-            await remove(licenseRef); // Gunakan remove untuk Realtime Database
+            await remove(licenseRef);
             debugLog("🔥 Lisensi dihapus dari Firebase.");
           } catch (err) {
-            debugLog("⚠️ Gagal hapus lisensi: " + err.message);
+            debugLog("⚠️ Gagal hapus lisensi: " + err);
           }
 
           try {
-            await set(deviceRef, { // Gunakan set untuk Realtime Database
+            await set(deviceRef, {
               activatedAt: Date.now(),
               licenseKey: licenseKey
             });
             debugLog("📡 Device dicatat di Firebase.");
             localStorage.setItem("showtime_activated", "true");
           } catch (err) {
-            debugLog("⚠️ Gagal set deviceRef: " + err.message);
+            debugLog("⚠️ Gagal set deviceRef: " + err);
           }
 
         } else {
@@ -210,13 +172,13 @@
         }
 
       } catch (err) {
-        debugLog("❌ Gagal koneksi Firebase saat validasi lisensi: " + err.message);
+        debugLog("❌ Gagal koneksi Firebase saat validasi: " + err);
+        alert("Koneksi gagal. Coba lagi.");
         window.location.replace("activate.html");
       }
     };
 
-    window.addEventListener('pageshow', async () => {
-      await initAuth(); // Inisialisasi otentikasi terlebih dahulu
+    window.addEventListener('pageshow', () => {
       runValidation();
     });
   </script>
