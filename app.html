@@ -69,38 +69,10 @@
     </div>
   </div>
 
-  <!-- Debug overlay -->
-  <div id="debugBanner" style="
-    position:fixed;
-    bottom:0;
-    left:0;
-    right:0;
-    background:#111;
-    color:#0f0;
-    padding:10px;
-    font-family:monospace;
-    font-size:12px;
-    z-index:9999;
-    max-height:160px;
-    overflow:auto;
-    display:none;
-    white-space:pre-wrap;
-  "></div>
-
   <!-- Script -->
   <script type="module">
     import { db } from './firebase-init.js';
     import { ref, get, set, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
-
-    // Debug log helper
-    const debugLog = (msg) => {
-      const banner = document.getElementById("debugBanner");
-      if (banner) {
-        banner.style.display = "block";
-        banner.textContent += `\n${msg}`;
-      }
-      console.log(msg);
-    };
 
     // Device ID (UUID)
     const getDeviceId = () => {
