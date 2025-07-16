@@ -89,10 +89,10 @@
 
   <!-- Script -->
   <script type="module">
-    // Import Firebase modules
+    // Import Firebase modules for Realtime Database
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { getDatabase, ref, get, set, remove } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js"; // Changed to Realtime Database
 
     // Debug log helper
     const debugLog = (msg) => {
@@ -118,7 +118,7 @@
     const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
 
     let app;
-    let db;
+    let db; // This will now be the Realtime Database instance
     let auth;
 
     const initFirebase = async () => {
@@ -130,7 +130,7 @@
         }
 
         app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
+        db = getDatabase(app); // Get Realtime Database instance
         auth = getAuth(app);
 
         // Sign in with custom token if available, otherwise anonymously
@@ -143,7 +143,6 @@
         }
       } catch (error) {
         debugLog("❌ Firebase: Gagal menginisialisasi atau mengautentikasi: " + error.message);
-        // Do not use alert(), just log the error and redirect
         window.location.replace("activate.html");
       }
     };
@@ -160,11 +159,12 @@
       const deviceId = getDeviceId();
       debugLog("🔑 Device ID: " + deviceId);
 
-      // Use Firestore doc references with proper collection paths
-      const deviceDocRef = doc(db, "artifacts", appId, "public", "data", "activatedDevices", deviceId);
+      // Use Realtime Database ref with proper paths
+      // For public data: /artifacts/{appId}/public/data/{your_collection_name}/{documentId}
+      const deviceRef = ref(db, `artifacts/${appId}/public/data/activatedDevices/${deviceId}`);
 
       try {
-        const deviceSnap = await getDoc(deviceDocRef); // Use getDoc for Firestore
+        const deviceSnap = await get(deviceRef); // Use get for Realtime Database
         if (deviceSnap.exists()) {
           debugLog("✅ Device sudah aktif.");
           return;
@@ -173,7 +173,6 @@
         }
       } catch (err) {
         debugLog("❌ Gagal cek device di Firebase: " + err.message);
-        // Continue to check license even if device check fails, might be a network issue
       }
 
       const licenseKey = localStorage.getItem("showtime_license");
@@ -185,28 +184,28 @@
         return;
       }
 
-      const licenseDocRef = doc(db, "artifacts", appId, "public", "data", "licenses", licenseKey);
+      const licenseRef = ref(db, `artifacts/${appId}/public/data/licenses/${licenseKey}`);
       try {
-        const snapshot = await getDoc(licenseDocRef); // Use getDoc for Firestore
+        const snapshot = await get(licenseRef); // Use get for Realtime Database
         if (snapshot.exists()) {
           debugLog("✅ Lisensi valid. Menghapus dan mengaktifkan device...");
 
           try {
-            await deleteDoc(licenseDocRef); // Use deleteDoc for Firestore
+            await remove(licenseRef); // Use remove for Realtime Database
             debugLog("🔥 Lisensi dihapus dari Firebase.");
           } catch (err) {
             debugLog("⚠️ Gagal hapus lisensi: " + err.message);
           }
 
           try {
-            await setDoc(deviceDocRef, { // Use setDoc for Firestore
+            await set(deviceRef, { // Use set for Realtime Database
               activatedAt: Date.now(),
               licenseKey: licenseKey
             });
             debugLog("📡 Device dicatat di Firebase.");
             localStorage.setItem("showtime_activated", "true");
           } catch (err) {
-            debugLog("⚠️ Gagal set deviceDocRef: " + err.message);
+            debugLog("⚠️ Gagal set deviceRef: " + err.message);
           }
 
         } else {
@@ -217,13 +216,12 @@
 
       } catch (err) {
         debugLog("❌ Gagal koneksi Firebase saat validasi lisensi: " + err.message);
-        // Do not use alert(), just log the error and redirect
         window.location.replace("activate.html");
       }
     };
 
     window.addEventListener('pageshow', async () => {
-      await initFirebase(); // Ensure Firebase is initialized before running validation
+      await initFirebase();
       runValidation();
     });
   </script>
