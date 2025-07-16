@@ -28,7 +28,7 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 97px 0 0 0;
+  margin: 118px 0 0 0;
   padding: 0 26px 20px;
 }
 
@@ -168,6 +168,15 @@ html, body {
   color: #bbb;
   cursor: pointer;
 }
+
+/* --- Perbaikan: Tambahkan lebar minimum untuk div teks di dalam tab --- */
+.tab div {
+  min-width: 70px; /* Sesuaikan lebar ini berdasarkan teks terpanjang yang mungkin ("World Clock.") */
+  text-align: center; /* Pastikan teks tetap di tengah dalam lebar tetap */
+  white-space: nowrap; /* Mencegah teks melipat ke baris baru */
+}
+/* --- Akhir Perbaikan --- */
+
 
 /* Base style for all tab images (sets size and common properties) */
 .tab img {
