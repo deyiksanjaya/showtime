@@ -612,6 +612,7 @@ tabs.forEach((tab) => {
 
   // 📱 Touch support (penting di iPhone/iPad)
   timerTab.addEventListener("touchstart", () => {
+    e.preventDefault();
     isHeld = false;
     holdTimeout = setTimeout(() => {
       isHeld = true;
@@ -619,7 +620,7 @@ tabs.forEach((tab) => {
       const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime&input=${encodeURIComponent(timerData)}`;
       window.location.href = shortcutUrl;
     }, 600);
-  });
+  }{ passive: false });
 
   timerTab.addEventListener("touchend", () => {
     clearTimeout(holdTimeout);
