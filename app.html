@@ -69,119 +69,71 @@
     </div>
   </div>
 
-  <!-- Debug overlay -->
-  <div id="debugBanner" style="
-    position:fixed;
-    bottom:0;
-    left:0;
-    right:0;
-    background:#111;
-    color:#0f0;
-    padding:10px;
-    font-family:monospace;
-    font-size:12px;
-    z-index:9999;
-    max-height:160px;
-    overflow:auto;
-    display:none;
-    white-space:pre-wrap;
-  "></div>
-
-  <!-- Script -->
   <script type="module">
-    import { db } from './firebase-init.js';
-    import { ref, get, set, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+  import { db } from './firebase-init.js';
+  import { ref, get, set, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
-    // Debug log helper
-    const debugLog = (msg) => {
-      const banner = document.getElementById("debugBanner");
-      if (banner) {
-        banner.style.display = "block";
-        banner.textContent += `\n${msg}`;
+  // Nonaktifkan debugLog agar tidak error jika dipanggil
+  const debugLog = () => {};
+
+  // Device ID generator
+  const getDeviceId = () => {
+    const base = navigator.userAgent + navigator.language;
+    const encoded = btoa(base).replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
+    const id = "device_" + encoded;
+    debugLog("Device ID: " + id);
+    return id;
+  };
+
+  const runValidation = async () => {
+    const deviceId = getDeviceId();
+    const deviceRef = ref(db, "data/activatedDevices/" + deviceId);
+
+    try {
+      const deviceSnap = await get(deviceRef);
+      if (deviceSnap.exists()) {
+        return; // Sudah diaktivasi
       }
-      console.log(msg);
-    };
+    } catch (err) {
+      // Gagal cek Firebase, tetap lanjutkan
+    }
 
-    // Device ID (UUID)
-    const getDeviceId = () => {
-  const base = navigator.userAgent + navigator.language;
-  const encoded = btoa(base).replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
-  const id = "device_" + encoded;
-  debugLog("🔑 Device ID (dihasilkan dari fingerprint): " + id);
-  return id;
-};
+    const licenseKey = localStorage.getItem("showtime_license");
 
-    const runValidation = async () => {
-      debugLog("🛡️ Memulai validasi lisensi...");
-      debugLog("🌐 URL: " + window.location.href);
+    if (!licenseKey) {
+      window.location.replace("activate.html");
+      return;
+    }
 
-      const deviceId = getDeviceId();
-      debugLog("🔑 Device ID: " + deviceId);
+    const licenseRef = ref(db, "data/licenses/" + licenseKey);
+    try {
+      const snapshot = await get(licenseRef);
+      if (snapshot.exists()) {
+        try {
+          await remove(licenseRef);
+        } catch (err) {}
 
-      const deviceRef = ref(db, "data/activatedDevices/" + deviceId);
-
-      try {
-        const deviceSnap = await get(deviceRef);
-        if (deviceSnap.exists()) {
-          debugLog("✅ Device sudah aktif.");
-          return;
-        } else {
-          debugLog("ℹ️ Device belum pernah aktivasi.");
-        }
-      } catch (err) {
-        debugLog("❌ Gagal cek device di Firebase: " + err);
-      }
-
-      const licenseKey = localStorage.getItem("showtime_license");
-      debugLog("📦 Lisensi lokal: " + licenseKey);
-
-      if (!licenseKey) {
-        debugLog("🚫 Lisensi kosong. Arahkan ke activate.html");
-        window.location.replace("activate.html");
-        return;
-      }
-
-      const licenseRef = ref(db, "data/licenses/" + licenseKey);
-      try {
-        const snapshot = await get(licenseRef);
-        if (snapshot.exists()) {
-          debugLog("✅ Lisensi valid. Menghapus dan mengaktifkan device...");
-
-          try {
-            await remove(licenseRef);
-            debugLog("🔥 Lisensi dihapus dari Firebase.");
-          } catch (err) {
-            debugLog("⚠️ Gagal hapus lisensi: " + err);
-          }
-
-          try {
-            await set(deviceRef, {
-              activatedAt: Date.now(),
-              licenseKey: licenseKey
-            });
-            debugLog("📡 Device dicatat di Firebase.");
-            localStorage.setItem("showtime_activated", "true");
-          } catch (err) {
-            debugLog("⚠️ Gagal set deviceRef: " + err);
-          }
-
-        } else {
-          debugLog("❌ Lisensi tidak valid atau sudah dipakai.");
-          localStorage.removeItem("showtime_license");
-          window.location.replace("activate.html");
-        }
-
-      } catch (err) {
-        debugLog("❌ Gagal koneksi Firebase saat validasi: " + err);
-        alert("Koneksi gagal. Coba lagi.");
+        try {
+          await set(deviceRef, {
+            activatedAt: Date.now(),
+            licenseKey: licenseKey
+          });
+          localStorage.setItem("showtime_activated", "true");
+        } catch (err) {}
+      } else {
+        localStorage.removeItem("showtime_license");
         window.location.replace("activate.html");
       }
-    };
+    } catch (err) {
+      alert("Koneksi gagal. Coba lagi.");
+      window.location.replace("activate.html");
+    }
+  };
 
-    window.addEventListener('pageshow', () => {
-      runValidation();
-    });
-  </script>
+  window.addEventListener('pageshow', () => {
+    runValidation();
+  });
+</script>
 
   <!-- Stopwatch logic kamu sendiri -->
   <script src="script.js"></script>
