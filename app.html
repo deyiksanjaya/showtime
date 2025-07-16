@@ -89,10 +89,13 @@
 
   <!-- Script -->
   <script type="module">
-    // Import Firebase modules for Realtime Database
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    // Import Firebase modules and 'db' instance from firebase-init.js
+    // PERHATIAN: Mengimpor konfigurasi Firebase secara langsung dari file di root
+    // akan mengekspos API Key dan detail proyek Anda di browser.
+    // Ini adalah RISIKO KEAMANAN.
+    import { db } from './firebase-init.js';
     import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getDatabase, ref, get, set, remove } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+    import { ref, get, set, remove } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
     // Debug log helper
     const debugLog = (msg) => {
@@ -113,31 +116,18 @@
       return id;
     };
 
-    // Firebase Initialization and Authentication
+    // Firebase Authentication
     // __app_id adalah variabel global yang disediakan oleh lingkungan Canvas.
-    // Jika tidak ada, akan menggunakan 'default-app-id'.
+    // Jika tidak ada (misalnya di GitHub Pages), akan menggunakan 'default-app-id'.
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    // __firebase_config adalah variabel global yang disediakan oleh lingkungan Canvas (Vercel).
-    // Ini harus diatur di pengaturan proyek Vercel Anda sebagai string JSON.
-    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+    let auth; // Deklarasikan variabel auth di sini
 
-    let app;
-    let db; // Ini akan menjadi instance Realtime Database
-    let auth;
-
-    const initFirebase = async () => {
+    const initAuth = async () => {
       try {
-        debugLog("Firebase Config yang diterima: " + JSON.stringify(firebaseConfig));
-
-        if (!firebaseConfig.projectId) {
-          // Ini akan terjadi jika __firebase_config tidak diatur dengan benar di Vercel
-          throw new Error("projectId tidak disediakan dalam konfigurasi Firebase. Pastikan variabel lingkungan __firebase_config diatur di platform hosting Anda dengan string JSON yang valid.");
-        }
-
-        app = initializeApp(firebaseConfig);
-        db = getDatabase(app); // Dapatkan instance Realtime Database
-        auth = getAuth(app);
-
+        // Instance 'app' secara implisit dibuat oleh firebase-init.js saat 'db' diekspor.
+        // Kita mendapatkan instance auth dari aplikasi default yang sudah diinisialisasi.
+        auth = getAuth();
+        
         // Masuk dengan token kustom jika tersedia, jika tidak secara anonim
         if (typeof __initial_auth_token !== 'undefined') {
           await signInWithCustomToken(auth, __initial_auth_token);
@@ -147,8 +137,7 @@
           debugLog("✅ Firebase: Berhasil masuk secara anonim.");
         }
       } catch (error) {
-        debugLog("❌ Firebase: Gagal menginisialisasi atau mengautentikasi: " + error.message);
-        // Jangan gunakan alert(), cukup log error dan arahkan ulang
+        debugLog("❌ Firebase: Gagal mengautentikasi: " + error.message);
         window.location.replace("activate.html");
       }
     };
@@ -157,9 +146,9 @@
       debugLog("🛡️ Memulai validasi lisensi...");
       debugLog("🌐 URL: " + window.location.href);
 
-      // Pastikan Firebase diinisialisasi sebelum melanjutkan
-      if (!db || !auth) {
-        await initFirebase();
+      // Pastikan auth diinisialisasi sebelum melanjutkan
+      if (!auth) {
+        await initAuth();
       }
 
       const deviceId = getDeviceId();
@@ -227,7 +216,7 @@
     };
 
     window.addEventListener('pageshow', async () => {
-      await initFirebase();
+      await initAuth(); // Inisialisasi otentikasi terlebih dahulu
       runValidation();
     });
   </script>
