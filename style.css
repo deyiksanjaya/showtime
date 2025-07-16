@@ -135,7 +135,7 @@ body > .app {
   list-style: none;
   margin: 0;
   display: block;                 /* <- penting! ubah dari flex ke block */
-  padding-bottom: 35px;         /* <- biar lap terakhir nggak ketutup tab */
+  padding-bottom: 40px;         /* <- biar lap terakhir nggak ketutup tab */
 }
 
 .laps li {
