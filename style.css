@@ -115,16 +115,16 @@ body > .app {
 .laps {
   margin: 4px auto 0;
   flex: 1;
-  overflow-y: scroll; /* ⬅️ selalu tampilkan ruang scrollbar */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Internet Explorer */
+  overflow-y: scroll;
+  scrollbar-width: none;           /* Firefox */
+  -ms-overflow-style: none;        /* IE & Edge */
   width: 90%;
-  display: flex;
-  flex-direction: column;
+  display: block;                  /* <- penting! ubah dari flex ke block */
   padding-bottom: 20px;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Hilangkan scrollbar visual di WebKit (iOS, Safari, Chrome) */
 .laps::-webkit-scrollbar {
   width: 0;
   background: transparent;
@@ -134,8 +134,8 @@ body > .app {
   padding: 0;
   list-style: none;
   margin: 0;
-  display: flex;
-  flex-direction: column;
+  display: block;                 /* <- penting! ubah dari flex ke block */
+  padding-bottom: 35px;         /* <- biar lap terakhir nggak ketutup tab */
 }
 
 .laps li {
