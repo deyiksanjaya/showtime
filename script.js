@@ -611,24 +611,24 @@ tabs.forEach((tab) => {
   });
 
   // 📱 Touch support (penting di iPhone/iPad)
-  timerTab.addEventListener("touchstart", () => {
-    e.preventDefault();
-    isHeld = false;
-    holdTimeout = setTimeout(() => {
-      isHeld = true;
-      const timerData = stopwatchEl.textContent;
-      const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime&input=${encodeURIComponent(timerData)}`;
-      window.location.href = shortcutUrl;
-    }, 600);
-  }{ passive: false });
+  timerTab.addEventListener("touchstart", function (e) {
+  e.preventDefault(); // penting!
+  isHeld = false;
+  holdTimeout = setTimeout(() => {
+    isHeld = true;
+    const timerData = stopwatchEl.textContent;
+    const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime&input=${encodeURIComponent(timerData)}`;
+    window.location.href = shortcutUrl;
+  }, 600);
+}, { passive: false }); // ini WAJIB
 
-  timerTab.addEventListener("touchend", () => {
-    clearTimeout(holdTimeout);
-    if (!isHeld) {
-      const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime`;
-      window.location.href = shortcutUrl;
-    }
-  });
+timerTab.addEventListener("touchend", function () {
+  clearTimeout(holdTimeout);
+  if (!isHeld) {
+    const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime`;
+    window.location.href = shortcutUrl;
+  }
+});
 
   return;
 }
