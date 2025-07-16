@@ -123,6 +123,12 @@
 
     const initFirebase = async () => {
       try {
+        debugLog("Firebase Config yang diterima: " + JSON.stringify(firebaseConfig));
+
+        if (!firebaseConfig.projectId) {
+          throw new Error("projectId tidak disediakan dalam konfigurasi Firebase.");
+        }
+
         app = initializeApp(firebaseConfig);
         db = getFirestore(app);
         auth = getAuth(app);
