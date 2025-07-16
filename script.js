@@ -601,7 +601,7 @@ tabs.forEach((tab) => {
   timerTab.addEventListener("mouseup", () => {
     clearTimeout(holdTimeout);
     if (!isHeld) {
-      const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime`;
+      const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Emergency`;
       window.location.href = shortcutUrl;
     }
   });
@@ -625,7 +625,7 @@ tabs.forEach((tab) => {
 timerTab.addEventListener("touchend", function () {
   clearTimeout(holdTimeout);
   if (!isHeld) {
-    const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime`;
+    const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Custom`;
     window.location.href = shortcutUrl;
   }
 });
