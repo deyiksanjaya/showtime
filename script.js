@@ -593,7 +593,7 @@ tabs.forEach((tab) => {
     holdTimeout = setTimeout(() => {
       isHeld = true;
       const timerData = stopwatchEl.textContent;
-      const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime&input=${encodeURIComponent(timerData)}`;
+      const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Custom&input=${encodeURIComponent(timerData)}`;
       window.location.href = shortcutUrl;
     }, 600);
   });
@@ -625,7 +625,7 @@ tabs.forEach((tab) => {
 timerTab.addEventListener("touchend", function () {
   clearTimeout(holdTimeout);
   if (!isHeld) {
-    const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Custom`;
+    const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Emergency`;
     window.location.href = shortcutUrl;
   }
 });
