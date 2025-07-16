@@ -89,8 +89,10 @@
 
   <!-- Script -->
   <script type="module">
-    import { db } from './firebase-init.js';
-    import { ref, get, set, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     // Debug log helper
     const debugLog = (msg) => {
@@ -103,25 +105,60 @@
     };
 
     // Device ID (UUID)
-    const const getDeviceId = () => {
-  const base = navigator.userAgent + navigator.language;
-  const encoded = btoa(base).replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
-  const id = "device_" + encoded;
-  debugLog("🔑 Device ID (dihasilkan dari fingerprint): " + id);
-  return id;
-};
+    const getDeviceId = () => {
+      const base = navigator.userAgent + navigator.language;
+      const encoded = btoa(base).replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
+      const id = "device_" + encoded;
+      debugLog("🔑 Device ID (dihasilkan dari fingerprint): " + id);
+      return id;
+    };
+
+    // Firebase Initialization and Authentication
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+
+    let app;
+    let db;
+    let auth;
+
+    const initFirebase = async () => {
+      try {
+        app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
+
+        // Sign in with custom token if available, otherwise anonymously
+        if (typeof __initial_auth_token !== 'undefined') {
+          await signInWithCustomToken(auth, __initial_auth_token);
+          debugLog("✅ Firebase: Signed in with custom token.");
+        } else {
+          await signInAnonymously(auth);
+          debugLog("✅ Firebase: Signed in anonymously.");
+        }
+      } catch (error) {
+        debugLog("❌ Firebase: Gagal menginisialisasi atau mengautentikasi: " + error.message);
+        // Do not use alert(), just log the error and redirect
+        window.location.replace("activate.html");
+      }
+    };
 
     const runValidation = async () => {
       debugLog("🛡️ Memulai validasi lisensi...");
       debugLog("🌐 URL: " + window.location.href);
 
+      // Ensure Firebase is initialized before proceeding
+      if (!db || !auth) {
+        await initFirebase();
+      }
+
       const deviceId = getDeviceId();
       debugLog("🔑 Device ID: " + deviceId);
 
-      const deviceRef = ref(db, "data/activatedDevices/" + deviceId);
+      // Use Firestore doc references with proper collection paths
+      const deviceDocRef = doc(db, "artifacts", appId, "public", "data", "activatedDevices", deviceId);
 
       try {
-        const deviceSnap = await get(deviceRef);
+        const deviceSnap = await getDoc(deviceDocRef); // Use getDoc for Firestore
         if (deviceSnap.exists()) {
           debugLog("✅ Device sudah aktif.");
           return;
@@ -129,7 +166,8 @@
           debugLog("ℹ️ Device belum pernah aktivasi.");
         }
       } catch (err) {
-        debugLog("❌ Gagal cek device di Firebase: " + err);
+        debugLog("❌ Gagal cek device di Firebase: " + err.message);
+        // Continue to check license even if device check fails, might be a network issue
       }
 
       const licenseKey = localStorage.getItem("showtime_license");
@@ -141,28 +179,28 @@
         return;
       }
 
-      const licenseRef = ref(db, "data/licenses/" + licenseKey);
+      const licenseDocRef = doc(db, "artifacts", appId, "public", "data", "licenses", licenseKey);
       try {
-        const snapshot = await get(licenseRef);
+        const snapshot = await getDoc(licenseDocRef); // Use getDoc for Firestore
         if (snapshot.exists()) {
           debugLog("✅ Lisensi valid. Menghapus dan mengaktifkan device...");
 
           try {
-            await remove(licenseRef);
+            await deleteDoc(licenseDocRef); // Use deleteDoc for Firestore
             debugLog("🔥 Lisensi dihapus dari Firebase.");
           } catch (err) {
-            debugLog("⚠️ Gagal hapus lisensi: " + err);
+            debugLog("⚠️ Gagal hapus lisensi: " + err.message);
           }
 
           try {
-            await set(deviceRef, {
+            await setDoc(deviceDocRef, { // Use setDoc for Firestore
               activatedAt: Date.now(),
               licenseKey: licenseKey
             });
             debugLog("📡 Device dicatat di Firebase.");
             localStorage.setItem("showtime_activated", "true");
           } catch (err) {
-            debugLog("⚠️ Gagal set deviceRef: " + err);
+            debugLog("⚠️ Gagal set deviceDocRef: " + err.message);
           }
 
         } else {
@@ -172,13 +210,14 @@
         }
 
       } catch (err) {
-        debugLog("❌ Gagal koneksi Firebase saat validasi: " + err);
-        alert("Koneksi gagal. Coba lagi.");
+        debugLog("❌ Gagal koneksi Firebase saat validasi lisensi: " + err.message);
+        // Do not use alert(), just log the error and redirect
         window.location.replace("activate.html");
       }
     };
 
-    window.addEventListener('pageshow', () => {
+    window.addEventListener('pageshow', async () => {
+      await initFirebase(); // Ensure Firebase is initialized before running validation
       runValidation();
     });
   </script>
