@@ -92,7 +92,7 @@
     // Import Firebase modules for Realtime Database
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getDatabase, ref, get, set, remove } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js"; // Changed to Realtime Database
+    import { getDatabase, ref, get, set, remove } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
     // Debug log helper
     const debugLog = (msg) => {
@@ -114,11 +114,15 @@
     };
 
     // Firebase Initialization and Authentication
+    // __app_id adalah variabel global yang disediakan oleh lingkungan Canvas.
+    // Jika tidak ada, akan menggunakan 'default-app-id'.
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    // __firebase_config adalah variabel global yang disediakan oleh lingkungan Canvas (Vercel).
+    // Ini harus diatur di pengaturan proyek Vercel Anda sebagai string JSON.
     const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
 
     let app;
-    let db; // This will now be the Realtime Database instance
+    let db; // Ini akan menjadi instance Realtime Database
     let auth;
 
     const initFirebase = async () => {
@@ -126,23 +130,25 @@
         debugLog("Firebase Config yang diterima: " + JSON.stringify(firebaseConfig));
 
         if (!firebaseConfig.projectId) {
-          throw new Error("projectId tidak disediakan dalam konfigurasi Firebase.");
+          // Ini akan terjadi jika __firebase_config tidak diatur dengan benar di Vercel
+          throw new Error("projectId tidak disediakan dalam konfigurasi Firebase. Pastikan variabel lingkungan __firebase_config diatur di platform hosting Anda dengan string JSON yang valid.");
         }
 
         app = initializeApp(firebaseConfig);
-        db = getDatabase(app); // Get Realtime Database instance
+        db = getDatabase(app); // Dapatkan instance Realtime Database
         auth = getAuth(app);
 
-        // Sign in with custom token if available, otherwise anonymously
+        // Masuk dengan token kustom jika tersedia, jika tidak secara anonim
         if (typeof __initial_auth_token !== 'undefined') {
           await signInWithCustomToken(auth, __initial_auth_token);
-          debugLog("✅ Firebase: Signed in with custom token.");
+          debugLog("✅ Firebase: Berhasil masuk dengan token kustom.");
         } else {
           await signInAnonymously(auth);
-          debugLog("✅ Firebase: Signed in anonymously.");
+          debugLog("✅ Firebase: Berhasil masuk secara anonim.");
         }
       } catch (error) {
         debugLog("❌ Firebase: Gagal menginisialisasi atau mengautentikasi: " + error.message);
+        // Jangan gunakan alert(), cukup log error dan arahkan ulang
         window.location.replace("activate.html");
       }
     };
@@ -151,7 +157,7 @@
       debugLog("🛡️ Memulai validasi lisensi...");
       debugLog("🌐 URL: " + window.location.href);
 
-      // Ensure Firebase is initialized before proceeding
+      // Pastikan Firebase diinisialisasi sebelum melanjutkan
       if (!db || !auth) {
         await initFirebase();
       }
@@ -159,12 +165,12 @@
       const deviceId = getDeviceId();
       debugLog("🔑 Device ID: " + deviceId);
 
-      // Use Realtime Database ref with proper paths
-      // For public data: /artifacts/{appId}/public/data/{your_collection_name}/{documentId}
+      // Gunakan ref Realtime Database dengan path yang benar
+      // Untuk data publik: /artifacts/{appId}/public/data/{nama_koleksi_anda}/{documentId}
       const deviceRef = ref(db, `artifacts/${appId}/public/data/activatedDevices/${deviceId}`);
 
       try {
-        const deviceSnap = await get(deviceRef); // Use get for Realtime Database
+        const deviceSnap = await get(deviceRef); // Gunakan get untuk Realtime Database
         if (deviceSnap.exists()) {
           debugLog("✅ Device sudah aktif.");
           return;
@@ -186,19 +192,19 @@
 
       const licenseRef = ref(db, `artifacts/${appId}/public/data/licenses/${licenseKey}`);
       try {
-        const snapshot = await get(licenseRef); // Use get for Realtime Database
+        const snapshot = await get(licenseRef); // Gunakan get untuk Realtime Database
         if (snapshot.exists()) {
           debugLog("✅ Lisensi valid. Menghapus dan mengaktifkan device...");
 
           try {
-            await remove(licenseRef); // Use remove for Realtime Database
+            await remove(licenseRef); // Gunakan remove untuk Realtime Database
             debugLog("🔥 Lisensi dihapus dari Firebase.");
           } catch (err) {
             debugLog("⚠️ Gagal hapus lisensi: " + err.message);
           }
 
           try {
-            await set(deviceRef, { // Use set for Realtime Database
+            await set(deviceRef, { // Gunakan set untuk Realtime Database
               activatedAt: Date.now(),
               licenseKey: licenseKey
             });
