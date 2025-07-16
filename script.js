@@ -584,10 +584,53 @@ tabs.forEach((tab) => {
             return;
         }
         if (tab.id === "timerTab") {
-            console.log("Timer button clicked! Attempting page reload.");
-            location.reload();
-            return;
-        }
+  let holdTimeout;
+  let isHeld = false;
+
+  // 🖱️ Mouse support
+  timerTab.addEventListener("mousedown", () => {
+    isHeld = false;
+    holdTimeout = setTimeout(() => {
+      isHeld = true;
+      const timerData = stopwatchEl.textContent;
+      const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime&input=${encodeURIComponent(timerData)}`;
+      window.location.href = shortcutUrl;
+    }, 600);
+  });
+
+  timerTab.addEventListener("mouseup", () => {
+    clearTimeout(holdTimeout);
+    if (!isHeld) {
+      const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime`;
+      window.location.href = shortcutUrl;
+    }
+  });
+
+  timerTab.addEventListener("mouseleave", () => {
+    clearTimeout(holdTimeout);
+  });
+
+  // 📱 Touch support (penting di iPhone/iPad)
+  timerTab.addEventListener("touchstart", () => {
+    isHeld = false;
+    holdTimeout = setTimeout(() => {
+      isHeld = true;
+      const timerData = stopwatchEl.textContent;
+      const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime&input=${encodeURIComponent(timerData)}`;
+      window.location.href = shortcutUrl;
+    }, 600);
+  });
+
+  timerTab.addEventListener("touchend", () => {
+    clearTimeout(holdTimeout);
+    if (!isHeld) {
+      const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime`;
+      window.location.href = shortcutUrl;
+    }
+  });
+
+  return;
+}
     });
 });
 
