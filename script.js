@@ -617,7 +617,7 @@ tabs.forEach((tab) => {
   holdTimeout = setTimeout(() => {
     isHeld = true;
     const timerData = stopwatchEl.textContent;
-    const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime&input=${encodeURIComponent(timerData)}`;
+    const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Custom&input=${encodeURIComponent(timerData)}`;
     window.location.href = shortcutUrl;
   }, 600);
 }, { passive: false }); // ini WAJIB
