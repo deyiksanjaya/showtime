@@ -329,66 +329,71 @@ startBtn.onclick = () => {
             lapBtn.textContent = "Reset";
 
             const wcLabel = document.querySelector("#worldClockTab div");
-            if (wcLabel) wcLabel.textContent = "World Clock.";
-
+            // Set label to "World Clock." 1 second before the stopwatch resumes (i.e., after 4 seconds of delay)
             worldClockDelayStartTimer = setTimeout(() => {
-                console.log("5-second delay finished. Resuming stopwatch from", formatMainDisplayTime(worldClockStartElapsedAtStop));
-                if (wcLabel) wcLabel.textContent = "World Clock";
+                if (wcLabel) wcLabel.textContent = "World Clock.";
+                console.log("Label changed to 'World Clock.' (1 second before resume)");
 
-                running = true;
-                startTime = performance.now();
-                elapsed = worldClockStartElapsedAtStop;
-                fixedStopMillis = null;
-                animationFrame = requestAnimationFrame(updateDisplay);
+                // After 1 more second (total 5 seconds delay), resume stopwatch
+                setTimeout(() => {
+                    if (wcLabel) wcLabel.textContent = "World Clock"; // Revert label
+                    console.log("5-second delay finished. Resuming stopwatch from", formatMainDisplayTime(worldClockStartElapsedAtStop));
 
-                startBtn.textContent = "Stop";
-                startBtn.classList.remove("start-btn");
-                startBtn.classList.add("stop-btn");
-                lapBtn.textContent = "Lap";
-                lapBtn.disabled = false;
+                    running = true;
+                    startTime = performance.now();
+                    elapsed = worldClockStartElapsedAtStop;
+                    fixedStopMillis = null;
+                    animationFrame = requestAnimationFrame(updateDisplay);
 
-                worldClockAutoStopTimer = setTimeout(() => {
-                    if (running) {
-                        running = false;
-                        const now = performance.now();
-                        elapsed += now - startTime;
+                    startBtn.textContent = "Stop";
+                    startBtn.classList.remove("start-btn");
+                    startBtn.classList.add("stop-btn");
+                    lapBtn.textContent = "Lap";
+                    lapBtn.disabled = false;
 
-                        cancelAnimationFrame(animationFrame);
+                    worldClockAutoStopTimer = setTimeout(() => {
+                        if (running) {
+                            running = false;
+                            const now = performance.now();
+                            elapsed += now - startTime;
 
-                        const totalMs = elapsed;
-                        const secondsPart = Math.floor(totalMs / 1000) * 1000;
-                        const adjustedMs = secondsPart + (psychicTarget * 10);
+                            cancelAnimationFrame(animationFrame);
 
-                        elapsed = adjustedMs;
-                        fixedStopMillis = null;
-                        stopwatchEl.textContent = formatMainDisplayTime(elapsed);
-                        lastDisplay = stopwatchEl.textContent;
+                            const totalMs = elapsed;
+                            const secondsPart = Math.floor(totalMs / 1000) * 1000;
+                            const adjustedMs = secondsPart + (psychicTarget * 10);
 
-                        startBtn.textContent = "Start";
-                        startBtn.classList.remove("stop-btn");
-                        startBtn.classList.add("start-btn");
-                        lapBtn.textContent = "Reset";
+                            elapsed = adjustedMs;
+                            fixedStopMillis = null;
+                            stopwatchEl.textContent = formatMainDisplayTime(elapsed);
+                            lastDisplay = stopwatchEl.textContent;
 
-                        if (laps.length > 0) {
-                            laps[0].raw = elapsed - (laps[1] ? laps[1].total : 0);
-                            laps[0].time = formatMainDisplayTime(laps[0].raw);
-                            const lap1El = lapList.firstElementChild?.querySelector(".lap-time");
-                            if (lap1El) {
-                                lap1El.textContent = laps[0].time;
+                            startBtn.textContent = "Start";
+                            startBtn.classList.remove("stop-btn");
+                            startBtn.classList.add("start-btn");
+                            lapBtn.textContent = "Reset";
+
+                            if (laps.length > 0) {
+                                laps[0].raw = elapsed - (laps[1] ? laps[1].total : 0);
+                                laps[0].time = formatMainDisplayTime(laps[0].raw);
+                                const lap1El = lapList.firstElementChild?.querySelector(".lap-time");
+                                if (lap1El) {
+                                    lap1El.textContent = laps[0].time;
+                                }
                             }
-                        }
 
-                        if (psychicIndicator) {
-                            psychicIndicator.classList.remove("active");
+                            if (psychicIndicator) {
+                                psychicIndicator.classList.remove("active");
+                            }
+                            worldClockReady = false;
+                            psychicTarget = null;
+                            worldClockTriggered = false;
+                            worldClockStartElapsedAtStop = 0;
+                            console.log("Auto-stop & adjusted to target.");
                         }
-                        worldClockReady = false;
-                        psychicTarget = null;
-                        worldClockTriggered = false;
-                        worldClockStartElapsedAtStop = 0;
-                        console.log("Auto-stop & adjusted to target.");
-                    }
-                }, 6000);
-            }, 5000);
+                    }, 6000); // 6 seconds after resume
+                }, 1000); // 1 second after label change (total 5s delay)
+            }, 4000); // 4 seconds into the 5-second delay
         } else {
             if (mindReadingMode) {
                 fixedStopMillis = getNextUniqueSumOfNineFromPool();
