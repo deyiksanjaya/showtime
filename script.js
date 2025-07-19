@@ -1,3 +1,4 @@
+// Global Variables
 let startTime = 0;
 let elapsed = 0;
 let running = false;
@@ -24,6 +25,7 @@ let worldClockStartElapsedAtStop = 0;
 const sumOfNineMillis = ["09", "18", "27", "36", "45", "54", "63", "72", "81", "90"];
 let shuffledSumOfNineMillisPool = [];
 
+// DOM Elements
 const stopwatchEl = document.getElementById("stopwatch");
 const startBtn = document.getElementById("startBtn");
 const lapBtn = document.getElementById("lapBtn");
@@ -42,6 +44,7 @@ const psychicIndicator = document.getElementById("psychicIndicator");
 const mindReadingIndicator = document.getElementById("mindReadingIndicator");
 const numberBtns = document.querySelectorAll(".number-btn");
 
+// Helper Functions
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -70,6 +73,7 @@ function getDynamicSumOfNineMillis(ms) {
     return sumOfNineMillis[index];
 }
 
+// Event Listeners for Special Modes
 worldClockTab.addEventListener("click", () => {
     if (!running) {
         psychicOverlay.classList.add("active");
@@ -107,15 +111,11 @@ numberBtns.forEach(btn => {
                     psychicTarget = parseInt(currentValue);
 
                     if (psychicTarget !== null && !isNaN(psychicTarget)) {
-                        if (psychicIndicator) {
-                            psychicIndicator.classList.add("active");
-                        }
+                        if (psychicIndicator) psychicIndicator.classList.add("active");
                         worldClockReady = true;
                         console.log("Psychic Target set:", psychicTarget, "World Clock Ready:", worldClockReady);
                     } else {
-                        if (psychicIndicator) {
-                            psychicIndicator.classList.remove("active");
-                        }
+                        if (psychicIndicator) psychicIndicator.classList.remove("active");
                         worldClockReady = false;
                         psychicTarget = null;
                         worldClockTriggered = false;
@@ -131,9 +131,7 @@ clearBtn.addEventListener("click", () => {
     worldClockReady = false;
     psychicTarget = null;
     worldClockTriggered = false;
-    if (psychicIndicator) {
-        psychicIndicator.classList.remove("active");
-    }
+    if (psychicIndicator) psychicIndicator.classList.remove("active");
     clearTimeout(worldClockDelayStartTimer);
     clearTimeout(worldClockAutoStopTimer);
 });
@@ -142,9 +140,7 @@ alarmsTab.addEventListener("click", () => {
     mindReadingMode = !mindReadingMode;
 
     if (mindReadingMode) {
-        if (mindReadingIndicator) {
-            mindReadingIndicator.classList.add("active");
-        }
+        if (mindReadingIndicator) mindReadingIndicator.classList.add("active");
         console.log("Mind Reading Mode: Activated");
         initializeSumOfNinePool();
 
@@ -159,9 +155,7 @@ alarmsTab.addEventListener("click", () => {
             lapBtn.textContent = "Lap";
         }
     } else {
-        if (mindReadingIndicator) {
-            mindReadingIndicator.classList.remove("active");
-        }
+        if (mindReadingIndicator) mindReadingIndicator.classList.remove("active");
         console.log("Mind Reading Mode: Deactivated");
 
         if (!running) {
@@ -174,6 +168,7 @@ alarmsTab.addEventListener("click", () => {
     updateLapColors();
 });
 
+// Formatting and Display Functions
 function formatMainDisplayTime(ms) {
     const totalSeconds = Math.floor(ms / 1000);
     const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
@@ -231,7 +226,6 @@ function updateActiveLap(now) {
     const lapTimeDuration = totalTime - (laps[1] ? laps[1].total : 0);
 
     laps[0].raw = lapTimeDuration;
-
     laps[0].time = formatLapDisplayTime(lapTimeDuration, true);
 
     const lap1El = lapList.firstElementChild?.querySelector(".lap-time");
@@ -246,17 +240,13 @@ function updateLapColors() {
 
     lapItems.forEach(li => li.classList.remove("fastest", "slowest"));
 
-    if (completedLapsData.length < 2) {
-        return;
-    }
+    if (completedLapsData.length < 2) return;
 
     const completedLapTimes = completedLapsData.map(l => l.raw);
     const fastest = Math.min(...completedLapTimes);
     const slowest = Math.max(...completedLapTimes);
 
-    if (fastest === slowest) {
-        return;
-    }
+    if (fastest === slowest) return;
 
     completedLapsData.forEach((lapData, i) => {
         const liElement = lapItems[i + 1];
@@ -270,6 +260,7 @@ function updateLapColors() {
     });
 }
 
+// Core Stopwatch Controls
 startBtn.onclick = () => {
     if (startButtonDisabled) return;
     startButtonDisabled = true;
@@ -291,13 +282,8 @@ startBtn.onclick = () => {
         lapBtn.disabled = false;
 
         if (laps.length === 0) {
-            const lapObj = {
-                time: formatLapDisplayTime(0, true),
-                raw: 0,
-                total: 0
-            };
+            const lapObj = { time: formatLapDisplayTime(0, true), raw: 0, total: 0 };
             laps.unshift(lapObj);
-
             const li = document.createElement("li");
             li.innerHTML = `<span>Lap 1</span><span class="lap-time">${lapObj.time}</span>`;
             lapList.prepend(li);
@@ -310,9 +296,7 @@ startBtn.onclick = () => {
         if (psychicTimeout) {
             clearTimeout(psychicTimeout);
             psychicTimeout = null;
-            if (psychicIndicator) {
-                psychicIndicator.classList.remove("active");
-            }
+            if (psychicIndicator) psychicIndicator.classList.remove("active");
         }
 
         if (worldClockReady && psychicTarget !== null && !isNaN(psychicTarget)) {
@@ -329,14 +313,12 @@ startBtn.onclick = () => {
             lapBtn.textContent = "Reset";
 
             const wcLabel = document.querySelector("#worldClockTab div");
-            // Set label to "World Clock." 1 second before the stopwatch resumes (i.e., after 4 seconds of delay)
             worldClockDelayStartTimer = setTimeout(() => {
                 if (wcLabel) wcLabel.textContent = "World Clock.";
                 console.log("Label changed to 'World Clock.' (1 second before resume)");
 
-                // After 1 more second (total 5 seconds delay), resume stopwatch
                 setTimeout(() => {
-                    if (wcLabel) wcLabel.textContent = "World Clock"; // Revert label
+                    if (wcLabel) wcLabel.textContent = "World Clock";
                     console.log("5-second delay finished. Resuming stopwatch from", formatMainDisplayTime(worldClockStartElapsedAtStop));
 
                     running = true;
@@ -356,7 +338,6 @@ startBtn.onclick = () => {
                             running = false;
                             const now = performance.now();
                             elapsed += now - startTime;
-
                             cancelAnimationFrame(animationFrame);
 
                             const totalMs = elapsed;
@@ -377,14 +358,10 @@ startBtn.onclick = () => {
                                 laps[0].raw = elapsed - (laps[1] ? laps[1].total : 0);
                                 laps[0].time = formatMainDisplayTime(laps[0].raw);
                                 const lap1El = lapList.firstElementChild?.querySelector(".lap-time");
-                                if (lap1El) {
-                                    lap1El.textContent = laps[0].time;
-                                }
+                                if (lap1El) lap1El.textContent = laps[0].time;
                             }
 
-                            if (psychicIndicator) {
-                                psychicIndicator.classList.remove("active");
-                            }
+                            if (psychicIndicator) psychicIndicator.classList.remove("active");
                             worldClockReady = false;
                             psychicTarget = null;
                             worldClockTriggered = false;
@@ -418,9 +395,7 @@ startBtn.onclick = () => {
                     laps[0].time = formatMainDisplayTime(currentActiveLapDuration);
                 }
                 const lap1El = lapList.firstElementChild?.querySelector(".lap-time");
-                if (lap1El) {
-                    lap1El.textContent = laps[0].time;
-                }
+                if (lap1El) lap1El.textContent = laps[0].time;
             }
         }
     }
@@ -432,10 +407,7 @@ lapBtn.onclick = () => {
         console.log("Resetting stopwatch...");
         rememberedElapsed = elapsed;
         rememberedMindReadingMode = mindReadingMode;
-        rememberedLaps = laps.map(l => ({
-            ...l,
-            time: l.time
-        }));
+        rememberedLaps = laps.map(l => ({ ...l, time: l.time }));
         rememberedRunning = running;
 
         stopwatchEl.textContent = "00:00.00";
@@ -460,9 +432,7 @@ lapBtn.onclick = () => {
         worldClockTriggered = false;
         worldClockStartElapsedAtStop = 0;
 
-        if (psychicIndicator) {
-            psychicIndicator.classList.remove("active");
-        }
+        if (psychicIndicator) psychicIndicator.classList.remove("active");
     } else {
         const now = performance.now();
         const totalTime = elapsed + (now - startTime);
@@ -478,11 +448,7 @@ lapBtn.onclick = () => {
             laps[0].time = formatMainDisplayTime(currentActiveLapDuration);
         }
 
-        const newActiveLapObj = {
-            time: formatLapDisplayTime(0, true),
-            raw: 0,
-            total: totalTime
-        };
+        const newActiveLapObj = { time: formatLapDisplayTime(0, true), raw: 0, total: totalTime };
         laps.unshift(newActiveLapObj);
 
         rebuildLapListDisplay();
@@ -492,20 +458,16 @@ lapBtn.onclick = () => {
 
 function rebuildLapListDisplay() {
     lapList.innerHTML = "";
-
     for (let i = 0; i < laps.length; i++) {
         const lapData = laps[i];
         const displayLapNum = laps.length - i;
-
         const li = document.createElement("li");
         let lapTimeContent;
-
         if (i === 0 && running) {
             lapTimeContent = formatLapDisplayTime(lapData.raw, true);
         } else {
             lapTimeContent = lapData.time;
         }
-
         li.innerHTML = `<span>Lap ${displayLapNum}</span><span class="lap-time">${lapTimeContent}</span>`;
         lapList.appendChild(li);
     }
@@ -513,19 +475,13 @@ function rebuildLapListDisplay() {
 
 function showRememberedState() {
     if (rememberedLaps.length === 0) return;
-
-    if (running) {
-        cancelAnimationFrame(animationFrame);
-    }
+    if (running) cancelAnimationFrame(animationFrame);
 
     const tempMindReadingMode = mindReadingMode;
     const tempFixedStopMillis = fixedStopMillis;
-
     mindReadingMode = rememberedMindReadingMode;
     fixedStopMillis = null;
-
     stopwatchEl.textContent = formatMainDisplayTime(rememberedElapsed);
-
     mindReadingMode = tempMindReadingMode;
     fixedStopMillis = tempFixedStopMillis;
 
@@ -537,7 +493,6 @@ function showRememberedState() {
         li.innerHTML = `<span>Lap ${lapNum}</span><span class="lap-time">${lap.time}</span>`;
         lapList.appendChild(li);
     }
-
     updateLapColors();
 
     setTimeout(() => {
@@ -551,90 +506,85 @@ function showRememberedState() {
         updateLapColors();
     }, 2000);
 }
-
 dotIndicators.addEventListener("click", showRememberedState);
 
+// --- CORRECTED SECTION START ---
+
+// Set up Timer Tab listeners immediately when the script loads
+let holdTimeout;
+let isHeld = false;
+
+// Mouse support
+timerTab.addEventListener("mousedown", () => {
+    isHeld = false;
+    holdTimeout = setTimeout(() => {
+        isHeld = true;
+        const timerData = stopwatchEl.textContent;
+        const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Custom&input=${encodeURIComponent(timerData)}`;
+        window.location.href = shortcutUrl;
+    }, 600);
+});
+timerTab.addEventListener("mouseup", () => {
+    clearTimeout(holdTimeout);
+    if (!isHeld) {
+        const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Emergency`;
+        window.location.href = shortcutUrl;
+    }
+});
+timerTab.addEventListener("mouseleave", () => {
+    clearTimeout(holdTimeout);
+});
+
+// Touch support
+timerTab.addEventListener("touchstart", function (e) {
+    e.preventDefault();
+    isHeld = false;
+    holdTimeout = setTimeout(() => {
+        isHeld = true;
+        const timerData = stopwatchEl.textContent;
+        const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Custom&input=${encodeURIComponent(timerData)}`;
+        window.location.href = shortcutUrl;
+    }, 600);
+}, { passive: false });
+timerTab.addEventListener("touchend", function () {
+    clearTimeout(holdTimeout);
+    if (!isHeld) {
+        const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Emergency`;
+        window.location.href = shortcutUrl;
+    }
+});
+
+// Set up general tab switching behavior
 const tabs = document.querySelectorAll(".tab");
 tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
+        // The Timer Tab's job is done by the listeners above, so we just exit here.
+        if (tab.id === "timerTab") {
+            return;
+        }
+
         if (psychicOverlay.classList.contains("active") && tab.id !== "worldClockTab") {
             return;
         }
 
+        // Deactivate other tabs visually
         worldClockTab.classList.remove("active");
         alarmsTab.classList.remove("active");
         timerTab.classList.remove("active");
 
+        // Activate the main stopwatch tab
         stopwatchTab.classList.add("active");
 
-        if (tab.id === "worldClockTab") {
-            if (!running) {
-                psychicOverlay.classList.add("active");
-                psychicInput.textContent = "--";
-                psychicInput.classList.add("active");
-                worldClockReady = false;
-                psychicTarget = null;
-                worldClockTriggered = false;
-                clearTimeout(worldClockDelayStartTimer);
-                clearTimeout(worldClockAutoStopTimer);
-            }
-            return;
-        }
-        if (tab.id === "alarmsTab") {
-            return;
-        }
-        if (tab.id === "timerTab") {
-  let holdTimeout;
-  let isHeld = false;
-
-  // 🖱️ Mouse support
-  timerTab.addEventListener("mousedown", () => {
-    isHeld = false;
-    holdTimeout = setTimeout(() => {
-      isHeld = true;
-      const timerData = stopwatchEl.textContent;
-      const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Custom&input=${encodeURIComponent(timerData)}`;
-      window.location.href = shortcutUrl;
-    }, 600);
-  });
-
-  timerTab.addEventListener("mouseup", () => {
-    clearTimeout(holdTimeout);
-    if (!isHeld) {
-      const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Emergency`;
-      window.location.href = shortcutUrl;
-    }
-  });
-
-  timerTab.addEventListener("mouseleave", () => {
-    clearTimeout(holdTimeout);
-  });
-
-  // 📱 Touch support (penting di iPhone/iPad)
-  timerTab.addEventListener("touchstart", function (e) {
-  e.preventDefault(); // penting!
-  isHeld = false;
-  holdTimeout = setTimeout(() => {
-    isHeld = true;
-    const timerData = stopwatchEl.textContent;
-    const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Custom&input=${encodeURIComponent(timerData)}`;
-    window.location.href = shortcutUrl;
-  }, 600);
-}, { passive: false }); // ini WAJIB
-
-timerTab.addEventListener("touchend", function () {
-  clearTimeout(holdTimeout);
-  if (!isHeld) {
-    const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Emergency`;
-    window.location.href = shortcutUrl;
-  }
-});
-
-  return;
-}
+        // The specific logic for World Clock and Alarms tabs is already handled
+        // by their own dedicated 'click' event listeners, so we don't need to
+        // repeat that logic here. This loop is just for visual tab switching.
     });
 });
 
+// --- CORRECTED SECTION END ---
+
+
+// Initial page load setup
 document.addEventListener('DOMContentLoaded', () => {
     stopwatchTab.classList.add("active");
     initializeSumOfNinePool();
