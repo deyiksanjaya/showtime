@@ -1,4 +1,3 @@
-// Global Variables
 let startTime = 0;
 let elapsed = 0;
 let running = false;
@@ -25,7 +24,6 @@ let worldClockStartElapsedAtStop = 0;
 const sumOfNineMillis = ["09", "18", "27", "36", "45", "54", "63", "72", "81", "90"];
 let shuffledSumOfNineMillisPool = [];
 
-// DOM Elements
 const stopwatchEl = document.getElementById("stopwatch");
 const startBtn = document.getElementById("startBtn");
 const lapBtn = document.getElementById("lapBtn");
@@ -44,7 +42,6 @@ const psychicIndicator = document.getElementById("psychicIndicator");
 const mindReadingIndicator = document.getElementById("mindReadingIndicator");
 const numberBtns = document.querySelectorAll(".number-btn");
 
-// Helper Functions
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -55,16 +52,13 @@ function shuffleArray(array) {
 
 function initializeSumOfNinePool() {
     shuffledSumOfNineMillisPool = shuffleArray([...sumOfNineMillis]);
-    console.log("Sum of Nine Pool Initialized:", shuffledSumOfNineMillisPool);
 }
 
 function getNextUniqueSumOfNineFromPool() {
     if (shuffledSumOfNineMillisPool.length === 0) {
         initializeSumOfNinePool();
-        console.warn("Sum of Nine Pool exhausted, re-initializing.");
     }
     const nextMillis = shuffledSumOfNineMillisPool.pop();
-    console.log("Drawing from pool:", nextMillis, "Remaining:", shuffledSumOfNineMillisPool.length);
     return nextMillis;
 }
 
@@ -73,7 +67,6 @@ function getDynamicSumOfNineMillis(ms) {
     return sumOfNineMillis[index];
 }
 
-// Event Listeners for Special Modes
 worldClockTab.addEventListener("click", () => {
     if (!running) {
         psychicOverlay.classList.add("active");
@@ -84,8 +77,6 @@ worldClockTab.addEventListener("click", () => {
         worldClockTriggered = false;
         clearTimeout(worldClockDelayStartTimer);
         clearTimeout(worldClockAutoStopTimer);
-    } else {
-        console.log("Cannot enter Psychic Mode while stopwatch is running.");
     }
 });
 
@@ -113,7 +104,6 @@ numberBtns.forEach(btn => {
                     if (psychicTarget !== null && !isNaN(psychicTarget)) {
                         if (psychicIndicator) psychicIndicator.classList.add("active");
                         worldClockReady = true;
-                        console.log("Psychic Target set:", psychicTarget, "World Clock Ready:", worldClockReady);
                     } else {
                         if (psychicIndicator) psychicIndicator.classList.remove("active");
                         worldClockReady = false;
@@ -141,7 +131,6 @@ alarmsTab.addEventListener("click", () => {
 
     if (mindReadingMode) {
         if (mindReadingIndicator) mindReadingIndicator.classList.add("active");
-        console.log("Mind Reading Mode: Activated");
         initializeSumOfNinePool();
 
         if (!running) {
@@ -156,8 +145,6 @@ alarmsTab.addEventListener("click", () => {
         }
     } else {
         if (mindReadingIndicator) mindReadingIndicator.classList.remove("active");
-        console.log("Mind Reading Mode: Deactivated");
-
         if (!running) {
             fixedStopMillis = null;
             stopwatchEl.textContent = formatMainDisplayTime(elapsed);
@@ -168,7 +155,6 @@ alarmsTab.addEventListener("click", () => {
     updateLapColors();
 });
 
-// Formatting and Display Functions
 function formatMainDisplayTime(ms) {
     const totalSeconds = Math.floor(ms / 1000);
     const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
@@ -260,7 +246,6 @@ function updateLapColors() {
     });
 }
 
-// Core Stopwatch Controls
 startBtn.onclick = () => {
     if (startButtonDisabled) return;
     startButtonDisabled = true;
@@ -300,7 +285,6 @@ startBtn.onclick = () => {
         }
 
         if (worldClockReady && psychicTarget !== null && !isNaN(psychicTarget)) {
-            console.log("Stopwatch stopped, Psychic Mode target set. Triggering World Clock sequence.");
             worldClockTriggered = true;
             worldClockStartElapsedAtStop = elapsed;
             fixedStopMillis = Math.floor((elapsed % 1000) / 10).toString().padStart(2, "0");
@@ -315,11 +299,9 @@ startBtn.onclick = () => {
             const wcLabel = document.querySelector("#worldClockTab div");
             worldClockDelayStartTimer = setTimeout(() => {
                 if (wcLabel) wcLabel.textContent = "World Clock.";
-                console.log("Label changed to 'World Clock.' (1 second before resume)");
 
                 setTimeout(() => {
                     if (wcLabel) wcLabel.textContent = "World Clock";
-                    console.log("5-second delay finished. Resuming stopwatch from", formatMainDisplayTime(worldClockStartElapsedAtStop));
 
                     running = true;
                     startTime = performance.now();
@@ -366,17 +348,38 @@ startBtn.onclick = () => {
                             psychicTarget = null;
                             worldClockTriggered = false;
                             worldClockStartElapsedAtStop = 0;
-                            console.log("Auto-stop & adjusted to target.");
                         }
-                    }, 6000); // 6 seconds after resume
-                }, 1000); // 1 second after label change (total 5s delay)
-            }, 4000); // 4 seconds into the 5-second delay
+                    }, 6000);
+                }, 1000);
+            }, 4000);
         } else {
             if (mindReadingMode) {
-                fixedStopMillis = getNextUniqueSumOfNineFromPool();
+                const finalSumOfNineMillis = getNextUniqueSumOfNineFromPool();
+                fixedStopMillis = finalSumOfNineMillis;
+                
+                if (laps.length > 0) {
+                    const currentActiveLapDuration = elapsed - (laps[1] ? laps[1].total : 0);
+                    laps[0].raw = currentActiveLapDuration;
+
+                    const totalSeconds = Math.floor(currentActiveLapDuration / 1000);
+                    const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
+                    const seconds = (totalSeconds % 60).toString().padStart(2, "0");
+                    laps[0].time = `${minutes}:${seconds}.${finalSumOfNineMillis}`;
+
+                    const lap1El = lapList.firstElementChild?.querySelector(".lap-time");
+                    if (lap1El) lap1El.textContent = laps[0].time;
+                }
             } else {
                 fixedStopMillis = null;
+                 if (laps.length > 0) {
+                    const currentActiveLapDuration = elapsed - (laps[1] ? laps[1].total : 0);
+                    laps[0].raw = currentActiveLapDuration;
+                    laps[0].time = formatMainDisplayTime(currentActiveLapDuration);
+                    const lap1El = lapList.firstElementChild?.querySelector(".lap-time");
+                    if (lap1El) lap1El.textContent = laps[0].time;
+                }
             }
+            
             stopwatchEl.textContent = formatMainDisplayTime(elapsed);
             lastDisplay = stopwatchEl.textContent;
 
@@ -384,19 +387,6 @@ startBtn.onclick = () => {
             startBtn.classList.remove("stop-btn");
             startBtn.classList.add("start-btn");
             lapBtn.textContent = "Reset";
-
-            if (laps.length > 0) {
-                const currentActiveLapDuration = elapsed - (laps[1] ? laps[1].total : 0);
-                laps[0].raw = currentActiveLapDuration;
-
-                if (mindReadingMode) {
-                    laps[0].time = formatLapDisplayTime(currentActiveLapDuration, false);
-                } else {
-                    laps[0].time = formatMainDisplayTime(currentActiveLapDuration);
-                }
-                const lap1El = lapList.firstElementChild?.querySelector(".lap-time");
-                if (lap1El) lap1El.textContent = laps[0].time;
-            }
         }
     }
     updateLapColors();
@@ -404,7 +394,6 @@ startBtn.onclick = () => {
 
 lapBtn.onclick = () => {
     if (!running) {
-        console.log("Resetting stopwatch...");
         rememberedElapsed = elapsed;
         rememberedMindReadingMode = mindReadingMode;
         rememberedLaps = laps.map(l => ({ ...l, time: l.time }));
@@ -508,13 +497,9 @@ function showRememberedState() {
 }
 dotIndicators.addEventListener("click", showRememberedState);
 
-// --- CORRECTED SECTION START ---
-
-// Set up Timer Tab listeners immediately when the script loads
 let holdTimeout;
 let isHeld = false;
 
-// Mouse support
 timerTab.addEventListener("mousedown", () => {
     isHeld = false;
     holdTimeout = setTimeout(() => {
@@ -535,7 +520,6 @@ timerTab.addEventListener("mouseleave", () => {
     clearTimeout(holdTimeout);
 });
 
-// Touch support
 timerTab.addEventListener("touchstart", function (e) {
     e.preventDefault();
     isHeld = false;
@@ -554,11 +538,9 @@ timerTab.addEventListener("touchend", function () {
     }
 });
 
-// Set up general tab switching behavior
 const tabs = document.querySelectorAll(".tab");
 tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
-        // The Timer Tab's job is done by the listeners above, so we just exit here.
         if (tab.id === "timerTab") {
             return;
         }
@@ -567,24 +549,14 @@ tabs.forEach((tab) => {
             return;
         }
 
-        // Deactivate other tabs visually
         worldClockTab.classList.remove("active");
         alarmsTab.classList.remove("active");
         timerTab.classList.remove("active");
 
-        // Activate the main stopwatch tab
         stopwatchTab.classList.add("active");
-
-        // The specific logic for World Clock and Alarms tabs is already handled
-        // by their own dedicated 'click' event listeners, so we don't need to
-        // repeat that logic here. This loop is just for visual tab switching.
     });
 });
 
-// --- CORRECTED SECTION END ---
-
-
-// Initial page load setup
 document.addEventListener('DOMContentLoaded', () => {
     stopwatchTab.classList.add("active");
     initializeSumOfNinePool();
