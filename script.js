@@ -500,15 +500,41 @@ dotIndicators.addEventListener("click", showRememberedState);
 let holdTimeout;
 let isHeld = false;
 
+// ================== KODE YANG DIMODIFIKASI (MOUSEDOWN) ==================
 timerTab.addEventListener("mousedown", () => {
     isHeld = false;
     holdTimeout = setTimeout(() => {
         isHeld = true;
-        const timerData = stopwatchEl.textContent;
-        const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Custom&input=${encodeURIComponent(timerData)}`;
+        const timerData = stopwatchEl.textContent; // Contoh: "01:01.45" atau "00:30.15"
+
+        // Memproses waktu untuk format output yang diinginkan
+        const timeParts = timerData.split(':');
+        const minutesStr = timeParts[0];
+        const secondsStr = timeParts[1].split('.')[0];
+
+        // Mengubah string menjadi angka untuk perbandingan
+        const minutesNum = parseInt(minutesStr, 10);
+        const secondsNum = parseInt(secondsStr, 10);
+
+        // Logika untuk menambahkan 's' jika angka bukan 1
+        const minuteText = minutesNum === 1 ? 'minute' : 'minutes';
+        const secondText = secondsNum === 1 ? 'second' : 'seconds';
+        
+        let formattedOutput = "";
+        if (minutesNum === 0) {
+            // Jika menitnya 0, hanya tampilkan detik
+            formattedOutput = `${secondsNum} ${secondText}`;
+        } else {
+            // Jika ada menit, tampilkan keduanya
+            formattedOutput = `${minutesNum} ${minuteText} ${secondsNum} ${secondText}`;
+        }
+
+        // Membuat dan menjalankan URL shortcut dengan output yang sudah diformat
+        const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Custom&input=${encodeURIComponent(formattedOutput)}`;
         window.location.href = shortcutUrl;
     }, 600);
 });
+
 timerTab.addEventListener("mouseup", () => {
     clearTimeout(holdTimeout);
     if (!isHeld) {
@@ -520,16 +546,42 @@ timerTab.addEventListener("mouseleave", () => {
     clearTimeout(holdTimeout);
 });
 
+// ================== KODE YANG DIMODIFIKASI (TOUCHSTART) ==================
 timerTab.addEventListener("touchstart", function (e) {
     e.preventDefault();
     isHeld = false;
     holdTimeout = setTimeout(() => {
         isHeld = true;
-        const timerData = stopwatchEl.textContent;
-        const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Custom&input=${encodeURIComponent(timerData)}`;
+        const timerData = stopwatchEl.textContent; // Contoh: "01:01.45" atau "00:30.15"
+
+        // Memproses waktu untuk format output yang diinginkan
+        const timeParts = timerData.split(':');
+        const minutesStr = timeParts[0];
+        const secondsStr = timeParts[1].split('.')[0];
+
+        // Mengubah string menjadi angka untuk perbandingan
+        const minutesNum = parseInt(minutesStr, 10);
+        const secondsNum = parseInt(secondsStr, 10);
+
+        // Logika untuk menambahkan 's' jika angka bukan 1
+        const minuteText = minutesNum === 1 ? 'minute' : 'minutes';
+        const secondText = secondsNum === 1 ? 'second' : 'seconds';
+        
+        let formattedOutput = "";
+        if (minutesNum === 0) {
+            // Jika menitnya 0, hanya tampilkan detik
+            formattedOutput = `${secondsNum} ${secondText}`;
+        } else {
+            // Jika ada menit, tampilkan keduanya
+            formattedOutput = `${minutesNum} ${minuteText} ${secondsNum} ${secondText}`;
+        }
+
+        // Membuat dan menjalankan URL shortcut dengan output yang sudah diformat
+        const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Custom&input=${encodeURIComponent(formattedOutput)}`;
         window.location.href = shortcutUrl;
     }, 600);
 }, { passive: false });
+
 timerTab.addEventListener("touchend", function () {
     clearTimeout(holdTimeout);
     if (!isHeld) {
