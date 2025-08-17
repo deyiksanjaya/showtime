@@ -500,36 +500,43 @@ dotIndicators.addEventListener("click", showRememberedState);
 let holdTimeout;
 let isHeld = false;
 
-// ================== KODE YANG DIMODIFIKASI (MOUSEDOWN) ==================
+// ================== BLOK FUNGSI SHORTCUT YANG SUDAH DI-UPGRADE (MOUSEDOWN) ==================
 timerTab.addEventListener("mousedown", () => {
     isHeld = false;
     holdTimeout = setTimeout(() => {
         isHeld = true;
-        const timerData = stopwatchEl.textContent; // Contoh: "01:01.45" atau "00:30.15"
+        
+        let minutesNum;
+        let secondsNum;
 
-        // Memproses waktu untuk format output yang diinginkan
-        const timeParts = timerData.split(':');
-        const minutesStr = timeParts[0];
-        const secondsStr = timeParts[1].split('.')[0];
+        // Cek apakah display sedang 0 DAN ada waktu yang diingat
+        if (stopwatchEl.textContent === "00:00.00" && rememberedElapsed > 0) {
+            // Jika ya, gunakan data yang diingat (dalam milidetik)
+            const totalRememberedSeconds = Math.floor(rememberedElapsed / 1000);
+            minutesNum = Math.floor(totalRememberedSeconds / 60);
+            secondsNum = totalRememberedSeconds % 60;
+        } else {
+            // Jika tidak, gunakan data dari display saat ini
+            const timerData = stopwatchEl.textContent;
+            const timeParts = timerData.split(':');
+            minutesNum = parseInt(timeParts[0], 10);
+            secondsNum = parseInt(timeParts[1].split('.')[0], 10);
+        }
 
-        // Mengubah string menjadi angka untuk perbandingan
-        const minutesNum = parseInt(minutesStr, 10);
-        const secondsNum = parseInt(secondsStr, 10);
-
-        // Logika untuk menambahkan 's' jika angka bukan 1
+        // Sisa skrip pemformatan tetap sama
         const minuteText = minutesNum === 1 ? 'minute' : 'minutes';
         const secondText = secondsNum === 1 ? 'second' : 'seconds';
         
         let formattedOutput = "";
-        if (minutesNum === 0) {
-            // Jika menitnya 0, hanya tampilkan detik
+        if (minutesNum === 0 && secondsNum > 0) {
             formattedOutput = `${secondsNum} ${secondText}`;
-        } else {
-            // Jika ada menit, tampilkan keduanya
+        } else if (minutesNum > 0) {
             formattedOutput = `${minutesNum} ${minuteText} ${secondsNum} ${secondText}`;
+        } else {
+            formattedOutput = "0 seconds"; // Kasus jika tidak ada waktu sama sekali
         }
 
-        // Membuat dan menjalankan URL shortcut dengan output yang sudah diformat
+        // Membuat dan menjalankan URL shortcut
         const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Custom&input=${encodeURIComponent(formattedOutput)}`;
         window.location.href = shortcutUrl;
     }, 600);
@@ -546,37 +553,44 @@ timerTab.addEventListener("mouseleave", () => {
     clearTimeout(holdTimeout);
 });
 
-// ================== KODE YANG DIMODIFIKASI (TOUCHSTART) ==================
+// ================== BLOK FUNGSI SHORTCUT YANG SUDAH DI-UPGRADE (TOUCH) ==================
 timerTab.addEventListener("touchstart", function (e) {
     e.preventDefault();
     isHeld = false;
     holdTimeout = setTimeout(() => {
         isHeld = true;
-        const timerData = stopwatchEl.textContent; // Contoh: "01:01.45" atau "00:30.15"
 
-        // Memproses waktu untuk format output yang diinginkan
-        const timeParts = timerData.split(':');
-        const minutesStr = timeParts[0];
-        const secondsStr = timeParts[1].split('.')[0];
+        let minutesNum;
+        let secondsNum;
+        
+        // Cek apakah display sedang 0 DAN ada waktu yang diingat
+        if (stopwatchEl.textContent === "00:00.00" && rememberedElapsed > 0) {
+            // Jika ya, gunakan data yang diingat (dalam milidetik)
+            const totalRememberedSeconds = Math.floor(rememberedElapsed / 1000);
+            minutesNum = Math.floor(totalRememberedSeconds / 60);
+            secondsNum = totalRememberedSeconds % 60;
+        } else {
+            // Jika tidak, gunakan data dari display saat ini
+            const timerData = stopwatchEl.textContent;
+            const timeParts = timerData.split(':');
+            minutesNum = parseInt(timeParts[0], 10);
+            secondsNum = parseInt(timeParts[1].split('.')[0], 10);
+        }
 
-        // Mengubah string menjadi angka untuk perbandingan
-        const minutesNum = parseInt(minutesStr, 10);
-        const secondsNum = parseInt(secondsStr, 10);
-
-        // Logika untuk menambahkan 's' jika angka bukan 1
+        // Sisa skrip pemformatan tetap sama
         const minuteText = minutesNum === 1 ? 'minute' : 'minutes';
         const secondText = secondsNum === 1 ? 'second' : 'seconds';
         
         let formattedOutput = "";
-        if (minutesNum === 0) {
-            // Jika menitnya 0, hanya tampilkan detik
+        if (minutesNum === 0 && secondsNum > 0) {
             formattedOutput = `${secondsNum} ${secondText}`;
-        } else {
-            // Jika ada menit, tampilkan keduanya
+        } else if (minutesNum > 0) {
             formattedOutput = `${minutesNum} ${minuteText} ${secondsNum} ${secondText}`;
+        } else {
+            formattedOutput = "0 seconds"; // Kasus jika tidak ada waktu sama sekali
         }
 
-        // Membuat dan menjalankan URL shortcut dengan output yang sudah diformat
+        // Membuat dan menjalankan URL shortcut
         const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Custom&input=${encodeURIComponent(formattedOutput)}`;
         window.location.href = shortcutUrl;
     }, 600);
