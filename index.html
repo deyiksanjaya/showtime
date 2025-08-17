@@ -2,198 +2,206 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShowTime by Heri Sanjaya</title>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-      <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #000000;
-            color: #ffffff;
+            font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            background-color: #0a0a0a;
         }
-
-        .ios-container {
-            max-width: 430px; /* iPhone 14 Pro Max width */
-            margin: 0 auto;
-            background-color: #000000;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+        .background-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top center, rgba(255, 165, 0, 0.1), transparent 40%);
+            z-index: -1;
+        }
+        .text-glow {
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3), 0 0 20px rgba(255, 165, 0, 0.4);
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
+            overflow: hidden;
         }
-
-        .time-display-promo {
-            font-size: 80px;
-            font-weight: 100;
-            text-align: center;
-            letter-spacing: 2px;
-            font-variant-numeric: tabular-nums;
-            text-shadow: 0 0 15px rgba(255, 160, 10, 0.3);
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 165, 0, 0.2), transparent);
+            transition: left 0.5s ease;
         }
-
-        .btn-promo {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1rem;
-            font-weight: 500;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            user-select: none;
-            transition: transform 0.1s ease, background-color 0.2s ease;
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
-
-        .btn-promo:active {
-            transform: scale(0.95);
+        .card:hover::before {
+            left: 100%;
+        }
+        .btn-buy {
+            background: linear-gradient(90deg, #FF8C00, #FFA500);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.4);
+        }
+        .btn-buy:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(255, 165, 0, 0.7);
         }
         
-        .buy-btn {
-            background-color: #013a1c;
-            color: #00ff4c;
-            box-shadow: 0 0 20px rgba(0, 255, 76, 0.4);
+        /* Animation classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
         }
-
-        .demo-btn {
-            background-color: #1c1c1e;
-            color: #aaa;
-        }
-        
-        .feature-card {
-            background-color: #1c1c1e;
-            border: 1px solid #2c2c2e;
-            border-radius: 1rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .feature-title {
-            color: #FFA00A;
-        }
-
-        /* Custom color for bolded text */
-        .text-highlight {
-            color: #FFA00A;
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
-<body class="bg-black">
+<body class="bg-gray-900 text-white antialiased">
+    <div class="background-gradient"></div>
 
-    <div class="ios-container">
-        <main class="flex-grow px-6 pt-16 pb-24">
-            <!-- Header -->
-            <header class="text-center mb-12">
-                <h1 class="text-5xl font-bold tracking-tight text-white">ShowTime</h1>
-                <p class="text-lg text-gray-400 mt-1">By Heri Sanjaya</p>
-            </header>
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-12 md:py-20">
 
-            <!-- Animated Time Display -->
-            <div class="my-8 flex justify-center">
-                <div class="time-display-promo">
-                    <span id="minutes">00</span>:<span id="seconds">00</span>.<span id="milliseconds" class="text-highlight">00</span>
-                </div>
+        <!-- Header Section -->
+        <header class="text-center mb-24 md:mb-32">
+            <div class="inline-block bg-red-600/80 text-white text-sm font-bold px-4 py-1 rounded-full mb-4 reveal">
+                iOS ONLY
             </div>
-            
-            <p class="text-center text-xl text-gray-300 leading-relaxed mb-16">
-                Three Deceptive Miracles. One Innocent App.
+            <h1 class="text-5xl md:text-7xl font-black uppercase tracking-wider text-glow reveal" style="transition-delay: 0.1s;">ShowTime</h1>
+            <p class="text-lg md:text-xl text-orange-400 mt-2 font-semibold reveal" style="transition-delay: 0.2s;">By Heri Sanjaya</p>
+            <p class="max-w-3xl mx-auto mt-6 text-gray-300 text-base md:text-lg reveal" style="transition-delay: 0.4s;">
+                To them, it's a simple stopwatch. To you, it's a secret weapon. Showtime is a revolutionary magic app that transforms the innocent iOS stopwatch into an invisible powerhouse of deception, engineered to be completely examinable.
             </p>
+        </header>
 
-            <!-- Introduction -->
-            <div class="mb-16">
-                 <p class="text-gray-300 text-center leading-7">
-                    For the modern mentalist, the greatest secrets are hidden in plain sight. <strong class="font-bold text-highlight">ShowTime</strong> transforms the simple iOS stopwatch into a powerhouse of deception, giving you three distinct, reputation-making effects built into one invisible tool.
-                </p>
-            </div>
-
-            <!-- Features Section -->
-            <div class="mb-16">
-                <div class="feature-card">
-                    <h3 class="text-xl font-semibold mb-3 feature-title">🔮 Thought Projection</h3>
-                    <p class="text-gray-400 leading-relaxed">
-                        A spectator merely <strong class="font-bold text-highlight">thinks</strong> of a two-digit number. They start the timer themselves. Miraculously, you stop the clock <strong class="font-bold text-highlight">without touching the screen</strong>, revealing their exact thought-of number in the milliseconds.
-                    </p>
-                </div>
-                <div class="feature-card">
-                    <h3 class="text-xl font-semibold mb-3 feature-title">🧠 Mind Reading Mode</h3>
-                    <p class="text-gray-400 leading-relaxed">
-                        A spectator creates a list of random lap times. They silently choose one of the millisecond values. With <strong class="underline font-bold text-highlight">unnerving accuracy</strong>, and <strong class="underline font-bold text-highlight">without touching the phone or peeking</strong>, you look into their eyes, find the number in their mind, and reveal it.
-                    </p>
-                </div>
-                 <div class="feature-card">
-                    <h3 class="text-xl font-semibold mb-3 feature-title">🤫 The Impossible Peek</h3>
-                    <p class="text-gray-400 leading-relaxed">
-                        A spectator starts, stops, and <strong class="font-bold text-highlight">resets</strong> the timer. The time is gone forever. Or is it? You take the phone back and, with a secret action, instantly know the exact time they stopped on, allowing you to reveal it at your leisure.
-                    </p>
-                </div>
-            </div>
+        <!-- Main Content Layout (Phone Sticky) -->
+        <div class="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-start">
             
-            <!-- Selling Points -->
-            <div class="text-center mb-20">
-                <h2 class="text-2xl font-bold text-white mb-6">Engineered for Deception</h2>
-                <ul class="space-y-3 text-gray-300">
-                    <li>✓ Three Built-In Miracle Effects</li>
-                    <li>✓ A Pixel-Perfect iOS Stopwatch Replica</li>
-                    <li>✓ Controls Hidden in Plain Sight</li>
-                    <li>✓ Intuitive and Invisible Operation</li>
-                    <li>✓ The Ultimate Tool for Your iPhone</li>
-                </ul>
+            <!-- Sticky iPhone Mockup Column -->
+            <div class="lg:sticky top-8 text-center mb-16 lg:mb-0">
+                <div class="relative w-64 h-[512px] bg-black border-[10px] border-gray-800 rounded-[48px] shadow-2xl z-10 mx-auto reveal" style="transition-delay: 0.6s;">
+                    <!-- iPhone Notch (Dynamic Island style) -->
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-5 bg-black rounded-b-lg z-20"></div>
+
+                    <!-- Side Buttons -->
+                    <div class="absolute -left-[13px] top-20 h-8 w-1 bg-gray-800 rounded-l-sm"></div> <!-- Ringer switch -->
+                    <div class="absolute -left-[13px] top-32 h-14 w-1 bg-gray-800 rounded-l-sm"></div> <!-- Volume buttons -->
+                    <div class="absolute -right-[13px] top-32 h-20 w-1 bg-gray-800 rounded-r-sm"></div> <!-- Power button -->
+
+                    <!-- Screen Content (YouTube Video) -->
+                    <div class="w-full h-full rounded-[38px] overflow-hidden">
+                         <iframe class="w-full h-full" src="https://www.youtube.com/embed/Q2R6k5mOKUo" title="ShowTime Performance" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+                <p class="mt-6 text-gray-400 text-sm italic reveal" style="transition-delay: 0.8s;">See the impossible in action.</p>
             </div>
 
-            <!-- Purchase Controls -->
-            <div class="text-center">
-                 <h2 class="text-3xl font-bold text-white mb-4">Get Your Access Now</h2>
-                 <p class="text-5xl font-bold text-white mb-8">$29.99</p>
-                 <div class="flex justify-center items-center space-x-16">
-                    <a href="#" class="btn-promo demo-btn flex flex-col">
-                        <span>Watch</span>
-                        <span>Demo</span>
-                    </a>
-                    <a href="https://herisanjaya.gumroad.com/l/nqrys" target="_blank" rel="noopener" class="btn-promo buy-btn flex flex-col">
-    <span>Buy</span>
-    <span>Now</span>
-</a>
-                 </div>
-            </div>
+            <!-- Scrolling Features Column -->
+            <div class="flex flex-col gap-8">
+                <div class="text-center mb-8 reveal">
+                    <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Three Impossible Effects.</h2>
+                    <p class="text-orange-400">One Deceptive App.</p>
+                </div>
 
-        </main>
+                <!-- Feature 1: Psychic Stop -->
+                <div class="card p-8 rounded-2xl reveal">
+                    <h3 class="text-2xl font-bold text-orange-400 mb-3">
+                        Psychic Stop
+                    </h3>
+                    <p class="text-gray-300">
+                        A spectator thinks of any two-digit number and starts the timer. Without touching the phone, you tap their palm, and the clock stops—revealing their exact number in the milliseconds. A direct, powerful display of mind over matter.
+                    </p>
+                </div>
+
+                <!-- Feature 2: Mind Reading -->
+                <div class="card p-8 rounded-2xl reveal">
+                    <h3 class="text-2xl font-bold text-orange-400 mb-3">
+                        Mind Reading
+                    </h3>
+                    <p class="text-gray-300">
+                        They create a list of random lap times and silently choose one millisecond value. With unnerving accuracy, you look into their eyes, find the number in their mind, and reveal it. Pure, hands-off mentalism at its most baffling.
+                    </p>
+                </div>
+                
+                <!-- Feature 3: The Peek -->
+                <div class="card p-8 rounded-2xl reveal">
+                    <h3 class="text-2xl font-bold text-orange-400 mb-3">
+                        The Peek
+                    </h3>
+                    <p class="text-gray-300">
+                        A spectator starts, stops, and resets the timer. The time is gone forever. Or is it? With a secret action invisible to everyone, you instantly know the exact time they stopped on, allowing you to reveal it whenever you choose.
+                    </p>
+                </div>
+
+                <!-- Engineered for Deception Section -->
+                <div class="mt-16 reveal">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl md:text-4xl font-bold tracking-tight">Engineered for Deception</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-gray-800/30 p-6 rounded-lg"><strong>Pixel-Perfect Replica:</strong> Indistinguishable from the native iOS stopwatch. The illusion is flawless.</div>
+                        <div class="bg-gray-800/30 p-6 rounded-lg"><strong>Hidden In Plain Sight:</strong> All controls are secretly integrated into the UI, impossible for spectators to find.</div>
+                        <div class="bg-gray-800/30 p-6 rounded-lg"><strong>Intuitive Operation:</strong> Designed for real-world performance with silent, easy-to-master controls.</div>
+                        <div class="bg-gray-800/30 p-6 rounded-lg"><strong>The Ultimate Tool:</strong> This is the app you will carry and use everywhere. A complete mentalism toolkit in one app.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final CTA Section -->
+        <section class="text-center mt-24 md:mt-32 py-16">
+            <h2 class="text-4xl md:text-5xl font-black text-white reveal">Ready to Own the Moment?</h2>
+            <p class="max-w-2xl mx-auto mt-4 text-gray-300 text-lg reveal" style="transition-delay: 0.2s;">Don't just perform another trick. Create a moment of pure impossibility. Add ShowTime to your arsenal today.</p>
+            <div class="flex justify-center mt-8 reveal" style="transition-delay: 0.4s;">
+                <a href="https://herisanjaya.gumroad.com/l/nqrys" target="_blank" class="btn-buy text-black font-bold py-4 px-10 rounded-full text-xl text-center shadow-lg">
+                    Get ShowTime Now
+                </a>
+            </div>
+        </section>
+
+
+        <!-- Footer -->
+        <footer class="text-center mt-20 border-t border-gray-800 pt-8">
+            <p class="text-gray-500">2025 ShowTime by Heri Sanjaya.</p>
+        </footer>
+
     </div>
-
+    
     <script>
-        // Script for animating the timer display
-        const minutesEl = document.getElementById('minutes');
-        const secondsEl = document.getElementById('seconds');
-        const millisecondsEl = document.getElementById('milliseconds');
+        document.addEventListener("DOMContentLoaded", function() {
+            const revealElements = document.querySelectorAll('.reveal');
 
-        let totalMilliseconds = 0;
-        
-        // Set an interval to update the timer display, creating a slow animation
-        setInterval(() => {
-            totalMilliseconds += 113; // Increment by a prime number for a less mechanical feel
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { 
+                threshold: 0.1 
+            });
 
-            // Reset after about 10 seconds to create a loop
-            if (totalMilliseconds > 10000) {
-                totalMilliseconds = 0;
-            }
-
-            // Calculate minutes, seconds, and hundredths of a second
-            let minutes = Math.floor(totalMilliseconds / 60000);
-            let seconds = Math.floor((totalMilliseconds % 60000) / 1000);
-            let milliseconds = Math.floor((totalMilliseconds % 1000) / 10);
-
-            // Format numbers with leading zeros and update the display
-            minutesEl.textContent = minutes.toString().padStart(2, '0');
-            secondsEl.textContent = seconds.toString().padStart(2, '0');
-            millisecondsEl.textContent = milliseconds.toString().padStart(2, '0');
-
-        }, 113); // Update interval
+            revealElements.forEach(el => {
+                observer.observe(el);
+            });
+        });
     </script>
 
 </body>
