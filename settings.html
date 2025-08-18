@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>ShowTime Settings</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: black;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #FFA00A;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #eee;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h2 img {
+            width: 24px;
+            height: 24px;
+            filter: invert(80%);
+        }
+        .setting-group {
+            background-color: #1c1c1e;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+        .description {
+            font-size: 14px;
+            color: #aaa;
+            margin-top: -5px;
+            margin-bottom: 20px;
+        }
+        .input-explanation {
+            font-size: 13px;
+            color: #888;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            padding-left: 2px;
+        }
+        label {
+            display: block;
+            font-size: 16px;
+            color: #ccc;
+            margin-bottom: 8px;
+        }
+        .slider-box {
+            background-color: #2c2c2e;
+            padding: 10px 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .slider-value {
+            color: #FFA00A;
+            font-weight: bold;
+            min-width: 60px;
+            text-align: right;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #2c2c2e;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+        input[type="range"] {
+            -webkit-appearance: none; appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #444;
+            border-radius: 5px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #FFA00A;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #FFA00A;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        input:focus {
+            outline: none;
+            border-color: #FFA00A;
+        }
+        .actions {
+            margin-bottom: 0;
+        }
+        button, .back-link, .reset-link {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        #saveBtn {
+            background-color: #013a1c;
+            color: #00ff4c;
+            border: none;
+        }
+        #saveBtn:disabled {
+            background-color: #2a2a2d;
+            color: #666;
+            cursor: not-allowed;
+        }
+        .reset-container {
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 20px;
+        }
+        .reset-link {
+            display: inline-block;
+            width: auto;
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 14px;
+            padding: 10px 20px;
+        }
+        .reset-link:hover {
+            color: #FFA00A;
+            background-color: #2c2c2e;
+        }
+        .back-link {
+            background-color: #333;
+            color: #fff;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 12px 30px;
+        }
+        
+        /* --- Modal Styles --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: #2c2c2e;
+            padding: 20px 30px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #00ff4c;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: scale(0.9);
+            transition: transform 0.2s ease;
+        }
+        .modal-overlay.visible .modal-content {
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Settings</h1>
+
+        <div class="setting-group">
+            <h2><img src="https://img.icons8.com/ios/50/globe.png" alt="Globe Icon">Magic Mode (World Clock)</h2>
+            <p class="description">Configure the automatic start and stop feature.</p>
+            
+            <label for="initialDelay">Auto-Start Delay</label>
+            <div class="slider-box">
+                <input type="range" id="initialDelay" min="1" max="10" step="0.5" value="4" class="setting-input">
+                <span id="initialDelayValue" class="slider-value">4.0 s</span>
+            </div>
+            <p class="input-explanation">After stopping, this is the delay before the stopwatch starts automatically.</p>
+
+            <label for="restartDelay">Indicator Delay</label>
+            <div class="slider-box">
+                 <input type="range" id="restartDelay" min="0.5" max="5" step="0.1" value="1" class="setting-input">
+                 <span id="restartDelayValue" class="slider-value">1.0 s</span>
+            </div>
+            <p class="input-explanation">A brief pause when dot (.) indicator appears, before the timer actually starts counting.</p>
+
+            <label for="finalStopDelay">Auto-Run Duration</label>
+            <div class="slider-box">
+                <input type="range" id="finalStopDelay" min="1" max="10" step="0.5" value="6" class="setting-input">
+                <span id="finalStopDelayValue" class="slider-value">6.0 s</span>
+            </div>
+            <p class="input-explanation">After auto-starting, the stopwatch will run for this duration before stopping at your target time.</p>
+        </div>
+
+        <div class="setting-group">
+            <h2><img src="https://img.icons8.com/ios-glyphs/50/timer.png" alt="Timer Icon">Timer Button Shortcuts</h2>
+            <p class="description">Enter the name of the iOS Shortcut you want to run when the Timer button is used.</p>
+            <label for="tapShortcut">On Single Tap</label>
+            <input type="text" id="tapShortcut" placeholder="e.g., Emergency Message" class="setting-input">
+
+            <label for="holdShortcut">On Press & Hold</label>
+            <input type="text" id="holdShortcut" placeholder="e.g., Custom Time Display" class="setting-input">
+        </div>
+        
+        <div class="actions">
+            <button id="saveBtn" disabled>Save Settings</button>
+        </div>
+        
+        <div class="reset-container">
+            <button class="reset-link" id="resetBtn">Reset to Default</button>
+        </div>
+
+        <a href="app.html" class="back-link">← Back to Stopwatch</a>
+    </div>
+
+    <!-- Save Confirmation Modal -->
+    <div id="saveModal" class="modal-overlay">
+        <div class="modal-content">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+            <span>Settings Saved!</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const allInputs = document.querySelectorAll('.setting-input');
+            const saveBtn = document.getElementById('saveBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const saveModal = document.getElementById('saveModal');
+            
+            const initialDelaySlider = document.getElementById('initialDelay');
+            const restartDelaySlider = document.getElementById('restartDelay');
+            const finalStopDelaySlider = document.getElementById('finalStopDelay');
+            const initialDelayValue = document.getElementById('initialDelayValue');
+            const restartDelayValue = document.getElementById('restartDelayValue');
+            const finalStopDelayValue = document.getElementById('finalStopDelayValue');
+            const tapShortcutInput = document.getElementById('tapShortcut');
+            const holdShortcutInput = document.getElementById('holdShortcut');
+
+            const defaultSettings = {
+                initialDelay: 4000,
+                restartDelay: 1000,
+                finalStopDelay: 6000,
+                tapShortcut: 'ShowTime Emergency',
+                holdShortcut: 'ShowTime Custom'
+            };
+
+            function loadSettings(settingsToLoad) {
+                initialDelaySlider.value = settingsToLoad.initialDelay / 1000;
+                restartDelaySlider.value = settingsToLoad.restartDelay / 1000;
+                finalStopDelaySlider.value = settingsToLoad.finalStopDelay / 1000;
+                tapShortcutInput.value = settingsToLoad.tapShortcut;
+                holdShortcutInput.value = settingsToLoad.holdShortcut;
+                updateSliderValueText();
+            }
+
+            function getStoredSettings() {
+                try {
+                    const stored = localStorage.getItem('stopwatchSettings');
+                    return stored ? { ...defaultSettings, ...JSON.parse(stored) } : defaultSettings;
+                } catch (e) {
+                    console.error("Failed to load settings, using defaults.", e);
+                    return defaultSettings;
+                }
+            }
+
+            function saveSettings() {
+                const settings = {
+                    initialDelay: parseFloat(initialDelaySlider.value) * 1000,
+                    restartDelay: parseFloat(restartDelaySlider.value) * 1000,
+                    finalStopDelay: parseFloat(finalStopDelaySlider.value) * 1000,
+                    tapShortcut: tapShortcutInput.value || defaultSettings.tapShortcut,
+                    holdShortcut: holdShortcutInput.value || defaultSettings.holdShortcut,
+                };
+                localStorage.setItem('stopwatchSettings', JSON.stringify(settings));
+                
+                // Show confirmation modal and disable save button
+                saveBtn.disabled = true;
+                saveModal.classList.add('visible');
+                setTimeout(() => {
+                    saveModal.classList.remove('visible');
+                }, 1500); // Modal will be visible for 1.5 seconds
+            }
+            
+            function updateSliderValueText() {
+                initialDelayValue.textContent = `${parseFloat(initialDelaySlider.value).toFixed(1)} s`;
+                restartDelayValue.textContent = `${parseFloat(restartDelaySlider.value).toFixed(1)} s`;
+                finalStopDelayValue.textContent = `${parseFloat(finalStopDelaySlider.value).toFixed(1)} s`;
+            }
+
+            function handleInputChange() {
+                saveBtn.disabled = false;
+                updateSliderValueText();
+            }
+
+            function resetToDefaults() {
+                loadSettings(defaultSettings);
+                saveSettings();
+            }
+
+            // --- Event Listeners ---
+            allInputs.forEach(input => input.addEventListener('input', handleInputChange));
+            saveBtn.addEventListener('click', saveSettings);
+            resetBtn.addEventListener('click', resetToDefaults);
+
+            // Initial Load
+            loadSettings(getStoredSettings());
+        });
+    </script>
+</body>
+</html>
