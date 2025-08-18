@@ -1,3 +1,31 @@
+// ================== SETTINGS LOADER ==================
+// Function to get settings from localStorage or use defaults
+function getSettings() {
+    const defaults = {
+        initialDelay: 4000,
+        restartDelay: 1000,
+        finalStopDelay: 6000,
+        tapShortcut: 'ShowTime Emergency',
+        holdShortcut: 'ShowTime Custom'
+    };
+    try {
+        const stored = localStorage.getItem('stopwatchSettings');
+        if (stored) {
+            // Merge stored settings over defaults to ensure no missing keys
+            return { ...defaults, ...JSON.parse(stored) };
+        }
+        return defaults;
+    } catch (e) {
+        console.error("Could not parse settings, using defaults.", e);
+        return defaults;
+    }
+}
+
+// Load settings once when the script starts
+const settings = getSettings();
+
+
+// ================== ORIGINAL SCRIPT VARIABLES ==================
 let startTime = 0;
 let elapsed = 0;
 let running = false;
@@ -41,6 +69,24 @@ const clearBtn = document.getElementById("clearBtn");
 const psychicIndicator = document.getElementById("psychicIndicator");
 const mindReadingIndicator = document.getElementById("mindReadingIndicator");
 const numberBtns = document.querySelectorAll(".number-btn");
+
+// ================== TRIPLE CLICK TO OPEN SETTINGS ==================
+let clickCount = 0;
+let clickTimer = null;
+
+stopwatchEl.addEventListener('click', () => {
+    clickCount++;
+    if (clickCount === 1) {
+        clickTimer = setTimeout(() => {
+            clickCount = 0; // Reset after 500ms
+        }, 500);
+    } else if (clickCount === 3) {
+        clearTimeout(clickTimer);
+        clickCount = 0;
+        window.location.href = 'settings.html';
+    }
+});
+
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -349,14 +395,14 @@ startBtn.onclick = () => {
                             worldClockTriggered = false;
                             worldClockStartElapsedAtStop = 0;
                         }
-                    }, 6000);
-                }, 1000);
-            }, 4000);
+                    }, settings.finalStopDelay); // USE SETTING
+                }, settings.restartDelay); // USE SETTING
+            }, settings.initialDelay); // USE SETTING
         } else {
             if (mindReadingMode) {
                 const finalSumOfNineMillis = getNextUniqueSumOfNineFromPool();
                 fixedStopMillis = finalSumOfNineMillis;
-                
+
                 if (laps.length > 0) {
                     const currentActiveLapDuration = elapsed - (laps[1] ? laps[1].total : 0);
                     laps[0].raw = currentActiveLapDuration;
@@ -371,7 +417,7 @@ startBtn.onclick = () => {
                 }
             } else {
                 fixedStopMillis = null;
-                 if (laps.length > 0) {
+                if (laps.length > 0) {
                     const currentActiveLapDuration = elapsed - (laps[1] ? laps[1].total : 0);
                     laps[0].raw = currentActiveLapDuration;
                     laps[0].time = formatMainDisplayTime(currentActiveLapDuration);
@@ -379,7 +425,7 @@ startBtn.onclick = () => {
                     if (lap1El) lap1El.textContent = laps[0].time;
                 }
             }
-            
+
             stopwatchEl.textContent = formatMainDisplayTime(elapsed);
             lastDisplay = stopwatchEl.textContent;
 
@@ -505,39 +551,34 @@ timerTab.addEventListener("mousedown", () => {
     isHeld = false;
     holdTimeout = setTimeout(() => {
         isHeld = true;
-        
+
         let minutesNum;
         let secondsNum;
 
-        // Cek apakah display sedang 0 DAN ada waktu yang diingat
         if (stopwatchEl.textContent === "00:00.00" && rememberedElapsed > 0) {
-            // Jika ya, gunakan data yang diingat (dalam milidetik)
             const totalRememberedSeconds = Math.floor(rememberedElapsed / 1000);
             minutesNum = Math.floor(totalRememberedSeconds / 60);
             secondsNum = totalRememberedSeconds % 60;
         } else {
-            // Jika tidak, gunakan data dari display saat ini
             const timerData = stopwatchEl.textContent;
             const timeParts = timerData.split(':');
             minutesNum = parseInt(timeParts[0], 10);
             secondsNum = parseInt(timeParts[1].split('.')[0], 10);
         }
 
-        // Sisa skrip pemformatan tetap sama
         const minuteText = minutesNum === 1 ? 'minute' : 'minutes';
         const secondText = secondsNum === 1 ? 'second' : 'seconds';
-        
+
         let formattedOutput = "";
         if (minutesNum === 0 && secondsNum > 0) {
             formattedOutput = `${secondsNum} ${secondText}`;
         } else if (minutesNum > 0) {
             formattedOutput = `${minutesNum} ${minuteText} ${secondsNum} ${secondText}`;
         } else {
-            formattedOutput = "0 seconds"; // Kasus jika tidak ada waktu sama sekali
+            formattedOutput = "0 seconds";
         }
 
-        // Membuat dan menjalankan URL shortcut
-        const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Custom&input=${encodeURIComponent(formattedOutput)}`;
+        const shortcutUrl = `shortcuts://run-shortcut?name=${encodeURIComponent(settings.holdShortcut)}&input=${encodeURIComponent(formattedOutput)}`; // USE SETTING
         window.location.href = shortcutUrl;
     }, 600);
 });
@@ -545,7 +586,7 @@ timerTab.addEventListener("mousedown", () => {
 timerTab.addEventListener("mouseup", () => {
     clearTimeout(holdTimeout);
     if (!isHeld) {
-        const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Emergency`;
+        const shortcutUrl = `shortcuts://run-shortcut?name=${encodeURIComponent(settings.tapShortcut)}`; // USE SETTING
         window.location.href = shortcutUrl;
     }
 });
@@ -554,7 +595,7 @@ timerTab.addEventListener("mouseleave", () => {
 });
 
 // ================== BLOK FUNGSI SHORTCUT YANG SUDAH DI-UPGRADE (TOUCH) ==================
-timerTab.addEventListener("touchstart", function (e) {
+timerTab.addEventListener("touchstart", function(e) {
     e.preventDefault();
     isHeld = false;
     holdTimeout = setTimeout(() => {
@@ -562,44 +603,39 @@ timerTab.addEventListener("touchstart", function (e) {
 
         let minutesNum;
         let secondsNum;
-        
-        // Cek apakah display sedang 0 DAN ada waktu yang diingat
+
         if (stopwatchEl.textContent === "00:00.00" && rememberedElapsed > 0) {
-            // Jika ya, gunakan data yang diingat (dalam milidetik)
             const totalRememberedSeconds = Math.floor(rememberedElapsed / 1000);
             minutesNum = Math.floor(totalRememberedSeconds / 60);
             secondsNum = totalRememberedSeconds % 60;
         } else {
-            // Jika tidak, gunakan data dari display saat ini
             const timerData = stopwatchEl.textContent;
             const timeParts = timerData.split(':');
             minutesNum = parseInt(timeParts[0], 10);
             secondsNum = parseInt(timeParts[1].split('.')[0], 10);
         }
 
-        // Sisa skrip pemformatan tetap sama
         const minuteText = minutesNum === 1 ? 'minute' : 'minutes';
         const secondText = secondsNum === 1 ? 'second' : 'seconds';
-        
+
         let formattedOutput = "";
         if (minutesNum === 0 && secondsNum > 0) {
             formattedOutput = `${secondsNum} ${secondText}`;
         } else if (minutesNum > 0) {
             formattedOutput = `${minutesNum} ${minuteText} ${secondsNum} ${secondText}`;
         } else {
-            formattedOutput = "0 seconds"; // Kasus jika tidak ada waktu sama sekali
+            formattedOutput = "0 seconds";
         }
 
-        // Membuat dan menjalankan URL shortcut
-        const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Custom&input=${encodeURIComponent(formattedOutput)}`;
+        const shortcutUrl = `shortcuts://run-shortcut?name=${encodeURIComponent(settings.holdShortcut)}&input=${encodeURIComponent(formattedOutput)}`; // USE SETTING
         window.location.href = shortcutUrl;
     }, 600);
 }, { passive: false });
 
-timerTab.addEventListener("touchend", function () {
+timerTab.addEventListener("touchend", function() {
     clearTimeout(holdTimeout);
     if (!isHeld) {
-        const shortcutUrl = `shortcuts://run-shortcut?name=ShowTime Emergency`;
+        const shortcutUrl = `shortcuts://run-shortcut?name=${encodeURIComponent(settings.tapShortcut)}`; // USE SETTING
         window.location.href = shortcutUrl;
     }
 });
