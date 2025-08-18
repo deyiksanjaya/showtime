@@ -11,8 +11,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0a0a0a;
-            background-image: radial-gradient(circle at top, #1a1a1a 0%, #0a0a0a 100%);
+            background-color: #000000; /* Changed to solid black */
             color: #d1d5db; /* Softer default text color */
         }
         .card {
@@ -83,16 +82,38 @@
         h1 {
             text-shadow: 0 0 15px rgba(255, 160, 10, 0.3);
         }
+        .back-button-container {
+            text-align: center;
+            margin-bottom: 48px; /* Same as header margin */
+        }
+        .back-button {
+            display: inline-block;
+            background-color: #013a1c;
+            color: #00ff4c;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+        .back-button:hover {
+            background-color: #025a2c;
+        }
     </style>
 </head>
 <body class="antialiased">
 
     <div class="container mx-auto p-4 md:p-8 max-w-3xl">
 
-        <header class="text-center mb-12">
+        <header class="text-center mb-6">
             <h1 class="text-4xl md:text-5xl font-bold text-white mb-2">ShowTime</h1>
             <p class="text-lg text-gray-400">The Secret Manual</p>
         </header>
+
+        <div class="back-button-container">
+            <a href="app.html" class="back-button">← Back to App</a>
+        </div>
 
         <div class="card mb-10">
             <div class="card-header">
@@ -125,7 +146,7 @@
                         </div>
                         <div class="step">
                             <div class="step-number">5</div>
-                            <p class="text-gray-400">Ask the spectator to <strong>extend their hand</strong> and imagine a "Stop" button on their palm.</p>
+                            <p class="text-gray-400">Ask the spectator to <strong>extend their hand</strong> and imagine a "Start" button on their palm.</p>
                         </div>
                         <div class="step">
                             <div class="step-number">6</div>
@@ -252,7 +273,7 @@
                     </div>
                     <div class="info-box mt-6 p-4 rounded-r-lg">
                         <p class="text-gray-300">
-                            <strong>Important Note:</strong> The <strong>Timers</strong> button has a secret memory. Even after you press <strong>Reset</strong> and the display shows <code>00:00.00</code>, ShowTime remembers the last stopped time. When you trigger a shortcut (by tapping or holding), this *remembered* time is what gets sent. This allows for powerful effects where the spectator believes the time is gone, but you can still secretly use it. This feature only works when no other special modes (like Mind Reading or Thought Projection) are active.
+                            <strong>Important Note:</strong> The <strong>Timers</strong> button has a secret memory. Even after you press <strong>Reset</strong> and the display shows <code>00:00.00</code>, ShowTime remembers the last stopped time. When you trigger a shortcut (by tapping or holding), this <strong>remembered</strong> time is what gets sent. This allows for powerful effects where the spectator believes the time is gone, but you can still secretly use it. This feature only works when no other special modes (like Mind Reading or Thought Projection) are active.
                         </p>
                     </div>
                 </div>
