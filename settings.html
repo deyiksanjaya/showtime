@@ -13,15 +13,34 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
         }
+        .top-link-container {
+            text-align: center;
+            margin-bottom: 30px; /* Spacing below the link */
+        }
+        .top-link {
+            display: inline-block;
+            background-color: #013a1c; /* Green background */
+            color: #00ff4c; /* Green text */
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+        .top-link:hover {
+            background-color: #025a2c;
+        }
         .container {
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
+            padding-top: 20px;
         }
         h1 {
             color: #FFA00A;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 15px; /* Adjusted spacing */
         }
         h2 {
             color: #eee;
@@ -53,7 +72,7 @@
             font-size: 13px;
             color: #888;
             margin-top: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 0; /* Adjusted margin */
             padding-left: 2px;
         }
         label {
@@ -85,7 +104,7 @@
             color: white;
             font-size: 16px;
             box-sizing: border-box;
-            margin-bottom: 20px;
+            margin-bottom: 0; /* Adjusted margin */
         }
         input[type="range"] {
             -webkit-appearance: none; appearance: none;
@@ -113,6 +132,12 @@
         input:focus {
             outline: none;
             border-color: #FFA00A;
+        }
+        hr {
+            border: none;
+            height: 1px;
+            background-color: #333;
+            margin: 25px 0;
         }
         .actions {
             margin-bottom: 0;
@@ -207,6 +232,9 @@
 <body>
     <div class="container">
         <h1>Settings</h1>
+        <div class="top-link-container">
+            <a href="instructions.html" class="top-link">Read Instructions</a>
+        </div>
 
         <div class="setting-group">
             <h2><img src="https://img.icons8.com/ios/50/globe.png" alt="Globe Icon">Magic Mode (World Clock)</h2>
@@ -219,12 +247,16 @@
             </div>
             <p class="input-explanation">After stopping, this is the delay before the stopwatch starts automatically.</p>
 
+            <hr>
+
             <label for="restartDelay">Indicator Delay</label>
             <div class="slider-box">
                  <input type="range" id="restartDelay" min="0.5" max="5" step="0.1" value="1" class="setting-input">
                  <span id="restartDelayValue" class="slider-value">1.0 s</span>
             </div>
             <p class="input-explanation">A brief pause when dot (.) indicator appears, before the timer actually starts counting.</p>
+
+            <hr>
 
             <label for="finalStopDelay">Auto-Run Duration</label>
             <div class="slider-box">
@@ -239,6 +271,8 @@
             <p class="description">Enter the name of the iOS Shortcut you want to run when the Timer button is used.</p>
             <label for="tapShortcut">On Single Tap</label>
             <input type="text" id="tapShortcut" placeholder="e.g., Emergency Message" class="setting-input">
+
+            <hr>
 
             <label for="holdShortcut">On Press & Hold</label>
             <input type="text" id="holdShortcut" placeholder="e.g., Custom Time Display" class="setting-input">
