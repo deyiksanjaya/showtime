@@ -9,10 +9,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* --- Page Styles --- */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #000000; /* Changed to solid black */
-            color: #d1d5db; /* Softer default text color */
+            background-color: #000000;
+            color: #d1d5db;
         }
         .card {
             background-color: #1c1c1e;
@@ -27,78 +28,110 @@
             padding: 16px 24px;
             border-bottom: 1px solid #333;
         }
-        .card-title {
-            color: #ffffff;
-            font-weight: 600; /* Bolder title */
-        }
-        .card-subtitle {
-            color: #FFA00A;
-            font-size: 0.875rem;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-        .step {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-        }
+        .card-title { color: #ffffff; font-weight: 600; }
+        .card-subtitle { color: #FFA00A; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.5px; }
+        .step { display: flex; align-items: flex-start; gap: 16px; }
         .step-number {
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
+            flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+            width: 28px; height: 28px; border-radius: 50%;
             background-image: linear-gradient(to bottom right, #FFA00A, #d98a0a);
-            color: #1c1c1e;
-            font-weight: 700;
-            font-size: 0.875rem;
+            color: #1c1c1e; font-weight: 700; font-size: 0.875rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
-        .info-box {
-            background-color: rgba(86, 130, 169, 0.1);
-            border-left: 4px solid #56a2d9;
-        }
-        .pro-tip {
-            background-color: rgba(0, 255, 76, 0.05);
-            border-left: 4px solid #00ff4c;
-        }
-        code {
-            background-color: #333;
-            color: #f2f2f2;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 0.9em;
-        }
-        .icon-svg {
-            width: 20px;
-            height: 20px;
-            display: inline-block;
-            vertical-align: middle;
-            margin-right: 4px;
-        }
-        h1 {
-            text-shadow: 0 0 15px rgba(255, 160, 10, 0.3);
-        }
-        .back-button-container {
-            text-align: center;
-            margin-bottom: 48px; /* Same as header margin */
-        }
+        .info-box { background-color: rgba(86, 130, 169, 0.1); border-left: 4px solid #56a2d9; }
+        .pro-tip { background-color: rgba(0, 255, 76, 0.05); border-left: 4px solid #00ff4c; }
+        code { background-color: #333; color: #f2f2f2; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.9em; }
+        .icon-svg { width: 20px; height: 20px; display: inline-block; vertical-align: middle; margin-right: 4px; }
+        h1 { text-shadow: 0 0 15px rgba(255, 160, 10, 0.3); }
+        .back-button-container { text-align: center; margin-bottom: 48px; }
         .back-button {
-            display: inline-block;
-            background-color: #013a1c;
-            color: #00ff4c;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: background-color 0.2s ease;
+            display: inline-block; background-color: #013a1c; color: #00ff4c;
+            padding: 10px 20px; border-radius: 8px; text-decoration: none;
+            font-size: 14px; font-weight: 500; transition: background-color 0.2s ease;
         }
-        .back-button:hover {
-            background-color: #025a2c;
+        .back-button:hover { background-color: #025a2c; }
+
+        /* --- TRY ON STOPWATCH STYLES --- */
+        .try-on-container {
+            border-top: 1px solid #333;
+            margin-top: 24px;
+            padding-top: 24px;
+        }
+        .try-on-app {
+            position: relative; /* Crucial for containing the overlay */
+            overflow: hidden; /* Hides overlay corners */
+            max-width: 320px;
+            margin: auto;
+            background-color: #000;
+            border-radius: 20px;
+            border: 4px solid #333;
+            padding: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            -webkit-user-select: none; user-select: none;
+        }
+        .try-on-app .time-display {
+            font-size: 54px;
+            font-weight: 200;
+            text-align: center;
+            padding: 20px 0;
+            font-variant-numeric: tabular-nums;
+        }
+        .try-on-app .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10px 10px;
+            border-bottom: 1px solid #222;
+        }
+        .try-on-app .btn {
+            width: 60px; height: 60px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 14px; font-weight: 500; border: none;
+            cursor: pointer; transition: background-color 0.1s ease;
+        }
+        .try-on-app .lap-btn { background-color: #1c1c1e; color: #aaa; }
+        .try-on-app .lap-btn:disabled { opacity: 0.6; cursor: default; }
+        .try-on-app .start-btn { background-color: #013a1c; color: #00ff4c; }
+        .try-on-app .stop-btn { background-color: #3c0000; color: #ff3b30; }
+        .try-on-app .dot-indicators { text-align: center; cursor: default; }
+        .try-on-app .dot-indicators.enabled { cursor: pointer; }
+        .try-on-app .dot { display: inline-block; width: 6px; height: 6px; margin: 0 3px; border-radius: 50%; background-color: gray; }
+        .try-on-app .dot.active { background-color: white; }
+        .try-on-app .laps {
+            font-size: 14px;
+            height: 60px;
+            overflow-y: scroll;
+            scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .try-on-app .laps::-webkit-scrollbar { display: none; }
+        .try-on-app .laps ul { padding: 0 15px; list-style: none; margin: 0; }
+        .try-on-app .laps li { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #1c1c1e; font-variant-numeric: tabular-nums; }
+        .try-on-app .tabs { display: flex; justify-content: space-around; align-items: center; padding-top: 5px; }
+        .try-on-app .tab { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #bbb; cursor: pointer; opacity: 0.5; }
+        .try-on-app .tab.active, .try-on-app .tab.enabled { opacity: 1; }
+        .try-on-app .tab img { width: 20px; height: 20px; margin-bottom: 2px; filter: invert(50%); }
+        .try-on-app .tab.active img { filter: invert(75%) sepia(60%) saturate(500%) hue-rotate(350deg) brightness(100%) contrast(100%); }
+        .try-on-app .stopwatch-tab.active { color: #FFA00A; }
+        .try-on-app .stopwatch-tab.active img { filter: brightness(1) drop-shadow(0 0 5px #FFA00A); }
+        .try-on-app .psychic-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s;
+        }
+        .try-on-app .psychic-overlay.active { opacity: 1; visibility: visible; }
+        .try-on-app .psychic-container { background: #1c1c1e; border-radius: 12px; padding: 18px; width: 220px; text-align: center; }
+        .try-on-app .psychic-input { font-size: 32px; padding: 8px 12px; background: #2c2c2e; border-radius: 9px; margin-bottom: 18px; color: white; width: 140px; text-align: center; border: 2px solid #3a3a3c; margin-left: auto; margin-right: auto; }
+        .try-on-app .number-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 10px; }
+        .try-on-app .number-btn { background: #333; color: white; border: none; border-radius: 12px; height: 40px; font-size: 20px; cursor: pointer; }
+        .disclaimer-text {
+            font-size: 0.75rem; /* 12px */
+            font-style: italic;
+            text-align: center;
+            color: #888;
+            margin-top: 12px;
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
         }
     </style>
 </head>
@@ -166,6 +199,37 @@
                         </div>
                     </div>
                 </div>
+                <!-- Try On Section -->
+                <div class="try-on-container">
+                    <h3 class="font-semibold text-lg text-center text-white mb-4">Try It Here</h3>
+                    <div class="try-on-app" data-trick-id="trick1">
+                        <div class="time-display">00:00.00</div>
+                        <div class="controls">
+                            <button class="btn lap-btn" disabled>Lap</button>
+                            <div class="dot-indicators"><span class="dot active"></span><span class="dot"></span></div>
+                            <button class="btn start-btn">Start</button>
+                        </div>
+                        <div class="laps"><ul></ul></div>
+                        <div class="tabs">
+                            <div class="tab world-clock-tab"><img src="https://img.icons8.com/ios/50/globe.png" alt="World Clock"/><div>World Clock</div></div>
+                            <div class="tab alarms-tab"><img src="https://img.icons8.com/ios-filled/50/alarm-clock.png" alt="Alarms"/><div>Alarms</div></div>
+                            <div class="tab stopwatch-tab active"><img src="https://img.icons8.com/ios-filled/50/FFA00A/stopwatch.png" alt="Stopwatch"/><div>Stopwatch</div></div>
+                            <div class="tab timer-tab"><img src="https://img.icons8.com/ios-glyphs/50/timer.png" alt="Timer"/><div>Timers</div></div>
+                        </div>
+                        <div class="psychic-overlay">
+                            <div class="psychic-container">
+                                <div class="psychic-input">--</div>
+                                <div class="number-grid">
+                                    <button class="number-btn" data-number="1">1</button><button class="number-btn" data-number="2">2</button><button class="number-btn" data-number="3">3</button>
+                                    <button class="number-btn" data-number="4">4</button><button class="number-btn" data-number="5">5</button><button class="number-btn" data-number="6">6</button>
+                                    <button class="number-btn" data-number="7">7</button><button class="number-btn" data-number="8">8</button><button class="number-btn" data-number="9">9</button>
+                                    <button class="number-btn" data-number="clear">⌫</button><button class="number-btn" data-number="0">0</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="disclaimer-text">Please note: The glow and highlights on enabled buttons are for instructional purposes only and will not appear in the actual app.</p>
+                </div>
             </div>
         </div>
 
@@ -175,7 +239,7 @@
                 <h2 class="card-title text-2xl">Mind Reading Mode</h2>
             </div>
             <div class="p-6 md:p-8 space-y-6">
-                <div>
+                 <div>
                     <h3 class="font-semibold text-lg text-white mb-2">The Effect</h3>
                     <p class="text-gray-400">A spectator creates a list of lap times, each with a seemingly random two-digit millisecond value. They silently think of just one of the millisecond numbers from the list. After a moment of concentration, you peer into their mind and reveal the exact number they are merely thinking of.</p>
                 </div>
@@ -208,6 +272,26 @@
                         </div>
                     </div>
                 </div>
+                <!-- Try On Section -->
+                <div class="try-on-container">
+                    <h3 class="font-semibold text-lg text-center text-white mb-4">Try It Here</h3>
+                    <div class="try-on-app" data-trick-id="trick2">
+                        <div class="time-display">00:00.00</div>
+                        <div class="controls">
+                            <button class="btn lap-btn" disabled>Lap</button>
+                            <div class="dot-indicators"><span class="dot active"></span><span class="dot"></span></div>
+                            <button class="btn start-btn">Start</button>
+                        </div>
+                        <div class="laps"><ul></ul></div>
+                        <div class="tabs">
+                            <div class="tab world-clock-tab"><img src="https://img.icons8.com/ios/50/globe.png" alt="World Clock"/><div>World Clock</div></div>
+                            <div class="tab alarms-tab enabled"><img src="https://img.icons8.com/ios-filled/50/alarm-clock.png" alt="Alarms"/><div>Alarms</div></div>
+                            <div class="tab stopwatch-tab active"><img src="https://img.icons8.com/ios-filled/50/FFA00A/stopwatch.png" alt="Stopwatch"/><div>Stopwatch</div></div>
+                            <div class="tab timer-tab"><img src="https://img.icons8.com/ios-glyphs/50/timer.png" alt="Timer"/><div>Timers</div></div>
+                        </div>
+                    </div>
+                    <p class="disclaimer-text">Please note: The glow and highlights on enabled buttons are for instructional purposes only and will not appear in the actual app.</p>
+                </div>
             </div>
         </div>
         
@@ -223,28 +307,45 @@
                 </div>
                 <div>
                     <h3 class="font-semibold text-lg text-white mb-4">The Secret Method</h3>
-                    <div class="space-y-4">
+                     <div class="space-y-4">
                         <div class="step">
                             <div class="step-number">1</div>
-                            <p class="text-gray-400">Hand the phone to a spectator. Ask them to Start, Stop, and then <strong>Reset</strong> the stopwatch. They will see the time disappear.</p>
+                            <p class="text-gray-400">Press Start, Stop, and then <strong>Reset</strong>. The time will vanish.</p>
                         </div>
                         <div class="step">
                             <div class="step-number">2</div>
-                            <p class="text-gray-400">Take the phone back. As you are talking, secretly <strong>tap the two small dots</strong> located between the Lap and Start buttons.</p>
+                            <p class="text-gray-400">Secretly <strong>tap the two small dots</strong> between the buttons.</p>
                         </div>
                         <div class="step">
                             <div class="step-number">3</div>
-                            <p class="text-gray-400">The spectator's "vanished" time will flash on the screen for 2 seconds. Casually glance down and peek at this information.</p>
-                        </div>
-                        <div class="step">
-                            <div class="step-number">4</div>
-                            <p class="text-gray-400">The time will disappear again. After a moment of concentration, dramatically reveal the exact time you secretly saw.</p>
+                            <p class="text-gray-400">The "vanished" time will flash on screen for 2 seconds for you to peek.</p>
                         </div>
                     </div>
+                </div>
+                <!-- Try On Section -->
+                <div class="try-on-container">
+                    <h3 class="font-semibold text-lg text-center text-white mb-4">Try It Here</h3>
+                    <div class="try-on-app" data-trick-id="trick3">
+                        <div class="time-display">00:00.00</div>
+                        <div class="controls">
+                            <button class="btn lap-btn" disabled>Lap</button>
+                            <div class="dot-indicators enabled"><span class="dot active"></span><span class="dot"></span></div>
+                            <button class="btn start-btn">Start</button>
+                        </div>
+                        <div class="laps"><ul></ul></div>
+                        <div class="tabs">
+                            <div class="tab world-clock-tab"><img src="https://img.icons8.com/ios/50/globe.png" alt="World Clock"/><div>World Clock</div></div>
+                            <div class="tab alarms-tab"><img src="https://img.icons8.com/ios-filled/50/alarm-clock.png" alt="Alarms"/><div>Alarms</div></div>
+                            <div class="tab stopwatch-tab active"><img src="https://img.icons8.com/ios-filled/50/FFA00A/stopwatch.png" alt="Stopwatch"/><div>Stopwatch</div></div>
+                            <div class="tab timer-tab"><img src="https://img.icons8.com/ios-glyphs/50/timer.png" alt="Timer"/><div>Timers</div></div>
+                        </div>
+                    </div>
+                    <p class="disclaimer-text">Please note: The glow and highlights on enabled buttons are for instructional purposes only and will not appear in the actual app.</p>
                 </div>
             </div>
         </div>
 
+        <!-- Other cards remain unchanged... -->
         <div class="card mb-10">
             <div class="card-header">
                 <p class="card-subtitle">Trick #4</p>
@@ -273,14 +374,13 @@
                     </div>
                     <div class="info-box mt-6 p-4 rounded-r-lg">
                         <p class="text-gray-300">
-                            <strong>Important Note:</strong> The <strong>Timers</strong> button has a secret memory. Even after you press <strong>Reset</strong> and the display shows <code>00:00.00</code>, ShowTime remembers the last stopped time. When you trigger a shortcut (by tapping or holding), this <strong>remembered</strong> time is what gets sent. This allows for powerful effects where the spectator believes the time is gone, but you can still secretly use it. This feature only works when no other special modes (like Mind Reading or Thought Projection) are active.
+                            <strong>Important Note:</strong> The <strong>Timers</strong> button has a secret memory. Even after you press <strong>Reset</strong> and the display shows <code>00:00.00</code>, ShowTime remembers the last stopped time. When you trigger a shortcut (by tapping or holding), this *remembered* time is what gets sent. This allows for powerful effects where the spectator believes the time is gone, but you can still secretly use it. This feature only works when no other special modes (like Mind Reading or Thought Projection) are active.
                         </p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- NEW SETTINGS SECTION -->
         <div class="card mb-10">
             <div class="card-header">
                 <p class="card-subtitle">Customization</p>
@@ -319,18 +419,17 @@
                 </div>
             </div>
         </div>
-        <!-- END NEW SETTINGS SECTION -->
 
         <div class="card mb-10">
              <div class="card-header">
                 <h3 class="font-semibold text-lg text-white flex items-center">
                     <svg class="icon-svg text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-                    Secret Utility
+                    Handling Unwanted Situation
                 </h3>
             </div>
             <div class="p-6 md:p-8">
-                <h4 class="font-semibold text-white mb-3">Panic Exit: Your Emergency Out</h4>
-                <p class="text-gray-400 mb-4">This lets you create an emergency exit. If you're in a tough spot, a single tap on the <strong>Timers tab</strong> can instantly and silently switch to the real iOS Clock app.</p>
+                <h4 class="font-semibold text-white mb-3">Auto Switch</h4>
+                <p class="text-gray-400 mb-4">This lets you create an emergency exit using iOS shortcuts. If you're in a tough spot, a single tap on the <strong>Timers tab</strong> can instantly and silently switch to the real iOS Clock app.</p>
                 
                 <h4 class="font-semibold text-white mb-2">How to Set It Up:</h4>
                 <div class="space-y-4">
@@ -365,7 +464,7 @@
         <div class="card mb-10">
             <div class="card-header">
                  <p class="card-subtitle">Advice</p>
-                 <h2 class="card-title text-2xl">Pro Performance Tips</h2>
+                 <h2 class="card-title text-2xl">Tips</h2>
             </div>
             <div class="p-6 md:p-8 pro-tip rounded-lg">
                 <ul class="list-disc list-inside text-green-200 space-y-2">
@@ -378,10 +477,253 @@
         </div>
         
         <footer class="text-center mt-12 mb-6">
-            <p class="text-gray-500">Now go and perform miracles.</p>
+            <p class="text-gray-500">Now you are basically ready for ShowTime!</p>
         </footer>
-
     </div>
+
+<script>
+// This script contains all the logic for the interactive "Try On" stopwatches.
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- Generic Stopwatch Class ---
+    class Stopwatch {
+        constructor(appEl) {
+            this.appEl = appEl;
+            if (!this.appEl) return;
+
+            this.timeEl = this.appEl.querySelector('.time-display');
+            this.startBtn = this.appEl.querySelector('.start-btn');
+            this.lapBtn = this.appEl.querySelector('.lap-btn');
+            this.lapListEl = this.appEl.querySelector('.laps ul');
+            this.dotIndicators = this.appEl.querySelector('.dot-indicators');
+            
+            this.startTime = 0;
+            this.elapsed = 0;
+            this.running = false;
+            this.laps = [];
+            this.animationFrame = null;
+            this.rememberedElapsed = 0;
+
+            this.initBaseListeners();
+        }
+
+        formatTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+            const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+            const milliseconds = Math.floor((ms % 1000) / 10).toString().padStart(2, '0');
+            return `${minutes}:${seconds}.${milliseconds}`;
+        }
+
+        updateDisplay() {
+            if (this.running) {
+                const diff = this.elapsed + (performance.now() - this.startTime);
+                this.timeEl.textContent = this.formatTime(diff);
+                this.animationFrame = requestAnimationFrame(() => this.updateDisplay());
+            }
+        }
+
+        start() {
+            if (this.running) return;
+            this.running = true;
+            this.startTime = performance.now();
+            this.startBtn.textContent = 'Stop';
+            this.startBtn.classList.remove('start-btn');
+            this.startBtn.classList.add('stop-btn');
+            this.lapBtn.textContent = 'Lap';
+            this.lapBtn.disabled = false;
+            this.updateDisplay();
+        }
+
+        stop() {
+            if (!this.running) return;
+            this.running = false;
+            this.elapsed += performance.now() - this.startTime;
+            cancelAnimationFrame(this.animationFrame);
+            this.startBtn.textContent = 'Start';
+            this.startBtn.classList.remove('stop-btn');
+            this.startBtn.classList.add('start-btn');
+            this.lapBtn.textContent = 'Reset';
+        }
+
+        reset() {
+            this.rememberedElapsed = this.elapsed;
+            this.running = false;
+            this.elapsed = 0;
+            this.laps = [];
+            cancelAnimationFrame(this.animationFrame);
+            this.timeEl.textContent = '00:00.00';
+            this.lapListEl.innerHTML = '';
+            this.lapBtn.disabled = true;
+            this.lapBtn.textContent = 'Lap';
+            this.startBtn.textContent = 'Start';
+            this.startBtn.classList.remove('stop-btn');
+            this.startBtn.classList.add('start-btn');
+        }
+
+        lap() {
+            if (!this.running) {
+                this.reset();
+                return;
+            }
+            const now = performance.now();
+            const totalTime = this.elapsed + (now - this.startTime);
+            const lastLapTotal = this.laps.length > 0 ? this.laps[0].total : 0;
+            const lapDuration = totalTime - lastLapTotal;
+
+            const lapObj = { time: this.formatTime(lapDuration), total: totalTime };
+            this.laps.unshift(lapObj);
+
+            const li = document.createElement('li');
+            li.innerHTML = `<span>Lap ${this.laps.length}</span><span>${lapObj.time}</span>`;
+            this.lapListEl.prepend(li);
+        }
+
+        initBaseListeners() {
+            this.startBtn.onclick = () => {
+                this.running ? this.stop() : this.start();
+            };
+            this.lapBtn.onclick = () => {
+                this.lap();
+            };
+        }
+    }
+
+    // --- Setup for each trick ---
+    document.querySelectorAll('.try-on-app').forEach(appEl => {
+        const trickId = appEl.dataset.trickId;
+        const s = new Stopwatch(appEl);
+
+        if (trickId === 'trick1') {
+            const worldClockTab = appEl.querySelector('.world-clock-tab');
+            const overlay = appEl.querySelector('.psychic-overlay');
+            const psychicInput = appEl.querySelector('.psychic-input');
+            const numberBtns = appEl.querySelectorAll('.number-btn');
+            let psychicTarget = null;
+            let worldClockReady = false;
+
+            worldClockTab.classList.add('enabled');
+            worldClockTab.onclick = () => {
+                if (s.running) return;
+                overlay.classList.add('active');
+                psychicInput.textContent = '--';
+            };
+            
+            overlay.onclick = (e) => { if (e.target === overlay) overlay.classList.remove('active'); };
+
+            numberBtns.forEach(btn => {
+                btn.onclick = () => {
+                    const num = btn.dataset.number;
+                    if (num === 'clear') { psychicInput.textContent = '--'; return; }
+                    if (psychicInput.textContent === '--') psychicInput.textContent = num;
+                    else if (psychicInput.textContent.length < 2) psychicInput.textContent += num;
+                    
+                    if (psychicInput.textContent.length === 2) {
+                        psychicTarget = parseInt(psychicInput.textContent, 10);
+                        worldClockReady = true;
+                        setTimeout(() => overlay.classList.remove('active'), 300);
+                    }
+                };
+            });
+
+            const originalStop = s.stop.bind(s);
+            s.stop = () => {
+                originalStop();
+                if (worldClockReady && psychicTarget !== null) {
+                    const wcLabelDiv = worldClockTab.querySelector('div');
+                    setTimeout(() => {
+                        wcLabelDiv.textContent = 'World Clock.';
+                        setTimeout(() => {
+                            wcLabelDiv.textContent = 'World Clock';
+                            s.start();
+                            setTimeout(() => {
+                                originalStop();
+                                const finalSeconds = Math.floor(s.elapsed / 1000);
+                                const finalMs = psychicTarget * 10;
+                                s.elapsed = (finalSeconds * 1000) + finalMs;
+                                s.timeEl.textContent = s.formatTime(s.elapsed);
+                                worldClockReady = false; psychicTarget = null;
+                            }, 6000);
+                        }, 1000);
+                    }, 4000);
+                }
+            };
+        }
+
+        if (trickId === 'trick2') {
+            const alarmsTab = appEl.querySelector('.alarms-tab');
+            let mindReadingMode = false;
+            const sumOfNineMillis = ["09", "18", "27", "36", "45", "54", "63", "72", "81"];
+            let shuffledPool = [];
+
+            const shuffleArray = (array) => {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            const initializePool = () => {
+                shuffledPool = shuffleArray([...sumOfNineMillis]);
+            }
+
+            const getNextUniqueSum = () => {
+                if (shuffledPool.length === 0) {
+                    initializePool();
+                }
+                return shuffledPool.pop();
+            }
+
+            alarmsTab.onclick = () => {
+                mindReadingMode = !mindReadingMode;
+                alarmsTab.classList.toggle('active', mindReadingMode);
+                if (mindReadingMode) {
+                    initializePool();
+                }
+            };
+
+            const originalLap = s.lap.bind(s);
+            s.lap = () => {
+                if (!s.running) { s.reset(); return; }
+                if (mindReadingMode) {
+                    const now = performance.now();
+                    const totalTime = s.elapsed + (now - s.startTime);
+                    const lastLapTotal = s.laps.length > 0 ? s.laps[0].total : 0;
+                    const lapDuration = totalTime - lastLapTotal;
+                    
+                    let formattedTime = s.formatTime(lapDuration);
+                    const uniqueSumOfNine = getNextUniqueSum();
+                    formattedTime = formattedTime.slice(0, -2) + uniqueSumOfNine;
+
+                    const lapObj = { time: formattedTime, total: totalTime };
+                    s.laps.unshift(lapObj);
+
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span>Lap ${s.laps.length}</span><span>${lapObj.time}</span>`;
+                    s.lapListEl.prepend(li);
+                } else {
+                    originalLap();
+                }
+            };
+        }
+
+        if (trickId === 'trick3') {
+            s.dotIndicators.classList.add('enabled');
+            s.dotIndicators.onclick = () => {
+                if (s.running || s.rememberedElapsed === 0) return;
+                const originalTime = s.timeEl.textContent;
+                s.timeEl.textContent = s.formatTime(s.rememberedElapsed);
+                s.timeEl.style.color = '#FFA00A';
+                setTimeout(() => {
+                    s.timeEl.textContent = originalTime;
+                    s.timeEl.style.color = 'white';
+                }, 2000);
+            };
+        }
+    });
+});
+</script>
 
 </body>
 </html>
