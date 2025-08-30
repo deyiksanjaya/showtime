@@ -8,9 +8,174 @@
     -webkit-user-select: none;
   }
   img {
-  -webkit-user-drag: none;
-  -webkit-touch-callout: none;
-}
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+  }
+  /* Menambahkan style CSS yang hilang dari file terpisah agar mandiri */
+  :root {
+      --bg-color: #000;
+      --time-color: #fff;
+      --btn-bg: #333;
+      --btn-text: #fff;
+      --start-btn-bg: #34C759;
+      --start-btn-text: #fff;
+      --stop-btn-bg: #FF3B30;
+      --stop-btn-text: #fff;
+      --lap-btn-bg: #333;
+      --lap-btn-text: #fff;
+      --lap-reset-btn-bg: #333;
+      --lap-reset-btn-text: #fff;
+      --lap-bg: transparent;
+      --lap-border: #333;
+      --lap-text-main: #fff;
+      --lap-text-secondary: #aaa;
+      --fastest-lap-color: #34C759;
+      --slowest-lap-color: #FF3B30;
+      --tab-icon-inactive: #8e8e93;
+      --tab-icon-active: #FFA00A;
+      --psychic-overlay-bg: rgba(0, 0, 0, 0.9);
+      --psychic-container-bg: #1c1c1e;
+  }
+  body {
+      background-color: var(--bg-color);
+      color: var(--time-color);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+  }
+  .app {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      box-sizing: border-box;
+  }
+  .time-display {
+      font-size: 10vw;
+      font-weight: 200;
+      text-align: center;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 2px;
+  }
+  @media (min-width: 600px) {
+    .time-display {
+        font-size: 60px;
+    }
+  }
+  .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+  }
+  .btn {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: var(--btn-bg);
+      color: var(--btn-text);
+  }
+  .btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+  }
+  .start-btn {
+      background-color: var(--start-btn-bg);
+      color: var(--start-btn-text);
+  }
+  .stop-btn {
+      background-color: var(--stop-btn-bg);
+      color: var(--stop-btn-text);
+  }
+  .laps {
+      flex-grow: 2;
+      overflow-y: auto;
+  }
+  #lapList {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+  }
+  #lapList li {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--lap-border);
+      font-size: 18px;
+  }
+  #lapList li.fastest span { color: var(--fastest-lap-color); }
+  #lapList li.slowest span { color: var(--slowest-lap-color); }
+  .tabs {
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid #222;
+      padding-top: 10px;
+  }
+  .tab {
+      text-align: center;
+      color: var(--tab-icon-inactive);
+      cursor: pointer;
+      font-size: 12px;
+  }
+  .tab img {
+      width: 28px;
+      height: 28px;
+      filter: grayscale(100%) contrast(50%);
+  }
+  #stopwatchIcon {
+     filter: none; /* Icon stopwatch selalu berwarna */
+  }
+  .psychic-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: var(--psychic-overlay-bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    z-index: 100;
+  }
+  .psychic-overlay.active { opacity: 1; visibility: visible; }
+  .psychic-container {
+    background-color: var(--psychic-container-bg);
+    padding: 20px;
+    border-radius: 16px;
+    text-align: center;
+    width: 90%;
+    max-width: 320px;
+  }
+  .psychic-title { font-size: 24px; font-weight: 600; margin-bottom: 10px; }
+  .psychic-input { font-size: 48px; font-weight: 300; margin-bottom: 10px; color: var(--tab-icon-active); }
+  .psychic-instruction { font-size: 14px; color: #8e8e93; margin-bottom: 20px; }
+  .number-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+  .number-btn {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    cursor: pointer;
+    margin: auto;
+  }
+  .dot-indicators { display: flex; gap: 8px; }
+  .dot { width: 8px; height: 8px; background-color: #555; border-radius: 50%; }
+  .dot.active { background-color: #fff; }
   </style>
   <title>ShowTime</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
@@ -19,133 +184,164 @@
   <meta name="apple-mobile-web-app-title" content="ShowTime">
   <link rel="apple-touch-icon" sizes="180x180" href="icon-180x180.png">
   <link rel="manifest" href="/manifest.json">
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Stopwatch UI -->
   <div class="app">
-  <div class="time-display" id="stopwatch">00:00.00</div>
+    <div class="time-display" id="stopwatch">00:00.00</div>
 
-  <div class="controls">
-    <button class="btn lap-btn" id="lapBtn" disabled aria-label="Lap or Reset">Lap</button>
-    <div class="dot-indicators">
-      <span class="dot active"></span><span class="dot"></span>
+    <div class="controls">
+      <button class="btn lap-btn" id="lapBtn" disabled aria-label="Lap or Reset">Lap</button>
+      <div class="dot-indicators">
+        <span class="dot active"></span><span class="dot"></span>
+      </div>
+      <button class="btn start-btn" id="startBtn" aria-label="Start or Stop">Start</button>
     </div>
-    <button class="btn start-btn" id="startBtn" aria-label="Start or Stop">Start</button>
-  </div>
 
-  <div class="laps" id="laps">
-    <ul id="lapList"></ul>
-  </div>
+    <div class="laps" id="laps">
+      <ul id="lapList"></ul>
+    </div>
 
-  <div class="tabs">
-    <div class="tab" id="worldClockTab">
-      <img src="https://img.icons8.com/ios/50/globe.png" alt="World Clock Icon"/>
-      <div>World Clock</div>
+    <div class="tabs">
+      <div class="tab" id="worldClockTab">
+        <img src="https://img.icons8.com/ios/50/globe.png" alt="World Clock Icon"/>
+        <div>World Clock</div>
+      </div>
+      <div class="tab" id="alarmsTab">
+        <img src="https://img.icons8.com/ios-filled/50/alarm-clock.png" alt="Alarms Icon"/>
+        <div>Alarms</div>
+      </div>
+      <div class="tab" id="stopwatchTab">
+        <img id="stopwatchIcon" src="https://img.icons8.com/ios-filled/50/FFA00A/stopwatch.png" alt="Stopwatch Icon"/>
+        <div>Stopwatch</div>
+      </div>
+      <div class="tab" id="timerTab">
+        <img src="https://img.icons8.com/ios-glyphs/50/timer.png" alt="Timer Icon"/>
+        <div>Timers</div>
+      </div>
     </div>
-    <div class="tab" id="alarmsTab">
-      <img src="https://img.icons8.com/ios-filled/50/alarm-clock.png" alt="Alarms Icon"/>
-      <div>Alarms</div>
-    </div>
-    <div class="tab" id="stopwatchTab">
-  <img id="stopwatchIcon" src="https://img.icons8.com/ios-filled/50/FFA00A/stopwatch.png" alt="Stopwatch Icon"/>
-  <div>Stopwatch</div>
-</div>
-    <div class="tab" id="timerTab">
-      <img src="https://img.icons8.com/ios-glyphs/50/timer.png" alt="Timer Icon"/>
-      <div>Timers</div>
-    </div>
-  </div>
 
-  <!-- Psychic input mode -->
-  <div class="psychic-overlay" id="psychicOverlay">
-    <div class="psychic-container">
-      <div class="psychic-title">Psychic Mode</div>
-      <div class="psychic-input" id="psychicInput">00</div>
-      <div class="psychic-instruction">Enter two-digit millisecond target</div>
-      <div class="number-grid">
-        <button class="number-btn" data-number="1">1</button>
-        <button class="number-btn" data-number="2">2</button>
-        <button class="number-btn" data-number="3">3</button>
-        <button class="number-btn" data-number="4">4</button>
-        <button class="number-btn" data-number="5">5</button>
-        <button class="number-btn" data-number="6">6</button>
-        <button class="number-btn" data-number="7">7</button>
-        <button class="number-btn" data-number="8">8</button>
-        <button class="number-btn" data-number="9">9</button>
-        <button class="number-btn" id="clearBtn">⌫</button>
-        <button class="number-btn" data-number="0">0</button>
+    <!-- Psychic input mode -->
+    <div class="psychic-overlay" id="psychicOverlay">
+      <div class="psychic-container">
+        <div class="psychic-title">Psychic Mode</div>
+        <div class="psychic-input" id="psychicInput">00</div>
+        <div class="psychic-instruction">Enter two-digit millisecond target</div>
+        <div class="number-grid">
+          <button class="number-btn" data-number="1">1</button>
+          <button class="number-btn" data-number="2">2</button>
+          <button class="number-btn" data-number="3">3</button>
+          <button class="number-btn" data-number="4">4</button>
+          <button class="number-btn" data-number="5">5</button>
+          <button class="number-btn" data-number="6">6</button>
+          <button class="number-btn" data-number="7">7</button>
+          <button class="number-btn" data-number="8">8</button>
+          <button class="number-btn" data-number="9">9</button>
+          <button class="number-btn" id="clearBtn">⌫</button>
+          <button class="number-btn" data-number="0">0</button>
+        </div>
       </div>
     </div>
   </div>
 
   <script type="module">
-  import { db } from './firebase-init.js';
-  import { ref, get, set, remove } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+    // --- DIUBAH: Impor dari Firestore, bukan Realtime Database ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-  // Nonaktifkan debugLog agar tidak error jika dipanggil
-  const debugLog = () => {};
+    // --- DIUBAH: Tambahkan konfigurasi dan inisialisasi di sini agar file mandiri ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyBm2cw6dircA3IMc3yCEeCgVa5--5W6DUw",
+      authDomain: "showtime-f086c.firebaseapp.com",
+      projectId: "showtime-f086c",
+      storageBucket: "showtime-f086c.appspot.com",
+      messagingSenderId: "31064800242",
+      appId: "1:31064800242:web:8b290d03eda9bf7d95896b"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app); // DIUBAH: Menggunakan getFirestore()
 
-  // Device ID generator
-  const getDeviceId = () => {
-    const base = navigator.userAgent + navigator.language;
-    const encoded = btoa(base).replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
-    const id = "device_" + encoded;
-    debugLog("Device ID: " + id);
-    return id;
-  };
+    // Device ID generator (tidak ada perubahan)
+    const getDeviceId = () => {
+        const base = navigator.userAgent + navigator.language;
+        const encoded = btoa(base).replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
+        return "device_" + encoded;
+    };
 
-  const runValidation = async () => {
-    const deviceId = getDeviceId();
-    const deviceRef = ref(db, "data/activatedDevices/" + deviceId);
-
-    try {
-      const deviceSnap = await get(deviceRef);
-      if (deviceSnap.exists()) {
-        return; // Sudah diaktivasi
-      }
-    } catch (err) {
-      // Gagal cek Firebase, tetap lanjutkan
-    }
-
-    const licenseKey = localStorage.getItem("showtime_license");
-
-    if (!licenseKey) {
-      window.location.replace("activate.html");
-      return;
-    }
-
-    const licenseRef = ref(db, "data/licenses/" + licenseKey);
-    try {
-      const snapshot = await get(licenseRef);
-      if (snapshot.exists()) {
+    const runValidation = async () => {
+        // DIUBAH: Lakukan login anonim terlebih dahulu
         try {
-          await remove(licenseRef);
-        } catch (err) {}
+            await signInAnonymously(auth);
+        } catch (error) {
+            console.error("Gagal login anonim:", error);
+            alert("Gagal terhubung ke layanan otentikasi. Silakan coba lagi.");
+            return; // Hentikan validasi jika login gagal
+        }
+
+        const deviceId = getDeviceId();
+        // --- DIUBAH: Menggunakan referensi dokumen Firestore ---
+        // Struktur baru: koleksi "activatedDevices", dokumen dengan ID `deviceId`
+        const deviceRef = doc(db, "activatedDevices", deviceId);
 
         try {
-          await set(deviceRef, {
-            activatedAt: Date.now(),
-            licenseKey: licenseKey
-          });
-          localStorage.setItem("showtime_activated", "true");
-        } catch (err) {}
-      } else {
-        localStorage.removeItem("showtime_license");
-        window.location.replace("activate.html");
-      }
-    } catch (err) {
-      alert("Koneksi gagal. Coba lagi.");
-      window.location.replace("activate.html");
-    }
-  };
+            // --- DIUBAH: Menggunakan getDoc untuk mengambil satu dokumen ---
+            const deviceSnap = await getDoc(deviceRef);
+            if (deviceSnap.exists()) {
+                return; // Perangkat ini sudah diaktivasi.
+            }
+        } catch (err) {
+            console.error("Gagal memeriksa status perangkat:", err);
+            // Tetap lanjutkan agar pengguna bisa mencoba aktivasi
+        }
 
-  window.addEventListener('pageshow', () => {
-    runValidation();
-  });
-</script>
+        const licenseKey = localStorage.getItem("showtime_license");
 
-  <!-- Stopwatch logic kamu sendiri -->
+        if (!licenseKey) {
+            window.location.replace("activate.html");
+            return;
+        }
+        
+        // --- DIUBAH: Menggunakan referensi dokumen Firestore untuk lisensi ---
+        const licenseRef = doc(db, "availableLicenses", licenseKey);
+        try {
+            const licenseSnap = await getDoc(licenseRef);
+            if (licenseSnap.exists()) {
+                // Lisensi valid, hapus lisensi dan daftarkan perangkat
+                
+                // 1. Hapus lisensi dari 'availableLicenses'
+                await deleteDoc(licenseRef);
+                
+                // 2. Daftarkan perangkat di 'activatedDevices'
+                await setDoc(deviceRef, {
+                    activatedAt: Date.now(),
+                    licenseKey: licenseKey,
+                    customerName: licenseSnap.data().customerName || 'Nama Tidak Diketahui' 
+                });
+
+                localStorage.setItem("showtime_activated", "true");
+
+            } else {
+                // Lisensi tidak ditemukan atau sudah dipakai
+                localStorage.removeItem("showtime_license");
+                alert("Kunci lisensi tidak valid atau sudah digunakan.");
+                window.location.replace("activate.html");
+            }
+        } catch (err) {
+            console.error("Koneksi gagal saat validasi lisensi:", err);
+            alert("Koneksi ke server gagal. Pastikan Anda terhubung ke internet dan coba lagi.");
+            // Jangan redirect, biarkan pengguna mencoba lagi nanti
+        }
+    };
+
+    // Jalankan validasi setelah halaman dimuat
+    window.addEventListener('pageshow', () => {
+        runValidation();
+    });
+  </script>
+
+  <!-- Stopwatch logic (file terpisah) -->
   <script src="script.js"></script>
 </body>
 </html>
