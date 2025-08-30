@@ -105,9 +105,9 @@
             font-size: 16px;
             box-sizing: border-box;
             margin-bottom: 0; /* Adjusted margin */
-            /* --- PERBAIKAN: Izinkan interaksi teks pada kolom input --- */
-            -webkit-user-select: auto; /* Untuk Safari/iOS */
-            user-select: auto;       /* Standar */
+            /* --- PERBAIKAN FINAL: Paksa agar input bisa diseleksi --- */
+            -webkit-user-select: text !important; /* Untuk Safari/iOS */
+            user-select: text !important;       /* Standar */
         }
         input[type="range"] {
             -webkit-appearance: none; appearance: none;
@@ -237,7 +237,7 @@
         <h1>Settings</h1>
         <div class="top-link-container">
             <a href="instructions.html" class="top-link">Read Instructions</a>
-        }
+        </div>
 
         <div class="setting-group">
             <h2><img src="https://img.icons8.com/ios/50/globe.png" alt="Globe Icon">Magic Mode (World Clock)</h2>
@@ -389,4 +389,3 @@
     </script>
 </body>
 </html>
-
