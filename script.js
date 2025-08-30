@@ -115,6 +115,15 @@ function getDynamicSumOfNineMillis(ms) {
 
 worldClockTab.addEventListener("click", () => {
     if (!running) {
+        // --- PERBAIKAN: Nonaktifkan Mind Reading Mode jika sedang aktif ---
+        if (mindReadingMode) {
+            mindReadingMode = false;
+            if (mindReadingIndicator) mindReadingIndicator.classList.remove("active");
+            // Perbarui tampilan display agar kembali ke format normal
+            stopwatchEl.textContent = formatMainDisplayTime(elapsed);
+            rebuildLapListDisplay();
+        }
+
         psychicOverlay.classList.add("active");
         psychicInput.textContent = "--";
         psychicInput.classList.add("active");
@@ -173,6 +182,17 @@ clearBtn.addEventListener("click", () => {
 });
 
 alarmsTab.addEventListener("click", () => {
+    // --- PERBAIKAN: Nonaktifkan Psychic Mode (overlay) jika sedang aktif ---
+    if (psychicOverlay.classList.contains("active")) {
+        psychicOverlay.classList.remove("active");
+        worldClockReady = false;
+        psychicTarget = null;
+        worldClockTriggered = false;
+        if (psychicIndicator) psychicIndicator.classList.remove("active");
+        clearTimeout(worldClockDelayStartTimer);
+        clearTimeout(worldClockAutoStopTimer);
+    }
+
     mindReadingMode = !mindReadingMode;
 
     if (mindReadingMode) {
