@@ -80,10 +80,10 @@
   </div>
 
   <script type="module">
-    // --- Impor dari Firestore, bukan Realtime Database ---
+    // --- Impor dari Firestore, dengan tambahan runTransaction untuk operasi yang aman ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, deleteDoc, runTransaction } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
     // --- Konfigurasi dan inisialisasi Firebase ---
     const firebaseConfig = {
@@ -116,7 +116,6 @@
         }
 
         const deviceId = getDeviceId();
-        // Menggunakan referensi dokumen Firestore
         const deviceRef = doc(db, "activatedDevices", deviceId);
 
         try {
@@ -136,34 +135,47 @@
             return;
         }
         
-        // Menggunakan referensi dokumen Firestore untuk lisensi
         const licenseRef = doc(db, "availableLicenses", licenseKey);
         try {
-            const licenseSnap = await getDoc(licenseRef);
-            if (licenseSnap.exists()) {
-                // Lisensi valid, hapus lisensi dan daftarkan perangkat
+            // Gunakan transaksi untuk memastikan kedua operasi (hapus dan buat) berhasil atau gagal bersamaan.
+            await runTransaction(db, async (transaction) => {
+                const licenseSnap = await transaction.get(licenseRef);
+
+                if (!licenseSnap.exists()) {
+                    // Jika lisensi tidak ada, gagalkan transaksi. Ini akan ditangkap oleh blok catch.
+                    throw new Error("LICENSE_NOT_FOUND");
+                }
+
+                // Lisensi ditemukan, lanjutkan dengan operasi.
+                const licenseData = licenseSnap.data();
                 
-                // 1. Hapus lisensi dari 'availableLicenses'
-                await deleteDoc(licenseRef);
+                // 1. Hapus lisensi dari 'availableLicenses' dalam transaksi
+                transaction.delete(licenseRef);
                 
-                // 2. Daftarkan perangkat di 'activatedDevices'
-                await setDoc(deviceRef, {
+                // 2. Daftarkan perangkat di 'activatedDevices' dalam transaksi
+                transaction.set(deviceRef, {
                     activatedAt: Date.now(),
                     licenseKey: licenseKey,
-                    customerName: licenseSnap.data().customerName || 'Nama Tidak Diketahui' 
+                    customerName: licenseData.customerName || 'Nama Tidak Diketahui' 
                 });
+            });
 
-                localStorage.setItem("showtime_activated", "true");
+            // Jika transaksi berhasil:
+            localStorage.setItem("showtime_activated", "true");
+            alert("Aktivasi berhasil!"); // Beri notifikasi sukses
+            window.location.reload(); // Muat ulang halaman untuk memastikan status aktivasi terbaca
 
-            } else {
+        } catch (err) {
+            console.error("Gagal dalam transaksi aktivasi:", err);
+            if (err.message === "LICENSE_NOT_FOUND") {
                 // Lisensi tidak ditemukan atau sudah dipakai
                 localStorage.removeItem("showtime_license");
                 alert("Kunci lisensi tidak valid atau sudah digunakan.");
                 window.location.replace("activate.html");
+            } else {
+                // Kesalahan lain (mis. koneksi, izin)
+                alert("Aktivasi gagal. Pastikan Anda terhubung ke internet dan coba lagi.");
             }
-        } catch (err) {
-            console.error("Koneksi gagal saat validasi lisensi:", err);
-            alert("Koneksi ke server gagal. Pastikan Anda terhubung ke internet dan coba lagi.");
         }
     };
 
