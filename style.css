@@ -1,3 +1,4 @@
+/* ================== GLOBAL ================== */
 html, body {
   margin: 0;
   padding: 0;
@@ -7,6 +8,10 @@ html, body {
   height: 100%;
   overflow: hidden;
   touch-action: manipulation;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 .app {
@@ -14,10 +19,11 @@ html, body {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible; /* ubah dari hidden supaya fixed element terlihat */
   position: relative;
 }
 
+/* ================== TIME DISPLAY ================== */
 .time-display {
   font-size: 90px;
   font-weight: 100;
@@ -30,6 +36,7 @@ html, body {
   transition: all 0.1s ease-in-out;
 }
 
+/* ================== CONTROLS ================== */
 .controls {
   position: relative;
   display: flex;
@@ -88,6 +95,7 @@ html, body {
   transform: scale(0.96);
 }
 
+/* ================== DOT INDICATORS ================== */
 .dot-indicators {
   text-align: center;
 }
@@ -105,6 +113,7 @@ html, body {
   background-color: white;
 }
 
+/* ================== LAPS ================== */
 .laps {
   margin: 4px auto 0;
   flex: 1;
@@ -153,10 +162,10 @@ html, body {
 /* ================== BOTTOM TABS ================== */
 .tabs-container {
   position: fixed;
-  bottom: 0;
+  bottom: env(safe-area-inset-bottom, 0);
   left: 0;
   right: 0;
-  z-index: 9999;  /* naikin dari 100 ke 9999 */
+  z-index: 9999;
   pointer-events: none;
   box-sizing: border-box;
   padding-bottom: 0;
@@ -174,9 +183,8 @@ html, body {
   justify-content: space-around;
   align-items: center;
   pointer-events: all;
-  transform: translateY(8px);
+  transform: none; /* hapus translateY supaya nggak kepotong */
 }
-
 
 .tab {
   display: flex;
