@@ -4,27 +4,27 @@ html, body {
   background: black;
   color: white;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  height: 100%; /* Menggunakan 100% untuk stabilitas */
-  overflow: hidden; 
+  height: 100%;
+  overflow: hidden;
   touch-action: manipulation;
-  /* DIHAPUS: display: flex dan semua properti flex dari body */
 }
 
 .app {
   height: 100%;
   box-sizing: border-box;
-  display: flex; /* Flexbox hanya untuk mengatur konten di dalam .app */
+  display: flex;
   flex-direction: column;
   overflow: hidden;
   position: relative;
-  padding-bottom: calc(60px + env(safe-area-inset-bottom)); 
+  /* Tinggi toolbar (60px) + safe area bawah */
+  padding-bottom: calc(60px + env(safe-area-inset-bottom));
 }
 
 .time-display {
   font-size: 90px;
   font-weight: 100;
   text-align: center;
-  margin-top: 185px; 
+  margin-top: 185px;
   letter-spacing: 2px;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
@@ -39,7 +39,7 @@ html, body {
   align-items: center;
   margin: 94px 0 0 0;
   padding: 0 26px 20px;
-  flex-shrink: 0; /* Mencegah controls menyusut */
+  flex-shrink: 0;
 }
 
 .controls::after {
@@ -109,7 +109,7 @@ html, body {
 
 .laps {
   margin: 4px auto 0;
-  flex: 1; /* Membuat area lap mengisi sisa ruang */
+  flex: 1;
   overflow-y: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -152,14 +152,15 @@ html, body {
   text-align: right;
 }
 
-/* ================== SOLUSI FINAL (METODE PALING STABIL) ================== */
+/* ================== TOOLBAR (iOS style) ================== */
 .tabs-container {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 100;
-  pointer-events: none;
+  pointer-events: none; /* container tidak menghalangi klik */
+}
 
 .tabs {
   max-width: 500px;
@@ -172,9 +173,9 @@ html, body {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  pointer-events: all;
+  pointer-events: all; /* isi toolbar tetap bisa diklik */
 }
-/* ======================================================================= */
+/* ========================================================= */
 
 .tab {
   display: flex;
@@ -200,7 +201,7 @@ html, body {
   height: 24px;
   filter: brightness(0) invert(1);
   transition: filter 0.2s, opacity 0.2s;
-  opacity: 1; 
+  opacity: 1;
 }
 
 .tab.active {
