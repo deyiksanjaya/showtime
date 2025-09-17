@@ -11,9 +11,8 @@ html, body {
   touch-action: manipulation;
 }
 
-/* PERUBAHAN: .app tidak lagi menampung toolbar, hanya konten utama */
 .app {
-  flex: 1; /* Membuat .app mengisi semua ruang yang tersedia */
+  flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -24,7 +23,8 @@ html, body {
   font-size: 90px;
   font-weight: 100;
   text-align: center;
-  margin-top: 145px; 
+  /* Mengembalikan margin atas ke nilai semula */
+  margin-top: 185px; 
   letter-spacing: 2px;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
@@ -32,45 +32,15 @@ html, body {
   transition: all 0.1s ease-in-out;
 }
 
-.indicators-container {
-    text-align: center;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-.indicator {
-    background: rgba(255, 160, 10, 0.2);
-    color: #FFA00A;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 500;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
-}
-
-.indicator.mind-reading {
-    background: rgba(90, 200, 250, 0.2);
-    color: #5ac8fa;
-}
-
-.indicator.active {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
+/* Gaya untuk indikator telah dihapus */
 
 .controls {
   position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 54px 0 0 0;
+  /* Mengembalikan margin atas ke nilai semula */
+  margin: 94px 0 0 0;
   padding: 0 26px 20px;
 }
 
@@ -147,8 +117,8 @@ html, body {
   -ms-overflow-style: none;
   width: 90%;
   display: block;
-  /* Mengurangi padding karena toolbar tidak lagi overlay */
-  padding-bottom: 20px; 
+  /* Menghapus padding-bottom agar tidak ada ruang ekstra */
+  padding-bottom: 0;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
@@ -162,6 +132,8 @@ html, body {
   padding: 0;
   list-style: none;
   margin: 0;
+  /* Memberi sedikit padding agar lap terakhir tidak terpotong */
+  padding-bottom: 20px;
 }
 
 .laps li {
@@ -185,29 +157,24 @@ html, body {
   text-align: right;
 }
 
-/* ================== PERUBAHAN UTAMA PADA TOOLBAR ================== */
+/* Posisi Toolbar Final */
 .tabs {
-  /* Menghapus position: absolute. Sekarang menjadi flex item biasa. */
   width: calc(100% - 20px);
   max-width: 500px;
-  height: 65px;
+  height: 60px; /* Sedikit lebih pendek agar pas */
   background: #1c1c1e;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border-radius: 32.5px;
-  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 30px; /* Menyesuaikan dengan height */
+  border: 0.1px solid rgba(255, 255, 255, 0.7);
   box-sizing: border-box;
-
-  /* Memusatkan toolbar dan memberinya jarak dari bawah */
   margin: 0 auto;
-  /* Fallback untuk browser lama */
+  /* Margin minimal untuk jarak dari bawah layar */
   margin-bottom: 10px; 
-  /* Menggunakan env() untuk menghormati safe area di iOS */
   margin-bottom: calc(10px + env(safe-area-inset-bottom));
-  flex-shrink: 0; /* Mencegah toolbar menyusut */
+  flex-shrink: 0;
 }
-/* ================================================================ */
 
 .tab {
   display: flex;
@@ -232,7 +199,7 @@ html, body {
   width: 24px;
   height: 24px;
   filter: brightness(0) invert(1);
-  opacity: 0.7;
+  opacity: 1;
   transition: filter 0.2s, opacity 0.2s;
 }
 
@@ -245,6 +212,7 @@ html, body {
   opacity: 1;
 }
 
+/* Sisa gaya psychic mode tidak diubah */
 .psychic-overlay {
   position: fixed;
   top: 0;
