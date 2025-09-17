@@ -18,7 +18,7 @@ html, body {
   overflow: hidden;
   position: relative;
   /* Memberi ruang di bawah agar konten tidak tertutup toolbar */
-  padding-bottom: 85px; 
+  padding-bottom: 90px; 
 }
 
 .time-display {
@@ -152,36 +152,32 @@ html, body {
   text-align: right;
 }
 
-/* ================== SOLUSI PASTI UNTUK TOOLBAR ================== */
-.tabs {
+/* ================== SOLUSI FINAL DENGAN PEMBUNGKUS ================== */
+/* Container tak terlihat untuk positioning dan safe area */
+.tabs-container {
   position: fixed;
-  /* Mengatur posisi dari tepi layar */
-  left: 10px;
-  right: 10px;
-  /* Posisi bawah dengan memperhitungkan safe area */
-  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
-  
-  /* Tinggi toolbar dibuat tetap */
-  height: 60px;
-  
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  /* Padding bawah untuk safe area, minimal 10px */
+  padding: 0 10px calc(env(safe-area-inset-bottom, 0px) + 10px);
+  box-sizing: border-box;
+}
+
+/* Toolbar visual yang sebenarnya */
+.tabs {
   max-width: 500px;
-  /* Menggunakan margin auto untuk center di layar lebar */
-  margin-left: auto;
-  margin-right: auto;
-  
+  margin: 0 auto; /* Center it */
+  height: 60px; /* Tinggi tetap */
   background: #1c1c1e;
+  border-radius: 30px;
+  border: 0.1px solid rgba(255, 255, 255, 0.7);
   display: flex;
   justify-content: space-around;
-  /* Ini akan bekerja karena tinggi sudah tetap */
-  align-items: center;
-  
-  border-radius: 30px;
-  box-sizing: border-box;
-  z-index: 100;
-  
-  border: 0.1px solid rgba(255, 255, 255, 0.7);
+  align-items: center; /* Akan bekerja dengan benar sekarang */
 }
-/* ============================================================= */
+/* =================================================================== */
 
 .tab {
   display: flex;
