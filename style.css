@@ -165,7 +165,7 @@ html, body {
   max-width: 500px;
   width: calc(100% - 20px);
   height: 60px;
-  margin: 0 auto env(safe-area-inset-bottom); /* buang +8px */
+  margin: 0 auto; /* buang +8px */
   border-radius: 30px;
   background: #1c1c1e;
   border: 0.5px solid rgba(255, 255, 255, 0.2);
