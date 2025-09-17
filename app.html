@@ -22,15 +22,10 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- ================== PERUBAHAN STRUKTUR ================== -->
-  <!-- Konten aplikasi sekarang terpisah dari toolbar -->
   <div class="app">
     <div class="time-display" id="stopwatch">00:00.00</div>
     
-    <div class="indicators-container">
-        <div class="indicator" id="psychicIndicator">Psychic Mode Ready</div>
-        <div class="indicator mind-reading" id="mindReadingIndicator">Mind Reading</div>
-    </div>
+    <!-- Indikator "Psychic Mode" dan "Mind Reading" telah dihapus -->
 
     <div class="controls">
       <button class="btn lap-btn" id="lapBtn" disabled aria-label="Lap or Reset">Lap</button>
@@ -44,7 +39,6 @@
       <ul id="lapList"></ul>
     </div>
 
-    <!-- Psychic input mode (tetap di dalam .app agar bisa di-overlay)-->
     <div class="psychic-overlay" id="psychicOverlay">
       <div class="psychic-container">
         <div class="psychic-title">Psychic Mode</div>
@@ -67,7 +61,6 @@
     </div>
   </div>
 
-  <!-- Toolbar sekarang menjadi elemen sibling dari .app, bukan child -->
   <div class="tabs">
     <div class="tab" id="worldClockTab">
       <img src="https://img.icons8.com/ios/50/globe.png" alt="World Clock Icon"/>
@@ -86,7 +79,6 @@
       <div>Timers</div>
     </div>
   </div>
-  <!-- ========================================================= -->
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
