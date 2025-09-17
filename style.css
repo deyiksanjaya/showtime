@@ -16,13 +16,15 @@ body > .app {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
 }
 
 .time-display {
   font-size: 90px;
   font-weight: 100;
   text-align: center;
-  margin-top: 185px;
+  /* Mengurangi margin atas agar ada ruang untuk indikator */
+  margin-top: 145px; 
   letter-spacing: 2px;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
@@ -30,12 +32,47 @@ body > .app {
   transition: all 0.1s ease-in-out;
 }
 
+/* ================== TAMBAHAN: Gaya untuk Indikator ================== */
+.indicators-container {
+    text-align: center;
+    height: 40px; /* Memberi ruang tetap */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.indicator {
+    background: rgba(255, 160, 10, 0.2);
+    color: #FFA00A;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+}
+
+.indicator.mind-reading {
+    background: rgba(90, 200, 250, 0.2);
+    color: #5ac8fa;
+}
+
+.indicator.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+/* ==================================================================== */
+
 .controls {
   position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 94px 0 0 0;
+  margin: 54px 0 0 0; /* Mengurangi margin atas setelah indikator ditambahkan */
   padding: 0 26px 20px;
 }
 
@@ -116,11 +153,11 @@ body > .app {
   margin: 4px auto 0;
   flex: 1;
   overflow-y: scroll;
-  scrollbar-width: none;           /* Firefox */
-  -ms-overflow-style: none;        /* IE & Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   width: 90%;
-  display: block;                  /* <- penting! ubah dari flex ke block */
-  padding-bottom: 20px;
+  display: block;
+  padding-bottom: 80px;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
@@ -134,8 +171,8 @@ body > .app {
   padding: 0;
   list-style: none;
   margin: 0;
-  display: block;                 /* <- penting! ubah dari flex ke block */
-  padding-bottom: 50px;         /* <- biar lap terakhir nggak ketutup tab */
+  display: block;
+  padding-bottom: 50px;
 }
 
 .laps li {
@@ -165,59 +202,55 @@ body > .app {
 
 .tabs {
   position: absolute;
-  bottom: -25px;
-  width: 100%;
-  height: 76px;
-  background: black;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 20px);
+  max-width: 500px;
+  height: 65px;
+  background: #1c1c1e;
   display: flex;
   justify-content: space-around;
   align-items: center;
+  border-radius: 32.5px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  border: 2px solid rgba(255, 255, 255, 0.7);
 }
 
 .tab {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 11px;
-  color: #bbb;
+  justify-content: center;
+  font-size: 10px;
+  color: #8e8e93;
   cursor: pointer;
+  flex: 1;
+  height: 100%;
+  transition: color 0.2s;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* --- Perbaikan: Tambahkan lebar minimum untuk div teks di dalam tab --- */
 .tab div {
-  min-width: 70px; /* Sesuaikan lebar ini berdasarkan teks terpanjang yang mungkin ("World Clock.") */
-  text-align: center; /* Pastikan teks tetap di tengah dalam lebar tetap */
-  white-space: nowrap; /* Mencegah teks melipat ke baris baru */
+  margin-top: 2px;
+  white-space: nowrap;
 }
-/* --- Akhir Perbaikan --- */
 
-
-/* Base style for all tab images (sets size and common properties) */
 .tab img {
   width: 24px;
   height: 24px;
-  margin-bottom: 4px;
-  opacity: 0.5; /* Default opacity for all inactive icons */
+  filter: brightness(0) invert(1);
+  opacity: 0.7;
   transition: filter 0.2s, opacity 0.2s;
 }
 
-/* Specific filter for inactive icons (World Clock, Alarms, Timers) */
-.tab:not(.active) img:not([alt="Stopwatch Icon"]) {
-  filter: invert(50%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(150%) contrast(100%);
-}
-
-/* Ensure stopwatch icon when NOT active keeps its original white color */
-.tab:not(.active) #stopwatchTab img {
-  filter: none; /* Explicitly remove any filter */
-  opacity: 0.5; /* Set specific opacity if needed, defaults to .tab img otherwise */
-}
-
 .tab.active {
-  color: #FFA00A; /* Orange text for active tab */
+  color: #FFA00A;
 }
 
-#stopwatchTab.active img {
-  filter: brightness(1);
+.tab.active img {
+  filter: none;
   opacity: 1;
 }
 
@@ -286,23 +319,6 @@ body > .app {
   font-size: 14px;
   color: #aaa;
   margin-bottom: 30px;
-}
-
-.psychic-mode-indicator {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: rgba(255, 160, 10, 0.2);
-  color: #FFA00A;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 14px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.psychic-mode-indicator.active {
-  opacity: 1;
 }
 
 .number-grid {
