@@ -16,7 +16,7 @@ html, body {
   flex-direction: column;
   overflow: hidden;
   position: relative;
-  padding-bottom: 20px; /* cukup supaya konten ga ketutup toolbar */
+  /* padding-bottom DIHAPUS supaya toolbar fixed nggak ngedorong konten */
 }
 
 .time-display {
@@ -151,23 +151,21 @@ html, body {
   text-align: right;
 }
 
-/* ================== TOOLBAR FIX ================== */
+/* ================== BOTTOM TABS ================== */
 .tabs-container {
   position: fixed;
+  bottom: 0;
   left: 0;
   right: 0;
-  bottom: env(safe-area-inset-bottom);
   z-index: 100;
-  display: flex;
-  justify-content: center;
-  pointer-events: none;
+  pointer-events: none; /* biar cuma .tabs yg interaktif */
 }
 
 .tabs {
   max-width: 500px;
   width: calc(100% - 20px);
   height: 60px;
-  margin-bottom: 8px; /* jarak tipis biar mirip Clock app */
+  margin: 0 auto env(safe-area-inset-bottom); /* buang +8px */
   border-radius: 30px;
   background: #1c1c1e;
   border: 0.5px solid rgba(255, 255, 255, 0.2);
@@ -176,7 +174,6 @@ html, body {
   align-items: center;
   pointer-events: all;
 }
-/* ================================================ */
 
 .tab {
   display: flex;
@@ -213,6 +210,7 @@ html, body {
   filter: none;
 }
 
+/* ================== OVERLAY ================== */
 .psychic-overlay {
   position: fixed;
   top: 0;
