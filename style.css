@@ -17,7 +17,7 @@ html, body {
   flex-direction: column;
   overflow: hidden;
   position: relative;
-  /* PERUBAHAN: Menambahkan padding untuk memberi ruang bagi toolbar fixed di bawah */
+  /* Memberi ruang di bawah agar konten tidak tertutup toolbar */
   padding-bottom: 85px; 
 }
 
@@ -152,15 +152,17 @@ html, body {
   text-align: right;
 }
 
-/* ================== WORKAROUND TOOLBAR ================== */
+/* ================== PERBAIKAN FINAL TOOLBAR ================== */
 .tabs {
-  position: fixed; /* Menggunakan fixed positioning */
-  bottom: 0;
+  position: fixed;
+  /* Menentukan jarak dari bawah secara langsung */
+  bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
   
   width: calc(100% - 20px);
   max-width: 500px;
+  /* Tinggi toolbar dibuat tetap */
   height: 60px;
   background: #1c1c1e;
   display: flex;
@@ -168,17 +170,14 @@ html, body {
   align-items: center;
   border-radius: 30px;
   box-sizing: border-box;
-  z-index: 100; /* Memastikan toolbar di atas konten lain */
+  z-index: 100;
   
-  /* Menambahkan ruang untuk home bar di iOS */
+  /* Padding untuk safe area, tidak mengubah tinggi elemen */
   padding-bottom: env(safe-area-inset-bottom);
-  height: calc(60px + env(safe-area-inset-bottom));
-  margin-bottom: 10px;
-
-  /* PERUBAHAN: Border diubah sesuai permintaan */
+  
   border: 0.1px solid rgba(255, 255, 255, 0.7);
 }
-/* ======================================================= */
+/* ============================================================= */
 
 .tab {
   display: flex;
@@ -204,7 +203,6 @@ html, body {
   height: 24px;
   filter: brightness(0) invert(1);
   transition: filter 0.2s, opacity 0.2s;
-  /* PERUBAHAN: Opacity diubah sesuai permintaan */
   opacity: 1; 
 }
 
