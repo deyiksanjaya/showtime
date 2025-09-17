@@ -177,7 +177,7 @@ body > .app {
   justify-content: space-around;
   align-items: center;
   border-radius: 38px; /* Membuat container membulat */
-  border: 0.1px solid white;
+  border: 0.1px solid #3A3A3C;
 }
 
 .tab {
