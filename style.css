@@ -11,8 +11,9 @@ html, body {
   touch-action: manipulation;
 }
 
-body > .app {
-  flex: 1;
+/* PERUBAHAN: .app tidak lagi menampung toolbar, hanya konten utama */
+.app {
+  flex: 1; /* Membuat .app mengisi semua ruang yang tersedia */
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -23,7 +24,6 @@ body > .app {
   font-size: 90px;
   font-weight: 100;
   text-align: center;
-  /* Mengurangi margin atas agar ada ruang untuk indikator */
   margin-top: 145px; 
   letter-spacing: 2px;
   font-variant-numeric: tabular-nums;
@@ -32,10 +32,9 @@ body > .app {
   transition: all 0.1s ease-in-out;
 }
 
-/* ================== TAMBAHAN: Gaya untuk Indikator ================== */
 .indicators-container {
     text-align: center;
-    height: 40px; /* Memberi ruang tetap */
+    height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -65,14 +64,13 @@ body > .app {
     visibility: visible;
     transform: translateY(0);
 }
-/* ==================================================================== */
 
 .controls {
   position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 54px 0 0 0; /* Mengurangi margin atas setelah indikator ditambahkan */
+  margin: 54px 0 0 0;
   padding: 0 26px 20px;
 }
 
@@ -106,26 +104,18 @@ body > .app {
   transition: background-color 0.1s ease, transform 0.1s ease;
 }
 
-.lap-btn {
-  background-color: #1c1c1e;
-  color: #aaa;
-}
-
 .lap-btn:disabled {
   opacity: 0.6;
-  cursor: default;
 }
 
 .start-btn {
   background-color: #013a1c;
   color: #00ff4c;
-  transition: transform 0.1s ease, background-color 0.3s ease;
 }
 
 .stop-btn {
   background-color: #3c0000;
   color: #ff3b30;
-  transition: transform 0.1s ease, background-color 0.3s ease;
 }
 
 .btn:active {
@@ -157,7 +147,8 @@ body > .app {
   -ms-overflow-style: none;
   width: 90%;
   display: block;
-  padding-bottom: 80px;
+  /* Mengurangi padding karena toolbar tidak lagi overlay */
+  padding-bottom: 20px; 
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
@@ -171,20 +162,14 @@ body > .app {
   padding: 0;
   list-style: none;
   margin: 0;
-  display: block;
-  padding-bottom: 50px;
 }
 
 .laps li {
   display: flex;
   justify-content: space-between;
-  padding: 4px 0;
+  padding: 10px 0;
   border-bottom: 1px solid #1c1c1e;
   font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum";
-  line-height: 1.4;
-  height: 30px;
-  transition: color 0.3s ease;
 }
 
 .laps li.fastest {
@@ -200,11 +185,9 @@ body > .app {
   text-align: right;
 }
 
+/* ================== PERUBAHAN UTAMA PADA TOOLBAR ================== */
 .tabs {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  /* Menghapus position: absolute. Sekarang menjadi flex item biasa. */
   width: calc(100% - 20px);
   max-width: 500px;
   height: 65px;
@@ -213,10 +196,18 @@ body > .app {
   justify-content: space-around;
   align-items: center;
   border-radius: 32.5px;
-  padding: 0 10px;
-  box-sizing: border-box;
   border: 2px solid rgba(255, 255, 255, 0.7);
+  box-sizing: border-box;
+
+  /* Memusatkan toolbar dan memberinya jarak dari bawah */
+  margin: 0 auto;
+  /* Fallback untuk browser lama */
+  margin-bottom: 10px; 
+  /* Menggunakan env() untuk menghormati safe area di iOS */
+  margin-bottom: calc(10px + env(safe-area-inset-bottom));
+  flex-shrink: 0; /* Mencegah toolbar menyusut */
 }
+/* ================================================================ */
 
 .tab {
   display: flex;
@@ -282,10 +273,6 @@ body > .app {
   width: 220px;
   text-align: center;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-  position: absolute;
-  left: 2%;
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .psychic-title {
@@ -302,7 +289,6 @@ body > .app {
   border-radius: 9px;
   margin-bottom: 18px;
   font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum";
   color: white;
   width: 140px;
   text-align: center;
@@ -341,19 +327,4 @@ body > .app {
 
 .number-btn:active {
   background: #444;
-}
-
-.close-btn {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: none;
-  border: none;
-  color: #aaa;
-  font-size: 24px;
-  cursor: pointer;
-}
-
-.close-btn:hover {
-  color: white;
 }
