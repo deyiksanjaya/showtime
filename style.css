@@ -163,9 +163,10 @@ html, body {
 
 .tabs {
   max-width: 500px;
-  width: calc(100% - 20px);
+  width: calc(100% - 60px);
   height: 60px;
-  margin: 0 auto; /* buang +8px */
+  margin: 0 auto; /* auto kiri-kanan */
+  margin-bottom: env(safe-area-inset-bottom); /* nempel ke safe area Safari */
   border-radius: 30px;
   background: #1c1c1e;
   border: 0.5px solid rgba(255, 255, 255, 0.2);
