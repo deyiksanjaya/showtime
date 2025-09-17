@@ -167,11 +167,11 @@ body > .app {
 
 .tabs {
   position: absolute;
-  bottom: -25px; /* DIKEMBALIKAN: Posisi kembali ke semula agar tidak bergeser */
-  left: 40px; /* Menambahkan margin luar 40px */
-  right: 40px; /* Menambahkan margin luar 40px */
+  bottom: -18px; /* DIKEMBALIKAN: Posisi kembali ke semula agar tidak bergeser */
+  left: 30px; /* Menambahkan margin luar 40px */
+  right: 30px; /* Menambahkan margin luar 40px */
   width: auto; /* Diperlukan agar margin bisa diterapkan */
-  height: 76px;
+  height: 60px;
   background: #1C1C1E; /* Warna container sesuai permintaan */
   display: flex;
   justify-content: space-around;
