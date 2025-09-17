@@ -156,25 +156,28 @@ html, body {
 /* ================== SOLUSI FINAL (METODE PALING STABIL) ================== */
 .tabs-container {
   position: fixed;
-  bottom: 0; /* biar nempel di dasar viewport */
   left: 0;
   right: 0;
+  bottom: 0; /* tempel ke dasar layar */
   z-index: 100;
   pointer-events: none;
-  padding-bottom: env(safe-area-inset-bottom); /* tambahin padding buat nutupin area gesture bar */
+  padding-bottom: env(safe-area-inset-bottom); /* kasih ruang buat gesture bar */
+  display: flex;
+  justify-content: center;
 }
 
 .tabs {
   max-width: 500px;
-  margin: 0 auto;
+  width: calc(100% - 20px); /* biar ada margin kiri-kanan */
   height: 60px;
   background: #1c1c1e;
   border-radius: 30px;
-  border: 0.1px solid rgba(255, 255, 255, 0.7);
+  border: 0.5px solid rgba(255, 255, 255, 0.2);
   display: flex;
   justify-content: space-around;
   align-items: center;
   pointer-events: all;
+  margin-bottom: 8px; /* jarak pixel-perfect dari dasar safe area */
 }
 /* ======================================================================= */
 
