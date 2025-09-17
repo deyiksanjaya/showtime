@@ -156,11 +156,12 @@ html, body {
 /* ================== SOLUSI FINAL (METODE PALING STABIL) ================== */
 .tabs-container {
   position: fixed;
-  bottom: env(safe-area-inset-bottom);
+  bottom: 0; /* biar nempel di dasar viewport */
   left: 0;
   right: 0;
   z-index: 100;
   pointer-events: none;
+  padding-bottom: env(safe-area-inset-bottom); /* tambahin padding buat nutupin area gesture bar */
 }
 
 .tabs {
