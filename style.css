@@ -17,13 +17,14 @@ html, body {
   flex-direction: column;
   overflow: hidden;
   position: relative;
+  /* PERUBAHAN: Menambahkan padding untuk memberi ruang bagi toolbar fixed di bawah */
+  padding-bottom: 85px; 
 }
 
 .time-display {
   font-size: 90px;
   font-weight: 100;
   text-align: center;
-  /* Mengembalikan margin atas ke nilai semula */
   margin-top: 185px; 
   letter-spacing: 2px;
   font-variant-numeric: tabular-nums;
@@ -32,14 +33,11 @@ html, body {
   transition: all 0.1s ease-in-out;
 }
 
-/* Gaya untuk indikator telah dihapus */
-
 .controls {
   position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* Mengembalikan margin atas ke nilai semula */
   margin: 94px 0 0 0;
   padding: 0 26px 20px;
 }
@@ -117,7 +115,6 @@ html, body {
   -ms-overflow-style: none;
   width: 90%;
   display: block;
-  /* Menghapus padding-bottom agar tidak ada ruang ekstra */
   padding-bottom: 0;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
@@ -132,8 +129,6 @@ html, body {
   padding: 0;
   list-style: none;
   margin: 0;
-  /* Memberi sedikit padding agar lap terakhir tidak terpotong */
-  padding-bottom: 20px;
 }
 
 .laps li {
@@ -157,24 +152,33 @@ html, body {
   text-align: right;
 }
 
-/* Posisi Toolbar Final */
+/* ================== WORKAROUND TOOLBAR ================== */
 .tabs {
+  position: fixed; /* Menggunakan fixed positioning */
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  
   width: calc(100% - 20px);
   max-width: 500px;
-  height: 60px; /* Sedikit lebih pendek agar pas */
+  height: 60px;
   background: #1c1c1e;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border-radius: 30px; /* Menyesuaikan dengan height */
-  border: 0.1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 30px;
   box-sizing: border-box;
-  margin: 0 auto;
-  /* Margin minimal untuk jarak dari bawah layar */
-  margin-bottom: 10px; 
-  margin-bottom: calc(10px + env(safe-area-inset-bottom));
-  flex-shrink: 0;
+  z-index: 100; /* Memastikan toolbar di atas konten lain */
+  
+  /* Menambahkan ruang untuk home bar di iOS */
+  padding-bottom: env(safe-area-inset-bottom);
+  height: calc(60px + env(safe-area-inset-bottom));
+  margin-bottom: 10px;
+
+  /* PERUBAHAN: Border diubah sesuai permintaan */
+  border: 0.1px solid rgba(255, 255, 255, 0.7);
 }
+/* ======================================================= */
 
 .tab {
   display: flex;
@@ -199,8 +203,9 @@ html, body {
   width: 24px;
   height: 24px;
   filter: brightness(0) invert(1);
-  opacity: 1;
   transition: filter 0.2s, opacity 0.2s;
+  /* PERUBAHAN: Opacity diubah sesuai permintaan */
+  opacity: 1; 
 }
 
 .tab.active {
@@ -209,10 +214,8 @@ html, body {
 
 .tab.active img {
   filter: none;
-  opacity: 1;
 }
 
-/* Sisa gaya psychic mode tidak diubah */
 .psychic-overlay {
   position: fixed;
   top: 0;
