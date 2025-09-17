@@ -152,27 +152,27 @@ html, body {
   text-align: right;
 }
 
-/* ================== PERBAIKAN FINAL TOOLBAR ================== */
+/* ================== PERBAIKAN FINAL TOOLBAR V2 ================== */
 .tabs {
   position: fixed;
-  /* Menentukan jarak dari bawah secara langsung */
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
   
   width: calc(100% - 20px);
   max-width: 500px;
-  /* Tinggi toolbar dibuat tetap */
-  height: 60px;
+  
   background: #1c1c1e;
   display: flex;
   justify-content: space-around;
-  align-items: center;
+  /* PERUBAHAN: Mengatur item agar menempel di atas */
+  align-items: flex-start;
+  
   border-radius: 30px;
   box-sizing: border-box;
   z-index: 100;
   
-  /* Padding untuk safe area, tidak mengubah tinggi elemen */
+  /* Padding untuk safe area, tidak mengubah tinggi visual item di dalamnya */
   padding-bottom: env(safe-area-inset-bottom);
   
   border: 0.1px solid rgba(255, 255, 255, 0.7);
@@ -188,7 +188,8 @@ html, body {
   color: #8e8e93;
   cursor: pointer;
   flex: 1;
-  height: 100%;
+  /* PERUBAHAN: Memberikan tinggi tetap agar tidak meregang */
+  height: 60px;
   transition: color 0.2s;
   -webkit-tap-highlight-color: transparent;
 }
