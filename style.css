@@ -5,14 +5,15 @@ html, body {
   color: white;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   height: 100dvh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  /* DIHAPUS: display: flex dan properti terkait yang menyebabkan konflik */
+  overflow: hidden; 
   touch-action: manipulation;
 }
 
+/* DIUBAH: .app sekarang menangani layout flex internalnya sendiri */
 .app {
-  flex: 1;
+  height: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -152,32 +153,32 @@ html, body {
   text-align: right;
 }
 
-/* ================== SOLUSI FINAL DENGAN PEMBUNGKUS ================== */
-/* Container tak terlihat untuk positioning dan safe area */
+/* ================== SOLUSI FINAL (METODE BARU) ================== */
 .tabs-container {
   position: fixed;
-  bottom: 0;
+  bottom: 0; /* Menempel di paling bawah */
   left: 0;
   right: 0;
   z-index: 100;
-  /* Padding bawah untuk safe area, minimal 10px */
-  padding: 0 10px calc(env(safe-area-inset-bottom, 0px) + 0px);
+  /* Padding untuk jarak dari tepi dan untuk safe area */
+  padding: 0 10px calc(env(safe-area-inset-bottom, 0px) + 5px); /* Jarak 5px dari bawah */
   box-sizing: border-box;
+  pointer-events: none; /* Agar container tidak bisa di-klik */
 }
 
-/* Toolbar visual yang sebenarnya */
 .tabs {
   max-width: 500px;
-  margin: 0 auto; /* Center it */
-  height: 60px; /* Tinggi tetap */
+  margin: 0 auto;
+  height: 60px;
   background: #1c1c1e;
   border-radius: 30px;
   border: 0.1px solid rgba(255, 255, 255, 0.7);
   display: flex;
   justify-content: space-around;
-  align-items: center; /* Akan bekerja dengan benar sekarang */
+  align-items: center;
+  pointer-events: all; /* Agar tombol di dalam toolbar bisa di-klik */
 }
-/* =================================================================== */
+/* ================================================================= */
 
 .tab {
   display: flex;
