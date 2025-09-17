@@ -159,13 +159,16 @@ html, body {
   z-index: 100;
   pointer-events: none;
   box-sizing: border-box;
-  /* Hapus padding-bottom biar gak dorong toolbar ke atas */
+
+  /* hanya kasih ruang kalau ada safe area (iPhone X ke atas) */
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  padding-bottom: constant(safe-area-inset-bottom, 0); /* iOS lama */
 }
 
 .tabs {
   max-width: 500px;
   width: calc(100% - 40px);
-  height: 60px;
+  height: 60px;              /* selalu fix 60px */
   margin: 0 auto;
   border-radius: 30px;
   background: #1c1c1e;
@@ -174,10 +177,6 @@ html, body {
   justify-content: space-around;
   align-items: center;
   pointer-events: all;
-
-  /* Tambahin safe area di dalam toolbar */
-  padding-bottom: env(safe-area-inset-bottom, 0);
-  padding-bottom: constant(safe-area-inset-bottom, 0); /* iOS lama */
 }
 
 .tab {
