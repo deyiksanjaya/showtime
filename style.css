@@ -167,7 +167,7 @@ body > .app {
 
 .tabs {
   position: absolute;
-  bottom: -18px; /* DIKEMBALIKAN: Posisi kembali ke semula agar tidak bergeser */
+  bottom: -20px; /* DIKEMBALIKAN: Posisi kembali ke semula agar tidak bergeser */
   left: 30px; /* Menambahkan margin luar 40px */
   right: 30px; /* Menambahkan margin luar 40px */
   width: auto; /* Diperlukan agar margin bisa diterapkan */
