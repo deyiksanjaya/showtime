@@ -159,7 +159,7 @@ html, body {
   left: 0;
   right: 0;
   z-index: 100;
-  pointer-events: 
+  pointer-events: none;
 
 .tabs {
   max-width: 500px;
