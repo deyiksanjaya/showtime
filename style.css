@@ -156,7 +156,7 @@ html, body {
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 9999;  /* naikin dari 100 ke 9999 */
   pointer-events: none;
   box-sizing: border-box;
   padding-bottom: 0;
