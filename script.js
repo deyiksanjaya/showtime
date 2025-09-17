@@ -683,3 +683,14 @@ document.addEventListener('DOMContentLoaded', () => {
     stopwatchTab.classList.add("active");
     initializeSumOfNinePool();
 });
+
+function setAppHeight() {
+  const app = document.querySelector('.app');
+  if (app) {
+    app.style.height = `${window.innerHeight}px`;
+  }
+}
+
+// Set saat load dan resize
+window.addEventListener('load', setAppHeight);
+window.addEventListener('resize', setAppHeight);
