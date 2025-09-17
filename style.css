@@ -4,22 +4,21 @@ html, body {
   background: black;
   color: white;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  height: 100dvh;
-  /* DIHAPUS: display: flex dan properti terkait yang menyebabkan konflik */
+  height: 100%; /* Menggunakan 100% untuk stabilitas */
   overflow: hidden; 
   touch-action: manipulation;
+  /* DIHAPUS: display: flex dan semua properti flex dari body */
 }
 
-/* DIUBAH: .app sekarang menangani layout flex internalnya sendiri */
 .app {
   height: 100%;
   box-sizing: border-box;
-  display: flex;
+  display: flex; /* Flexbox hanya untuk mengatur konten di dalam .app */
   flex-direction: column;
   overflow: hidden;
   position: relative;
-  /* Memberi ruang di bawah agar konten tidak tertutup toolbar */
-  padding-bottom: 90px; 
+  /* Padding agar lap terakhir tidak tertutup toolbar */
+  padding-bottom: 85px; 
 }
 
 .time-display {
@@ -41,6 +40,7 @@ html, body {
   align-items: center;
   margin: 94px 0 0 0;
   padding: 0 26px 20px;
+  flex-shrink: 0; /* Mencegah controls menyusut */
 }
 
 .controls::after {
@@ -110,7 +110,7 @@ html, body {
 
 .laps {
   margin: 4px auto 0;
-  flex: 1;
+  flex: 1; /* Membuat area lap mengisi sisa ruang */
   overflow-y: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -153,17 +153,14 @@ html, body {
   text-align: right;
 }
 
-/* ================== SOLUSI FINAL (METODE BARU) ================== */
+/* ================== SOLUSI FINAL (METODE PALING STABIL) ================== */
 .tabs-container {
   position: fixed;
-  bottom: 0; /* Menempel di paling bawah */
-  left: 0;
-  right: 0;
+  bottom: 5px; /* Jarak 5px dari dasar layar. Ubah ini jika perlu. */
+  left: 10px;
+  right: 10px;
   z-index: 100;
-  /* Padding untuk jarak dari tepi dan untuk safe area */
-  padding: 0 10px calc(env(safe-area-inset-bottom, 0px) + 5px); /* Jarak 5px dari bawah */
-  box-sizing: border-box;
-  pointer-events: none; /* Agar container tidak bisa di-klik */
+  pointer-events: none;
 }
 
 .tabs {
@@ -176,9 +173,9 @@ html, body {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  pointer-events: all; /* Agar tombol di dalam toolbar bisa di-klik */
+  pointer-events: all;
 }
-/* ================================================================= */
+/* ======================================================================= */
 
 .tab {
   display: flex;
