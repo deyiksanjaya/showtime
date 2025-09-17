@@ -156,9 +156,9 @@ html, body {
 /* ================== SOLUSI FINAL (METODE PALING STABIL) ================== */
 .tabs-container {
   position: fixed;
-  bottom: 5px; /* Jarak 5px dari dasar layar. Ubah ini jika perlu. */
-  left: 10px;
-  right: 10px;
+  bottom: env(safe-area-inset-bottom);
+  left: 0;
+  right: 0;
   z-index: 100;
   pointer-events: none;
 }
