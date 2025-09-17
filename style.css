@@ -1,25 +1,23 @@
-/* ================== GLOBAL ================== */
 html, body {
   margin: 0;
   padding: 0;
   background: black;
   color: white;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  height: 100%;
+  height: 100dvh;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   touch-action: manipulation;
 }
 
-.app {
-  height: 100%; /* nanti akan di-overwrite oleh JS */
-  box-sizing: border-box;
+body > .app {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: visible; /* supaya tabs fixed terlihat */
-  position: relative;
+  overflow: hidden;
 }
 
-/* ================== TIME DISPLAY ================== */
 .time-display {
   font-size: 90px;
   font-weight: 100;
@@ -32,7 +30,6 @@ html, body {
   transition: all 0.1s ease-in-out;
 }
 
-/* ================== CONTROLS ================== */
 .controls {
   position: relative;
   display: flex;
@@ -40,7 +37,6 @@ html, body {
   align-items: center;
   margin: 94px 0 0 0;
   padding: 0 26px 20px;
-  flex-shrink: 0;
 }
 
 .controls::after {
@@ -73,25 +69,32 @@ html, body {
   transition: background-color 0.1s ease, transform 0.1s ease;
 }
 
+.lap-btn {
+  background-color: #1c1c1e;
+  color: #aaa;
+}
+
 .lap-btn:disabled {
   opacity: 0.6;
+  cursor: default;
 }
 
 .start-btn {
   background-color: #013a1c;
   color: #00ff4c;
+  transition: transform 0.1s ease, background-color 0.3s ease;
 }
 
 .stop-btn {
   background-color: #3c0000;
   color: #ff3b30;
+  transition: transform 0.1s ease, background-color 0.3s ease;
 }
 
 .btn:active {
   transform: scale(0.96);
 }
 
-/* ================== DOT INDICATORS ================== */
 .dot-indicators {
   text-align: center;
 }
@@ -109,16 +112,15 @@ html, body {
   background-color: white;
 }
 
-/* ================== LAPS ================== */
 .laps {
   margin: 4px auto 0;
   flex: 1;
   overflow-y: scroll;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  scrollbar-width: none;           /* Firefox */
+  -ms-overflow-style: none;        /* IE & Edge */
   width: 90%;
-  display: block;
-  padding-bottom: 0;
+  display: block;                  /* <- penting! ubah dari flex ke block */
+  padding-bottom: 20px;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
@@ -132,14 +134,20 @@ html, body {
   padding: 0;
   list-style: none;
   margin: 0;
+  display: block;                 /* <- penting! ubah dari flex ke block */
+  padding-bottom: 50px;         /* <- biar lap terakhir nggak ketutup tab */
 }
 
 .laps li {
   display: flex;
   justify-content: space-between;
-  padding: 10px 0;
+  padding: 4px 0;
   border-bottom: 1px solid #1c1c1e;
   font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  line-height: 1.4;
+  height: 30px;
+  transition: color 0.3s ease;
 }
 
 .laps li.fastest {
@@ -155,69 +163,72 @@ html, body {
   text-align: right;
 }
 
-/* ================== BOTTOM TABS ================== */
-.tabs-container {
-  position: fixed;
-  bottom: env(safe-area-inset-bottom, 0); /* aman untuk home gesture */
-  left: 0;
-  right: 0;
-  z-index: 9999;
-  pointer-events: none;
-  box-sizing: border-box;
-  padding-bottom: 0;
-}
+/* === PERUBAHAN CSS TABS === */
 
 .tabs {
-  max-width: 500px;
-  width: calc(100% - 40px);
-  height: 60px;
-  margin: 0 auto;
-  border-radius: 30px;
-  background: #1c1c1e;
-  border: 0.5px solid rgba(255, 255, 255, 0.2);
+  position: absolute;
+  bottom: -25px; /* DIKEMBALIKAN: Posisi kembali ke semula agar tidak bergeser */
+  left: 40px; /* Menambahkan margin luar 40px */
+  right: 40px; /* Menambahkan margin luar 40px */
+  width: auto; /* Diperlukan agar margin bisa diterapkan */
+  height: 76px;
+  background: #1C1C1E; /* Warna container sesuai permintaan */
   display: flex;
   justify-content: space-around;
   align-items: center;
-  pointer-events: all;
-  transform: none;
+  border-radius: 38px; /* Membuat container membulat */
 }
 
 .tab {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  color: #8e8e93;
+  font-size: 11px;
+  color: #bbb;
   cursor: pointer;
-  flex: 1;
-  height: 100%;
-  transition: color 0.2s;
-  -webkit-tap-highlight-color: transparent;
 }
 
+/* --- Perbaikan: Tambahkan lebar minimum untuk div teks di dalam tab --- */
 .tab div {
-  margin-top: 2px;
-  white-space: nowrap;
+  min-width: 70px; /* Sesuaikan lebar ini berdasarkan teks terpanjang yang mungkin ("World Clock.") */
+  text-align: center; /* Pastikan teks tetap di tengah dalam lebar tetap */
+  white-space: nowrap; /* Mencegah teks melipat ke baris baru */
 }
+/* --- Akhir Perbaikan --- */
 
+
+/* Base style for all tab images (sets size and common properties) */
 .tab img {
   width: 24px;
   height: 24px;
-  filter: brightness(0) invert(1);
+  margin-bottom: 4px;
+  opacity: 1; /* DIUBAH: Opasitas default diubah menjadi 1 */
   transition: filter 0.2s, opacity 0.2s;
-  opacity: 1;
+}
+
+/* Specific filter for inactive icons (World Clock, Alarms, Timers) */
+.tab:not(.active) img:not([alt="Stopwatch Icon"]) {
+  /* DIUBAH: Filter diubah untuk membuat ikon menjadi putih */
+  filter: brightness(0) invert(1); 
+}
+
+/* Ensure stopwatch icon when NOT active keeps its original white color */
+.tab:not(.active) #stopwatchTab img {
+  filter: none; /* Explicitly remove any filter */
+  opacity: 0.5; /* TIDAK DIUBAH: Mempertahankan opasitas untuk ikon stopwatch non-aktif */
 }
 
 .tab.active {
-  color: #FFA00A;
+  color: #FFA00A; /* Orange text for active tab */
 }
 
-.tab.active img {
-  filter: none;
+#stopwatchTab.active img {
+  filter: brightness(1);
+  opacity: 1;
 }
 
-/* ================== OVERLAY ================== */
+/* === AKHIR PERUBAHAN === */
+
 .psychic-overlay {
   position: fixed;
   top: 0;
@@ -246,6 +257,10 @@ html, body {
   width: 220px;
   text-align: center;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  position: absolute;
+  left: 2%;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .psychic-title {
@@ -262,6 +277,7 @@ html, body {
   border-radius: 9px;
   margin-bottom: 18px;
   font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
   color: white;
   width: 140px;
   text-align: center;
@@ -278,6 +294,23 @@ html, body {
   font-size: 14px;
   color: #aaa;
   margin-bottom: 30px;
+}
+
+.psychic-mode-indicator {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 160, 10, 0.2);
+  color: #FFA00A;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.psychic-mode-indicator.active {
+  opacity: 1;
 }
 
 .number-grid {
@@ -300,4 +333,19 @@ html, body {
 
 .number-btn:active {
   background: #444;
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: white;
 }
