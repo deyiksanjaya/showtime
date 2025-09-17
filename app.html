@@ -24,68 +24,74 @@
 <body>
   <!-- Stopwatch UI -->
   <div class="app">
-  <div class="time-display" id="stopwatch">00:00.00</div>
-
-  <div class="controls">
-    <button class="btn lap-btn" id="lapBtn" disabled aria-label="Lap or Reset">Lap</button>
-    <div class="dot-indicators">
-      <span class="dot active"></span><span class="dot"></span>
+    <div class="time-display" id="stopwatch">00:00.00</div>
+    
+    <!-- ================== TAMBAHAN: Indikator untuk Mode Spesial ================== -->
+    <div class="indicators-container">
+        <div class="indicator" id="psychicIndicator">Psychic Mode Ready</div>
+        <div class="indicator mind-reading" id="mindReadingIndicator">Mind Reading</div>
     </div>
-    <button class="btn start-btn" id="startBtn" aria-label="Start or Stop">Start</button>
-  </div>
+    <!-- ========================================================================= -->
 
-  <div class="laps" id="laps">
-    <ul id="lapList"></ul>
-  </div>
+    <div class="controls">
+      <button class="btn lap-btn" id="lapBtn" disabled aria-label="Lap or Reset">Lap</button>
+      <div class="dot-indicators">
+        <span class="dot active"></span><span class="dot"></span>
+      </div>
+      <button class="btn start-btn" id="startBtn" aria-label="Start or Stop">Start</button>
+    </div>
 
-  <div class="tabs">
-    <div class="tab" id="worldClockTab">
-      <img src="https://img.icons8.com/ios/50/globe.png" alt="World Clock Icon"/>
-      <div>World Clock</div>
+    <div class="laps" id="laps">
+      <ul id="lapList"></ul>
     </div>
-    <div class="tab" id="alarmsTab">
-      <img src="https://img.icons8.com/ios-filled/50/alarm-clock.png" alt="Alarms Icon"/>
-      <div>Alarms</div>
-    </div>
-    <div class="tab" id="stopwatchTab">
-  <img id="stopwatchIcon" src="https://img.icons8.com/ios-filled/50/FFA00A/stopwatch.png" alt="Stopwatch Icon"/>
-  <div>Stopwatch</div>
-</div>
-    <div class="tab" id="timerTab">
-      <img src="https://img.icons8.com/ios-glyphs/50/timer.png" alt="Timer Icon"/>
-      <div>Timers</div>
-    </div>
-  </div>
 
-  <!-- Psychic input mode -->
-  <div class="psychic-overlay" id="psychicOverlay">
-    <div class="psychic-container">
-      <div class="psychic-title">Psychic Mode</div>
-      <div class="psychic-input" id="psychicInput">00</div>
-      <div class.="psychic-instruction">Enter two-digit millisecond target</div>
-      <div class="number-grid">
-        <button class="number-btn" data-number="1">1</button>
-        <button class="number-btn" data-number="2">2</button>
-        <button class="number-btn" data-number="3">3</button>
-        <button class="number-btn" data-number="4">4</button>
-        <button class="number-btn" data-number="5">5</button>
-        <button class="number-btn" data-number="6">6</button>
-        <button class="number-btn" data-number="7">7</button>
-        <button class="number-btn" data-number="8">8</button>
-        <button class="number-btn" data-number="9">9</button>
-        <button class="number-btn" id="clearBtn">⌫</button>
-        <button class="number-btn" data-number="0">0</button>
+    <div class="tabs">
+      <div class="tab" id="worldClockTab">
+        <img src="https://img.icons8.com/ios/50/globe.png" alt="World Clock Icon"/>
+        <div>World Clock</div>
+      </div>
+      <div class="tab" id="alarmsTab">
+        <img src="https://img.icons8.com/ios-filled/50/alarm-clock.png" alt="Alarms Icon"/>
+        <div>Alarms</div>
+      </div>
+      <div class="tab active" id="stopwatchTab">
+        <img id="stopwatchIcon" src="https://img.icons8.com/ios-filled/50/FFA00A/stopwatch.png" alt="Stopwatch Icon"/>
+        <div>Stopwatch</div>
+      </div>
+      <div class="tab" id="timerTab">
+        <img src="https://img.icons8.com/ios-glyphs/50/timer.png" alt="Timer Icon"/>
+        <div>Timers</div>
+      </div>
+    </div>
+
+    <!-- Psychic input mode -->
+    <div class="psychic-overlay" id="psychicOverlay">
+      <div class="psychic-container">
+        <div class="psychic-title">Psychic Mode</div>
+        <div class="psychic-input" id="psychicInput">00</div>
+        <div class="psychic-instruction">Enter two-digit millisecond target</div>
+        <div class="number-grid">
+          <button class="number-btn" data-number="1">1</button>
+          <button class="number-btn" data-number="2">2</button>
+          <button class="number-btn" data-number="3">3</button>
+          <button class="number-btn" data-number="4">4</button>
+          <button class="number-btn" data-number="5">5</button>
+          <button class="number-btn" data-number="6">6</button>
+          <button class="number-btn" data-number="7">7</button>
+          <button class="number-btn" data-number="8">8</button>
+          <button class="number-btn" data-number="9">9</button>
+          <button class="number-btn" id="clearBtn">⌫</button>
+          <button class="number-btn" data-number="0">0</button>
+        </div>
       </div>
     </div>
   </div>
 
   <script type="module">
-    // --- DIUBAH: Menambahkan onAuthStateChanged untuk penanganan otentikasi yang lebih baik ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, runTransaction } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-    // --- Konfigurasi dan inisialisasi Firebase ---
     const firebaseConfig = {
       apiKey: "AIzaSyBm2cw6dircA3IMc3yCEeCgVa5--5W6DUw",
       authDomain: "showtime-f086c.firebaseapp.com",
@@ -98,24 +104,19 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Device ID generator
     const getDeviceId = () => {
         const base = navigator.userAgent + navigator.language;
         const encoded = btoa(base).replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
         return "device_" + encoded;
     };
 
-    // --- DIUBAH: Fungsi validasi sekarang tidak menangani login ---
     const runValidation = async () => {
         const deviceId = getDeviceId();
         const deviceRef = doc(db, "activatedDevices", deviceId);
-
-        // Periksa apakah perangkat sudah teraktivasi
         const deviceSnap = await getDoc(deviceRef);
         if (deviceSnap.exists()) {
-            return; // Jika sudah, hentikan proses.
+            return;
         }
-
         const licenseKey = localStorage.getItem("showtime_license");
         if (!licenseKey) {
             window.location.replace("activate.html");
@@ -126,9 +127,7 @@
         try {
             await runTransaction(db, async (transaction) => {
                 const licenseSnap = await transaction.get(licenseRef);
-                if (!licenseSnap.exists()) {
-                    throw new Error("LICENSE_NOT_FOUND");
-                }
+                if (!licenseSnap.exists()) throw new Error("LICENSE_NOT_FOUND");
                 const licenseData = licenseSnap.data();
                 transaction.delete(licenseRef);
                 transaction.set(deviceRef, {
@@ -137,11 +136,8 @@
                     customerName: licenseData.customerName || 'Nama Tidak Diketahui' 
                 });
             });
-
             localStorage.setItem("showtime_activated", "true");
-            // Menghapus alert "sukses" agar tidak mengganggu
             window.location.reload(); 
-
         } catch (err) {
             console.error("Gagal dalam transaksi aktivasi:", err);
             if (err.message === "LICENSE_NOT_FOUND") {
@@ -154,14 +150,10 @@
         }
     };
 
-    // --- DIUBAH: Menggunakan listener onAuthStateChanged sebagai titik masuk ---
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            // Pengguna sudah login (baik dari sesi sebelumnya atau baru saja)
-            // Lanjutkan dengan validasi
             runValidation();
         } else {
-            // Tidak ada pengguna yang login, coba login secara anonim
             signInAnonymously(auth).catch((error) => {
                 console.error("Gagal login anonim:", error);
                 alert("Gagal terhubung ke layanan otentikasi. Silakan coba lagi.");
@@ -169,8 +161,6 @@
         }
     });
   </script>
-
-  <!-- Stopwatch logic kamu sendiri -->
   <script src="script.js"></script>
 </body>
 </html>
