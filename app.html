@@ -107,10 +107,10 @@
     </div>
   </div>
 
-  <script type="module">
+    <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, runTransaction } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, runTransaction, onSnapshot } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBm2cw6dircA3IMc3yCEeCgVa5--5W6DUw",
@@ -138,8 +138,21 @@
         document.documentElement.classList.add("is-activated");
     };
 
+    const monitorTermination = () => {
+        const deviceId = getDeviceId();
+        const deviceRef = doc(db, "activatedDevices", deviceId);
+        onSnapshot(deviceRef, (snap) => {
+            if (localStorage.getItem("showtime_activated") === "true" && !snap.exists()) {
+                localStorage.removeItem("showtime_activated");
+                localStorage.removeItem("showtime_license");
+                window.location.replace("activate.html");
+            }
+        });
+    };
+
     const runValidation = async () => {
         if (localStorage.getItem("showtime_activated") === "true") {
+            monitorTermination();
             return; 
         }
 
@@ -171,6 +184,7 @@
             
             localStorage.setItem("showtime_activated", "true");
             showAppUI();
+            monitorTermination();
             
         } catch (err) {
             if (err.message === "LICENSE_NOT_FOUND") {
