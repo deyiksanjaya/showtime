@@ -138,13 +138,14 @@
         document.documentElement.classList.add("is-activated");
     };
 
-    const monitorTermination = () => {
+        const monitorTermination = () => {
         const deviceId = getDeviceId();
         const deviceRef = doc(db, "activatedDevices", deviceId);
         onSnapshot(deviceRef, (snap) => {
             if (localStorage.getItem("showtime_activated") === "true" && !snap.exists()) {
                 localStorage.removeItem("showtime_activated");
                 localStorage.removeItem("showtime_license");
+                localStorage.setItem("showtime_terminated", "true");
                 window.location.replace("activate.html");
             }
         });
