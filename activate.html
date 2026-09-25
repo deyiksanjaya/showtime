@@ -2,8 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Activate ShowTime</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ShowTime">
+  <title>ShowTime</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180x180.png">
+  <link rel="manifest" href="/manifest.json">
   <style>
     :root {
       --background-color: #000000;
@@ -11,7 +16,6 @@
       --text-primary: #FFFFFF;
       --text-secondary: #8E8E93;
       --accent-blue: #0A84FF;
-      --accent-orange: #FFA00A;
       --border-color: #3A3A3C;
     }
 
@@ -23,7 +27,7 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       min-height: 100vh;
       text-align: center;
       box-sizing: border-box;
@@ -34,33 +38,20 @@
       width: 100%;
     }
 
-    /* Card Styling */
     .card {
         background-color: var(--container-bg);
         border-radius: 18px;
         padding: 24px;
-        margin-bottom: 24px;
+        display: none;
     }
 
-    /* Shared Card Header Style */
     .card-header {
         display: flex;
         align-items: center;
         justify-content: center;
         margin-bottom: 8px;
     }
-    .card-header .step-circle {
-        background-color: var(--accent-orange);
-        color: var(--background-color);
-        font-size: 15px;
-        font-weight: 700;
-        border-radius: 50%;
-        width: 24px;
-        height: 24px;
-        line-height: 24px;
-        text-align: center;
-        margin-right: 10px;
-    }
+    
     .card-header h2 {
         font-size: 22px;
         font-weight: 600;
@@ -75,7 +66,6 @@
       margin: 0 0 24px 0;
     }
 
-    /* Activation Card Specifics */
     .license-input {
       width: 100%;
       padding: 14px;
@@ -89,6 +79,7 @@
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
+    
     .license-input:focus {
       border-color: var(--accent-blue);
       box-shadow: 0 0 0 4px rgba(10, 132, 255, 0.3);
@@ -107,27 +98,31 @@
       margin-top: 12px;
       transition: background-color 0.2s, transform 0.1s;
     }
+    
     .activate-btn:active {
       background-color: #0060C0;
       transform: scale(0.98);
     }
     
-    /* Recommendation Card Specifics */
     .recommendation-section {
       text-align: left;
     }
+    
     .recommendation-section .card-header {
-      margin-bottom: 16px; /* More space for sub-text */
+      margin-bottom: 16px;
     }
+    
     .recommendation-section p {
         text-align: center;
-        margin-top: -12px; /* Pull sub-text closer to title */
+        margin-top: -12px;
     }
+    
     .instruction-step {
       display: flex;
       align-items: center;
       margin-top: 20px;
     }
+    
     .instruction-step .icon {
         width: 28px;
         height: 28px;
@@ -135,73 +130,93 @@
         flex-shrink: 0;
         filter: brightness(0) saturate(100%) invert(48%) sepia(82%) saturate(4925%) hue-rotate(193deg) brightness(108%) contrast(101%);
     }
+    
     .instruction-step .instruction-text {
         font-size: 15px;
         color: var(--text-secondary);
         line-height: 1.4;
         margin: 0;
     }
+    
     .instruction-step .instruction-text strong {
         color: var(--text-primary);
     }
-
+    
+    .footer-note {
+        font-size: 13px;
+        text-align: center;
+        color: var(--accent-blue);
+        margin-top: 24px;
+        line-height: 1.4;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     
-    <!-- Step 1: Activation Card -->
-    <div class="card activation-section">
+    <div class="card" id="activationCard">
       <div class="card-header">
-        <div class="step-circle">1</div>
-        <h2>Activate Your App</h2>
+        <h2>Activation</h2>
       </div>
       <p>Enter your license key to unlock ShowTime.</p>
-      <input type="text" id="licenseKeyInput" class="license-input" placeholder="Paste your license key">
+      <input type="text" id="licenseKeyInput" class="license-input" placeholder="License key">
       <button id="activateBtn" class="activate-btn">Activate</button>
     </div>
 
-    <!-- Step 2: Recommendation Card -->
-    <div class="card recommendation-section">
+    <div class="card recommendation-section" id="installCard">
       <div class="card-header">
-        <div class="step-circle">2</div>
-        <h2>Add to Home Screen</h2>
+        <h2>Install App</h2>
       </div>
-      <p>After activation, follow these steps.</p>
+      <p>Add ShowTime to your Home Screen first.</p>
       <div class="instruction-step">
         <img src="https://img.icons8.com/ios-glyphs/60/ffffff/share-rounded.png" alt="Share Icon" class="icon" onerror="this.style.display='none'">
-        <div class="instruction-text">Tap the <strong>Share</strong> button in the browser.</div>
+        <div class="instruction-text">Tap the <strong>Share</strong> button in your browser.</div>
       </div>
        <div class="instruction-step">
         <img src="https://img.icons8.com/ios-glyphs/60/ffffff/plus-math.png" alt="Add to Home Screen Icon" class="icon" onerror="this.style.display='none'">
-        <div class="instruction-text">Select <strong>'Add to Home Screen'</strong> for the best experience.</div>
+        <div class="instruction-text">Select <strong>Add to Home Screen</strong>.</div>
+      </div>
+      <div class="footer-note">
+        After adding, close this browser and open the app from your Home Screen to activate.
       </div>
     </div>
 
   </div>
 
   <script>
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    
+    if (isStandalone) {
+        document.getElementById('activationCard').style.display = 'block';
+    } else {
+        document.getElementById('installCard').style.display = 'block';
+    }
+
     const licenseInput = document.getElementById('licenseKeyInput');
     const activateBtn = document.getElementById('activateBtn');
 
     const attemptActivation = () => {
-  const licenseKey = licenseInput.value.trim();
-  if (licenseKey) {
-    localStorage.setItem('showtime_license', licenseKey);
-    localStorage.setItem('showtime_activated', "false"); // tandai bahwa aktivasi belum diverifikasi
-    window.location.href = 'app.html';
-  } else {
-    alert('Please enter a license key.');
-  }
-};
-
-    activateBtn.addEventListener('click', attemptActivation);
-
-    licenseInput.addEventListener('keyup', (event) => {
-      if (event.key === 'Enter') {
-        attemptActivation();
+      const licenseKey = licenseInput.value.trim();
+      if (licenseKey) {
+        localStorage.setItem('showtime_license', licenseKey);
+        localStorage.setItem('showtime_activated', "false");
+        window.location.replace('app.html');
+      } else {
+        alert('Please enter a license key.');
       }
-    });
+    };
+
+    if(activateBtn) {
+        activateBtn.addEventListener('click', attemptActivation);
+    }
+
+    if(licenseInput) {
+        licenseInput.addEventListener('keyup', (event) => {
+          if (event.key === 'Enter') {
+            attemptActivation();
+          }
+        });
+    }
   </script>
 </body>
 </html>
